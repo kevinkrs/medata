@@ -43,39 +43,46 @@ db = SQLAlchemy(app)
 
 
 #models
+#__tablename__ needs to be used if refered to tabel not class name 
 #
 #
-#
-#tabel where all categories are listed
-class Categories(db.Model):
-    __tablename__ = 'categories'
 
-    categorieId = db.Column(db.Integer, primary_key=True)
-    insightId = db.Column(db.Integer, db.ForeignKey('insights.id'))
-    supervised_learning_by_classification = db.Column(db.Boolean, unique=False, nullable=False, default = False)
-    laboratory_experiments = db.Column(db.Boolean, unique=False, nullable=False, default = False)
-    category3 = db.Column(db.Boolean, unique=False, nullable=False, default = False)
-    
-
-    #creats dictionary
-    def __repr__(self):
-        return dict(insightId = self.insightId,
-        supervised_learning_by_classification = self.supervised_learning_by_classification,
-        laboratory_experiments = self.laboratory_experiments,
-        category3 = self.category3)
-
-#table with insightId and name
+#Insights with all supported categories and all informations
+#one2many relationship with informtion (one for each paperId)
+#one2many realtionship with categories (onw row in categories for each supported category (more efficent soluton??))
 class Insights(db.Model):
     __tablename__ = 'insights'
 
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(30))
-    categories = db.relationship('categories', backref = 'categories', lazy = False)
-    information = db.relationship('information', backref = 'information', lazy = False)
+    categories = db.relationship('categories', backref = 'categories', lazy = True)
+    information = db.relationship('information', backref = 'information', lazy = True)
 
+
+    #information and categories need to be looped in 
     def __repr__(self):
         return dict(id = self.id,
         name = self.name)
+
+
+
+
+#tabel where all supported categories are listed
+class Categories(db.Model):
+    __tablename__ = 'categories'
+
+    insightId = db.Column(db.Integer, db.ForeignKey('insights.id'))
+    categorieId = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(30))
+
+    
+    def __repr__(self):
+
+        return dict(insightId = self.insightId,  
+        categorieId = self.categorieId,
+        name = self.name)
+
+
 
 
 #actual information, linked to paaperId and an insight 
@@ -88,7 +95,7 @@ class Information(db.Model):
     answer1 = db.Column(db.String(30))
     answer1_upvotes = db.Column(db.Integer)
     answer1_downvotes = db.Column(db.Integer)
-    answer2= db.Column(db.String(30))
+    answer2 = db.Column(db.String(30))
     answer2_upvotes = db.Column(db.Integer)
     answer2_downvotes = db.Column(db.Integer)
     answer3 = db.Column(db.String(30))
