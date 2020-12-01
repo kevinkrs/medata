@@ -34,7 +34,9 @@ DEBUG = True
 app = Flask(__name__)
 app.config.from_object(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:////tmp/test.db'
+app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 db = SQLAlchemy(app)
+
 
 
 #models
@@ -45,13 +47,14 @@ db = SQLAlchemy(app)
 class Categories(db.Model):
     __tablename__ = 'categories'
 
+    categorieId = db.Column(db.Integer, primary_key=True)
     insightId = db.Column(db.Integer, db.ForeignKey('Insights.id'))
     supervised_learning_by_classification = db.Column(db.Integer, default = 0)
     laboratory_experiments = db.Column(db.Integer, default = 0)
     category3 = db.Column(db.Integer, default = 0)
 
     #creats dictionary
-    def to_dict(self):
+    def __repr__(self):
         return dict(insightId = self.insightId,
         supervised_learning_by_classification = self.supervised_learning_by_classification,
         laboratory_experiments = self.laboratory_experiments,
@@ -64,7 +67,7 @@ class Insights(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(30))
 
-    def to_dict(self):
+    def __repr__(self):
         return dict(id = self.id,
         name = self.name)
 
@@ -90,7 +93,7 @@ class Information(db.Model):
     insight_downvotes = db.Column(db.Integer)
     timestamp = db.Column(db.DateTime, default = datetime.utcnow)
 
-    def to_dict(self):
+    def __repr__(self):
         return dict(insightId = self.insightId,
         paperId = self.paperId,
         answer1 = self.answer1,
