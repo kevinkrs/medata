@@ -49,9 +49,9 @@ class Categories(db.Model):
 
     categorieId = db.Column(db.Integer, primary_key=True)
     insightId = db.Column(db.Integer, db.ForeignKey('Insights.id'))
-    supervised_learning_by_classification = db.Column(db.Integer, default = 0)
-    laboratory_experiments = db.Column(db.Integer, default = 0)
-    category3 = db.Column(db.Integer, default = 0)
+    supervised_learning_by_classification = db.Column(db.Boolean, unique=False, nullable=False, default = False)
+    laboratory_experiments = db.Column(db.Boolean, unique=False, nullable=False, default = False)
+    category3 = db.Column(db.Boolean, unique=False, nullable=False, default = False)
 
     #creats dictionary
     def __repr__(self):
@@ -168,7 +168,7 @@ def single_book(book_id):
         response_object['message'] = 'Book updated!'
     if request.method == 'DELETE':
         remove_book(book_id)
-        response_object['message'] = 'Book removed!'
+        response_object['message'] = 'B ook removed!'
     return jsonify(response_object)
 
 
