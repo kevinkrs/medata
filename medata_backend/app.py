@@ -5,6 +5,8 @@ from flask_cors import CORS
 from flask_sqlalchemy import SQLAlchemy
 from datetime import datetime
 
+from sqlalchemy.orm import backref
+
 
 BOOKS = [
     {
@@ -33,7 +35,8 @@ DEBUG = True
 # instantiate the app
 app = Flask(__name__)
 app.config.from_object(__name__)
-app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:////tmp/test.db'
+#/// for relative location of db file
+app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///database.db'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 db = SQLAlchemy(app)
 
@@ -48,10 +51,11 @@ class Categories(db.Model):
     __tablename__ = 'categories'
 
     categorieId = db.Column(db.Integer, primary_key=True)
-    insightId = db.Column(db.Integer, db.ForeignKey('Insights.id'))
+    insightId = db.Column(db.Integer, db.ForeignKey('insights.id'))
     supervised_learning_by_classification = db.Column(db.Boolean, unique=False, nullable=False, default = False)
     laboratory_experiments = db.Column(db.Boolean, unique=False, nullable=False, default = False)
     category3 = db.Column(db.Boolean, unique=False, nullable=False, default = False)
+    
 
     #creats dictionary
     def __repr__(self):
@@ -66,6 +70,8 @@ class Insights(db.Model):
 
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(30))
+    categories = db.relationship('categories', backref = 'categories', lazy = False)
+    information = db.relationship('information', backref = 'information', lazy = False)
 
     def __repr__(self):
         return dict(id = self.id,
@@ -76,7 +82,7 @@ class Insights(db.Model):
 class Information(db.Model):
     __tablename__ = 'information'
 
-    insightId = db.Column(db.Integer, db.ForeignKey('Insights.id'))
+    insightId = db.Column(db.Integer, db.ForeignKey('insights.id'))
     paperId = db.Column(db.Integer, primary_key=True)
     #3 possible answers to insight with up- and downvotes
     answer1 = db.Column(db.String(30))
