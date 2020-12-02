@@ -8,7 +8,7 @@ from datetime import datetime
 
 from sqlalchemy.orm import backref
 
-
+#example for data
 BOOKS = [
     {
         'id': uuid.uuid4().hex,
@@ -30,10 +30,10 @@ BOOKS = [
     }
 ]
 
-# configuration
+#configuration
 DEBUG = True
 
-# instantiate the app
+# nstantiate the app
 app = Flask(__name__)
 app.config.from_object(__name__)
 #/// for relative location of db file
@@ -77,17 +77,17 @@ class Categories(db.Model):
 
     insightId = db.Column(db.Integer, db.ForeignKey('insights.id'))
     categoryId = db.Column(db.Integer, primary_key=True)
+    #name as primary_key?
     name = db.Column(db.String(30))
 
     
     def to_dict(self):
-
         return dict(insightId = self.insightId,  
         categoryId = self.categoryId,
         name = self.name)
 
     def __repr__(self):
-         return f'CategoryId: {self.categoryId}, name: {self.name}'
+         return f'CategoryId: {self.categoryId}, name: {self.name} | '
 
 
 
@@ -118,10 +118,10 @@ class Information(db.Model):
         paperId = self.paperId,
         answer1 = self.answer1,
         answer1_upvotes = self.answer1_upvotes,
-        answer1_downvotes =self.answer1_downvotes,
+        answer1_downvotes = self.answer1_downvotes,
         answer2 = self.answer2,
         answer2_upvotes = self.answer2_upvotes,
-        answer2_downvotes =self.answer2_downvotes,
+        answer2_downvotes = self.answer2_downvotes,
         answer3 = self.answer3,
         answer3_upvotes = self.answer3_upvotes,
         answer3_downvotes =self.answer3_downvotes,
@@ -141,7 +141,7 @@ class Information(db.Model):
 
 
 
-# enable CORS
+#enable CORS
 CORS(app, resources={r'/*': {'origins': '*'}})
 
 
@@ -153,12 +153,12 @@ def remove_book(book_id):
     return False
 
 
-# sanity check route
+#sanity check route
 @app.route('/ping', methods=['GET'])
 def ping_pong():
     return jsonify('pong!')
 
-#Beispielmethode
+#example method
 @app.route('/books', methods=['GET', 'POST'])
 def all_books():
     response_object = {'status': 'success'}
@@ -175,7 +175,7 @@ def all_books():
         response_object['books'] = BOOKS
     return jsonify(response_object)
 
-#Beispielmethode
+#example method
 @app.route('/books/<book_id>', methods=['PUT', 'DELETE'])
 def single_book(book_id):
     response_object = {'status': 'success'}
@@ -191,7 +191,7 @@ def single_book(book_id):
         response_object['message'] = 'Book updated!'
     if request.method == 'DELETE':
         remove_book(book_id)
-        response_object['message'] = 'B ook removed!'
+        response_object['message'] = 'Book removed!'
     return jsonify(response_object)
 
 
