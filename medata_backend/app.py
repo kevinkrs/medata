@@ -158,7 +158,7 @@ def remove_book(book_id):
 def ping_pong():
     return jsonify('pong!')
 
-
+#Beispielmethode
 @app.route('/books', methods=['GET', 'POST'])
 def all_books():
     response_object = {'status': 'success'}
@@ -175,7 +175,7 @@ def all_books():
         response_object['books'] = BOOKS
     return jsonify(response_object)
 
-
+#Beispielmethode
 @app.route('/books/<book_id>', methods=['PUT', 'DELETE'])
 def single_book(book_id):
     response_object = {'status': 'success'}
