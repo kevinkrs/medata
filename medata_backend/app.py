@@ -1,3 +1,4 @@
+from enum import unique
 import uuid
 
 from flask import Flask, jsonify, request
@@ -46,7 +47,7 @@ db = SQLAlchemy(app)
 #__tablename__ needs to be used if refered to tabel not class name 
 #
 #
-
+#
 #Insights with all supported categories and all informations
 #one2many relationship with informtion (one for each paperId)
 #one2many realtionship with categories (onw row in categories for each supported category (more efficent soluton??))
@@ -55,32 +56,38 @@ class Insights(db.Model):
 
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(30))
-    categories = db.relationship('categories', backref = 'categories', lazy = True)
-    information = db.relationship('information', backref = 'information', lazy = True)
+    categories = db.relationship('Categories', backref = 'categories', lazy = True)
+    information = db.relationship('Information', backref = 'information', lazy = True)
 
 
     #information and categories need to be looped in 
-    def __repr__(self):
+    def to_dict(self):
         return dict(id = self.id,
         name = self.name)
+
+    def __repr__(self):
+        return f'id: {self.id}, name: {self.name}'
 
 
 
 
 #tabel where all supported categories are listed
 class Categories(db.Model):
-    __tablename__ = 'categories'
+    __tableninsame__ = 'categories'
 
     insightId = db.Column(db.Integer, db.ForeignKey('insights.id'))
-    categorieId = db.Column(db.Integer, primary_key=True)
+    categoryId = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(30))
 
     
-    def __repr__(self):
+    def to_dict(self):
 
         return dict(insightId = self.insightId,  
-        categorieId = self.categorieId,
+        categoryId = self.categoryId,
         name = self.name)
+
+    def __repr__(self):
+         return f'CategoryId: {self.categoryId}, name: {self.name}'
 
 
 
@@ -106,7 +113,7 @@ class Information(db.Model):
     insight_downvotes = db.Column(db.Integer)
     timestamp = db.Column(db.DateTime, default = datetime.utcnow)
 
-    def __repr__(self):
+    def to_dict(self):
         return dict(insightId = self.insightId,
         paperId = self.paperId,
         answer1 = self.answer1,
@@ -122,6 +129,9 @@ class Information(db.Model):
         insight_downvotes = self.insight_downvotes,
         timestamp = self.timestamp.strftime("%Y-%m-%d %H:%M:%S")
         )
+
+    def __repr__(self):
+         return f'insightId: {self.insightId}, paperId: {self.paperId}'
 
 
 
