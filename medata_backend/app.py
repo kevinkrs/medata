@@ -5,6 +5,7 @@ from flask import Flask, jsonify, request
 from flask_cors import CORS
 from flask_sqlalchemy import SQLAlchemy
 from datetime import datetime
+from flask_marshmallow import Marshmallow
 
 from sqlalchemy.orm import backref
 
@@ -18,7 +19,8 @@ app.config.from_object(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///database.db'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 db = SQLAlchemy(app)
-
+#!! Order matters here, SQLAlchemy has to be installed first!
+ma = Marshmallow(app)
 
 
 #models
@@ -67,7 +69,12 @@ class Categories(db.Model):
     def __repr__(self):
          return f'CategoryId: {self.categoryId}, name: {self.name} | '
 
+class CategoriesSchema(ma.Schema):
+    class Meta:
+        fields = ("insightId", "categoryId", "name")
 
+category_schema = CategoriesSchema()
+categories_schema = CategoriesSchema(many=True)
 
 
 #actual information, linked to paaperId and an insight 
@@ -182,6 +189,10 @@ def get_all():
     
     return jsonify(response_object)
 
+@app.route('/all', methods = ["GET"])
+def all_data():
+     all_categories = Categories.query.all()
+     return jsonify(categories_schema.dump(all_categories))
 
 
 if __name__ == '__main__':
