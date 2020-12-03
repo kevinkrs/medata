@@ -56,7 +56,9 @@ class Insights(db.Model):
 class InsightSchema(ma.Schema):
     class Meta:
         #field which will be returned
-        fields = ("id", "name", "categories", "information")
+        #categories and information are missing here
+
+        fields = ("id", "name")
 
 insight_schema = InsightSchema()
 insights_schema = InsightSchema(many=True)
@@ -221,7 +223,7 @@ def all_data():
     all_information = Information.query.all()
 
     response_object.append(categories_schema.dump(all_categories))
-    #response_object.append(insights_schema.dump(all_insights))
+    response_object.append(insights_schema.dump(all_insights))
     response_object.append(informations_schema.dump(all_information))
     #all data is added to a list which is called response object. This list is then serialized to JSON format 
     #Todo: maybe add titles | Problems:
