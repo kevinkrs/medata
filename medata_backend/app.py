@@ -71,6 +71,7 @@ class Categories(db.Model):
 
 class CategoriesSchema(ma.Schema):
     class Meta:
+        #field which will be returned
         fields = ("insightId", "categoryId", "name")
 
 category_schema = CategoriesSchema()
