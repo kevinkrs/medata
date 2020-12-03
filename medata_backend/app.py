@@ -36,8 +36,10 @@ class Insights(db.Model):
 
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(30))
-    categories = db.relationship('Categories', backref = 'categories', lazy = True)
-    information = db.relationship('Information', backref = 'information', lazy = True)
+
+    
+    # categories = db.relationship('Categories', backref = 'categories', lazy = True)
+    # information = db.relationship('Information', backref = 'information', lazy = True)
 
 
     #information and categories need to be looped in 
@@ -49,9 +51,16 @@ class Insights(db.Model):
         return f'id: {self.id}, name: {self.name}'
 
 
+class InsightSchema(ma.Schema):
+    class Meta:
+        #field which will be returned
+        fields = ("id", "name", "categories", "information")
+
+insight_schema = InsightSchema()
+insights_schema = InsightSchema(many=True)
 
 
-#tabel where all supported categories are listed
+#table where all supported categories are listed
 class Categories(db.Model):
     __tableninsame__ = 'categories'
 
@@ -119,10 +128,22 @@ class Information(db.Model):
     def __repr__(self):
          return f'insightId: {self.insightId}, paperId: {self.paperId}'
 
+class InformationSchema(ma.Schema):
+    class Meta:
+        #fields which will be returned
+        fields = ("insightId", "paperId", "answer1", "answer1_upvotes", "answer1_downvotes", 
+        "answer2", "answer2_upvotes", "answer2_downvotes", "answer3", "answer3_upvotes", "answer3_downvotes",
+        "insight_upvotes", "insight_downvotes", "timestamp")
+
+information_schema = InformationSchema()
+informations_schema = InformationSchema(many=True)
 
 
-
-
+'''
+receives an Array of strings
+'''
+def insights_for_category(category_names):
+       return None
 
 
 
@@ -192,8 +213,18 @@ def get_all():
 
 @app.route('/all', methods = ["GET"])
 def all_data():
-     all_categories = Categories.query.all()
-     return jsonify(categories_schema.dump(all_categories))
+    response_object = []
+    all_categories = Categories.query.all()
+    all_insights = Insights.query.all()
+    all_information = Information.query.all()
+
+    response_object.append(categories_schema.dump(all_categories))
+    response_object.append(insights_schema.dump(all_insights))
+    response_object.append(informations_schema.dump(all_information))
+    #all data is added to a list which is called response object. This list is then serialized to JSON format 
+    #Todo: maybe add titles | Problems:
+    return jsonify(response_object)
+    
 
 
 if __name__ == '__main__':
