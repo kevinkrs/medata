@@ -8,32 +8,10 @@ from datetime import datetime
 
 from sqlalchemy.orm import backref
 
-#example for data
-BOOKS = [
-    {
-        'id': uuid.uuid4().hex,
-        'title': 'On the Road',
-        'author': 'Jack Kerouac',
-        'read': True
-    },
-    {
-        'id': uuid.uuid4().hex,
-        'title': 'Harry Potter and the Philosopher\'s Stone',
-        'author': 'J. K. Rowling',
-        'read': False
-    },
-    {
-        'id': uuid.uuid4().hex,
-        'title': 'Green Eggs and Ham',
-        'author': 'Dr. Seuss',
-        'read': True
-    }
-]
-
 #configuration
 DEBUG = True
 
-# nstantiate the app
+#instantiate the app
 app = Flask(__name__)
 app.config.from_object(__name__)
 #/// for relative location of db file
@@ -193,6 +171,17 @@ def single_book(book_id):
         remove_book(book_id)
         response_object['message'] = 'Book removed!'
     return jsonify(response_object)
+
+
+@app.route('/get_all', methods=['GET'])
+def get_all():
+    response_object = {'status':     'success'}
+    print(Insights.query.count())
+    for x in range(0,Insights.query.count()):
+        response_object[f'insight {x}'] = Insights.query.get(x).to_dict()
+    
+    return jsonify(response_object)
+
 
 
 if __name__ == '__main__':
