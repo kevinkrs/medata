@@ -37,7 +37,9 @@ class Insights(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(30))
 
-    
+    categories = db.relationship('Categories', backref = 'insights', lazy = True)
+    information = db.relationship('Information', backref = 'insights', lazy = True)
+    #changed the backref to the insights table
     # categories = db.relationship('Categories', backref = 'categories', lazy = True)
     # information = db.relationship('Information', backref = 'information', lazy = True)
 
