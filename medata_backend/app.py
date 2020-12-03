@@ -33,21 +33,23 @@ ma = Marshmallow(app)
 #one2many realtionship with categories (onw row in categories for each supported category (more efficent soluton??))
 class Insights(db.Model):
     __tablename__ = 'insights'
+    #constructor
+    def __init__(self, **kwargs):
+        super().__init__(**kwargs)
+        
 
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(30))
 
     categories = db.relationship('Categories', backref = 'insights', lazy = True)
     information = db.relationship('Information', backref = 'insights', lazy = True)
-    #changed the backref to the insights table
-    # categories = db.relationship('Categories', backref = 'categories', lazy = True)
-    # information = db.relationship('Information', backref = 'information', lazy = True)
 
-
-    #information and categories need to be looped in 
     def to_dict(self):
         return dict(id = self.id,
-        name = self.name)
+        name = self.name,
+        categories=[category.to_dict() for category in self.categories],
+        information=[info.to_dict() for info in self.information]
+        )
 
     def __repr__(self):
         return f'id: {self.id}, name: {self.name}'
@@ -75,12 +77,10 @@ class Categories(db.Model):
 
     
     def to_dict(self):
-        return dict(insightId = self.insightId,  
-        categoryId = self.categoryId,
-        name = self.name)
+        return dict(category_name = self.name)
 
     def __repr__(self):
-         return f'CategoryId: {self.categoryId}, name: {self.name} | '
+         return f'CategoryId: {self.categoryId}, name: {self.name}'
 
 class CategoriesSchema(ma.Schema):
     class Meta:
@@ -113,7 +113,7 @@ class Information(db.Model):
     timestamp = db.Column(db.DateTime, default = datetime.utcnow)
 
     def to_dict(self):
-        return dict(insightId = self.insightId,
+        return dict(
         paperId = self.paperId,
         answer1 = self.answer1,
         answer1_upvotes = self.answer1_upvotes,
@@ -125,8 +125,7 @@ class Information(db.Model):
         answer3_upvotes = self.answer3_upvotes,
         answer3_downvotes =self.answer3_downvotes,
         insight_upvotes = self.insight_upvotes,
-        insight_downvotes = self.insight_downvotes,
-        timestamp = self.timestamp.strftime("%Y-%m-%d %H:%M:%S")
+        insight_downvotes = self.insight_downvotes
         )
 
     def __repr__(self):
