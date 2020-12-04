@@ -9,10 +9,6 @@ from flask_marshmallow import Marshmallow
 
 from sqlalchemy.orm import backref
 
-from create_mock_data import create_mock_dataa
-
-create_mock_data.create_mock_dataa()
-
 
 #configuration
 DEBUG = True
