@@ -72,7 +72,6 @@ class Categories(db.Model):
 
     insightId = db.Column(db.Integer, db.ForeignKey('insights.id'))
     categoryId = db.Column(db.Integer, primary_key=True)
-    #name as primary_key?
     name = db.Column(db.String(30))
 
     
@@ -92,7 +91,7 @@ categories_schema = CategoriesSchema(many=True)
 
 
 #actual information, linked to paaperId and an insight 
-#add author, articel no., title, publication date 
+#add author, articel no., title, publication date, update defaults!
 class Information(db.Model):
     __tablename__ = 'information'
 
