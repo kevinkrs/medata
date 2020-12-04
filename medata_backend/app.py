@@ -13,6 +13,7 @@ from create_mock_data import create_mock_dataa
 
 create_mock_data.create_mock_dataa()
 
+
 #configuration
 DEBUG = True
 
