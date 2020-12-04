@@ -143,14 +143,6 @@ information_schema = InformationSchema()
 informations_schema = InformationSchema(many=True)
 
 
-'''
-receives an Array of strings
-'''
-def insights_for_category(category_names):
-       return None
-
-
-
 
 #enable CORS
 CORS(app, resources={r'/*': {'origins': '*'}})
