@@ -92,6 +92,7 @@ categories_schema = CategoriesSchema(many=True)
 
 
 #actual information, linked to paaperId and an insight 
+#add author, articel no., title, publication date 
 class Information(db.Model):
     __tablename__ = 'information'
 
