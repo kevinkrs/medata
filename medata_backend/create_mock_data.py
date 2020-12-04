@@ -1,4 +1,4 @@
-from app import db, Information, Insights, Categories
+#from app import db, Information, Insights, Categories
 import random
 
 
@@ -11,14 +11,15 @@ def create_mock_dataa():
     print("db.create_all()")
     
     for x in range(0, b):
-        print(f"i1S=Insights(id={x}, name={insight_names[x]})")
-        print(c3=Categories(insightId=x, name = random.choice(categories_names)))
-        print(inf1 =Information(insightId=x, paperId=543+x, answer1=f"first answer: {random()}", answer1_upvotes=random.randint(2,13), insight_upvotes=random.randint(1,14)))
+        print(f"i{x}=Insights(id={x}, name='{insight_names[x]}')")
+        print(f"c{x}=Categories(insightId={x}, name = '{random.choice(categories_names)}')")
+        print(f"inf{x} =Information(insightId={x}, paperId={543+x}, answer1='first answer: {random()}', answer1_upvotes={random.randint(2,13)}, insight_upvotes={random.randint(1,14)})")
 
-        print(db.session.add(i1))
-        print(db.session.add(c3))
-        print(db.session.add(inf1))
+        print(f"db.session.add(i{x})")
+        print(f"db.session.add(c{x})")
+        print(f"db.session.add(inf{x})")
 
-    print(db.session.commit())
+    print("db.session.commit()")
 print('from app import db, Information, Insights, Categories')
+print("db.create_all()")
 create_mock_dataa()
