@@ -99,17 +99,17 @@ class Information(db.Model):
     paperId = db.Column(db.Integer, primary_key=True)
     #3 possible answers to insight with up- and downvotes
     answer1 = db.Column(db.String(30))
-    answer1_upvotes = db.Column(db.Integer)
-    answer1_downvotes = db.Column(db.Integer)
+    answer1_upvotes = db.Column(db.Integer, default = 0)
+    answer1_downvotes = db.Column(db.Integer, default = 0)
     answer2 = db.Column(db.String(30))
-    answer2_upvotes = db.Column(db.Integer)
-    answer2_downvotes = db.Column(db.Integer)
+    answer2_upvotes = db.Column(db.Integer, default = 0)
+    answer2_downvotes = db.Column(db.Integer, default = 0)
     answer3 = db.Column(db.String(30))
-    answer3_upvotes = db.Column(db.Integer)
-    answer3_downvotes = db.Column(db.Integer)
+    answer3_upvotes = db.Column(db.Integer, default = 0)
+    answer3_downvotes = db.Column(db.Integer, default = 0)
     #relevance of insight for specific paper
-    insight_upvotes = db.Column(db.Integer)
-    insight_downvotes = db.Column(db.Integer)
+    insight_upvotes = db.Column(db.Integer, default = 0)
+    insight_downvotes = db.Column(db.Integer, default = 0)
     timestamp = db.Column(db.DateTime, default = datetime.utcnow)
 
     def to_dict(self):
