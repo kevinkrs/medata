@@ -4,6 +4,7 @@ import uuid
 from flask import Flask, jsonify, request
 from flask_cors import CORS
 from flask_sqlalchemy import SQLAlchemy
+from sqlalchemy import or_
 from datetime import datetime
 from flask_marshmallow import Marshmallow
 
@@ -98,7 +99,7 @@ class Information(db.Model):
     __tablename__ = 'information'
 
     insightId = db.Column(db.Integer, db.ForeignKey('insights.id'))
-    paperId = db.Column(db.Integer, primary_key=True)
+    paperId = db.Column(db.Integer, default=0, primary_key=True)
     #3 possible answers to insight with up- and downvotes
     answer1 = db.Column(db.String(30))
     answer1_upvotes = db.Column(db.Integer, default = 0)
@@ -209,27 +210,29 @@ def get_all():
     return jsonify(response_object)
 
 
-
+#idea: step1: get id's of all supported insights, setp2:if possible get existing information,
+#if not create empty information with paper_id and insight_id, return information with insight_id's
+#add insight_name to information db? -> to_dict() jsonfy
 @app.route('/get_specific', methods=['GET'])
-def get_specific(paper_id, categories):
+def get_specific():
     response_object = {'status':     'success'}
-    for x in range(0,Insights.query.count()):
 
-        response_object[f'insight {x}'] = Insights.query.get(x).to_dict()
-    
-    return jsonify(response_object)
-
-
-
-def test():
-    #filters by one category and paperId
-    #filter: 'and' but needs to be 'or'
-    joined = Insights.query.join(Insights.categories).join(Insights.information).filter(Categories.name=='category3',
-    Categories.name=='laboratory experiments').filter(Information.paperId==544).all()
-    print(joined)
+    #step1
+    counter = 0
+    filtered_category = Insights.query.join(Insights.categories).filter(or_(Categories.name=='category3', Categories.name=='laboratory experiments'))
+    for x in range(0, filtered_category.count()):
+        matching_insight_ids = []
+        filtered_category.get(counter)
 
 
-test()
+
+
+    #join tabels, filter correct category, paper_id, return all BUT not serializable, Insights.to_dict does not 
+    #work either, print does work
+    filtered_insights = Insights.query.join(Insights.categories).join(Insights.information).filter(or_(Categories.name=='category3', Categories.name=='laboratory experiments')).filter(or_(Information.paperId==544, Information.paperId==0)).all()
+
+    return jsonify(filtered_insights)
+
 
 
 
