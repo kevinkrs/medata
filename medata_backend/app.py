@@ -53,6 +53,7 @@ class Insights(db.Model):
         )
 
     def __repr__(self):
+
         return f'id: {self.id}, name: {self.name}'
 
 
@@ -206,6 +207,31 @@ def get_all():
         response_object[f'insight {x}'] = Insights.query.get(x).to_dict()
     
     return jsonify(response_object)
+
+
+
+@app.route('/get_specific', methods=['GET'])
+def get_specific(paper_id, categories):
+    response_object = {'status':     'success'}
+    for x in range(0,Insights.query.count()):
+
+        response_object[f'insight {x}'] = Insights.query.get(x).to_dict()
+    
+    return jsonify(response_object)
+
+
+
+def test():
+    #filters by one category and paperId
+    #filter: 'and' but needs to be 'or'
+    joined = Insights.query.join(Insights.categories).join(Insights.information).filter(Categories.name=='category3',
+    Categories.name=='laboratory experiments').filter(Information.paperId==544).all()
+    print(joined)
+
+
+test()
+
+
 
 @app.route('/all', methods = ["GET"])
 def all_data():
