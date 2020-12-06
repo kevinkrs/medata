@@ -15,11 +15,11 @@ def create_mock_dataa():
         random.shuffle(categories_names)
         print(f"i{x}=Insights(id={x}, name='{insight_names[x]}')")
 
-        print(f"c{x}=Categories(insightId={x}, name = '{categories_names.pop()}')")
-        print(f"c{x+100}=Categories(insightId={x}, name = '{categories_names.pop()}')")
+        print(f"c{x}=Categories(insight_id={x}, name = '{categories_names.pop()}')")
+        print(f"c{x+100}=Categories(insight_id={x}, name = '{categories_names.pop()}')")
 
-        print(f"inf{x} =Information(insightId={x}, insight_name = '{insight_names[x]}', paperId={random.randint(50,65)}, answer1='first answer: {random.random()}', answer1_upvotes={random.randint(2,13)}, insight_upvotes={random.randint(1,14)})")
-        print(f"inf{x+100} =Information(insightId={x}, insight_name = '{insight_names[x]}', paperId={random.randint(65,80)}, answer1='first answer: {random.random()}', answer1_upvotes={random.randint(2,13)}, insight_upvotes={random.randint(1,14)})")
+        print(f"inf{x} =Information(insight_id={x}, insight_name = '{insight_names[x]}', paper_id={random.randint(50,60)}, answer1='first answer: {random.random()}', answer1_upvotes={random.randint(2,13)}, insight_upvotes={random.randint(1,14)})")
+        print(f"inf{x+100} =Information(insight_id={x}, insight_name = '{insight_names[x]}', paper_id={random.randint(60,70)}, answer1='first answer: {random.random()}', answer1_upvotes={random.randint(2,13)}, insight_upvotes={random.randint(1,14)})")
 
         print(f"db.session.add(i{x})")
         print(f"db.session.add(c{x})")
