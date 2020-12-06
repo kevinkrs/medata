@@ -98,8 +98,10 @@ categories_schema = CategoriesSchema(many=True)
 class Information(db.Model):
     __tablename__ = 'information'
 
+    informationId = db.Column(db.Integer, primary_key=True)
     insightId = db.Column(db.Integer, db.ForeignKey('insights.id'))
-    paperId = db.Column(db.Integer, default=0, primary_key=True)
+    insight_name = db.Column(db.String(30))
+    paperId = db.Column(db.Integer, default=0)
     #3 possible answers to insight with up- and downvotes
     answer1 = db.Column(db.String(30))
     answer1_upvotes = db.Column(db.Integer, default = 0)
@@ -116,7 +118,8 @@ class Information(db.Model):
     timestamp = db.Column(db.DateTime, default = datetime.utcnow)
 
     def to_dict(self):
-        return dict(
+        return dict(id = self.insightId,
+        name = self.insight_name, 
         paperId = self.paperId,
         answer1 = self.answer1,
         answer1_upvotes = self.answer1_upvotes,
@@ -210,28 +213,35 @@ def get_all():
     return jsonify(response_object)
 
 
-#idea: step1: get id's of all supported insights, setp2:if possible get existing information,
-#if not create empty information with paper_id and insight_id, return information with insight_id's
-#add insight_name to information db? -> to_dict() jsonfy
+#step1: get id's of all supported insights
+#step1,5: if (imformation for paper_id does not exist) create information with paper_id
+#setp2: get relevant information (paper_id==paper_id)
 @app.route('/get_specific', methods=['GET'])
 def get_specific():
-    response_object = {'status':     'success'}
+    response_object = []
+    response_object.append({'status':     'success'})
+    relevant_categories = ['', 'laboratory experiments']
+    paper_id = 55
+    
+    #step1 information filtered by category
+    filtered_category_all = Insights.query.join(Insights.categories).filter(or_(Categories.name==x for x in relevant_categories)).all()
+    matching_insight_ids = []
+    for x in filtered_category_all:
+        matching_insight_ids.append(x.id)
 
-    #step1
-    counter = 0
-    filtered_category = Insights.query.join(Insights.categories).filter(or_(Categories.name=='category3', Categories.name=='laboratory experiments'))
-    for x in range(0, filtered_category.count()):
-        matching_insight_ids = []
-        filtered_category.get(counter)
+
+    #step2 information filtered by id
+    filtered_information_all = Information.query.filter(or_(Information.insightId==int(x) for x in matching_insight_ids)).filter(Information.paperId==paper_id).all()
+    for x in filtered_information_all:
+        response_object.append(x.to_dict())
+    
+    
+    #filtered_insights = Insights.query.join(Insights.categories).join(Insights.information).filter(or_(Categories.name==x for x in relevant_categories)).filter(Information.paperId==paper_id).all()
+
+    return jsonify(response_object)
+    
 
 
-
-
-    #join tabels, filter correct category, paper_id, return all BUT not serializable, Insights.to_dict does not 
-    #work either, print does work
-    filtered_insights = Insights.query.join(Insights.categories).join(Insights.information).filter(or_(Categories.name=='category3', Categories.name=='laboratory experiments')).filter(or_(Information.paperId==544, Information.paperId==0)).all()
-
-    return jsonify(filtered_insights)
 
 
 

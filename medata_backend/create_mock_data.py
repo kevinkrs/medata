@@ -18,8 +18,8 @@ def create_mock_dataa():
         print(f"c{x}=Categories(insightId={x}, name = '{categories_names.pop()}')")
         print(f"c{x+100}=Categories(insightId={x}, name = '{categories_names.pop()}')")
 
-        print(f"inf{x} =Information(insightId={x}, paperId={543+x}, answer1='first answer: {random.random()}', answer1_upvotes={random.randint(2,13)}, insight_upvotes={random.randint(1,14)})")
-        print(f"inf{x+100} =Information(insightId={x}, paperId={123456+x}, answer1='first answer: {random.random()}', answer1_upvotes={random.randint(2,13)}, insight_upvotes={random.randint(1,14)})")
+        print(f"inf{x} =Information(insightId={x}, insight_name = '{insight_names[x]}', paperId={random.randint(50,65)}, answer1='first answer: {random.random()}', answer1_upvotes={random.randint(2,13)}, insight_upvotes={random.randint(1,14)})")
+        print(f"inf{x+100} =Information(insightId={x}, insight_name = '{insight_names[x]}', paperId={random.randint(65,80)}, answer1='first answer: {random.random()}', answer1_upvotes={random.randint(2,13)}, insight_upvotes={random.randint(1,14)})")
 
         print(f"db.session.add(i{x})")
         print(f"db.session.add(c{x})")
