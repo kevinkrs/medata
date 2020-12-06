@@ -214,24 +214,31 @@ def get_all():
 
 
 #step1: get id's of all supported insights
-#step1,5: if (imformation for paper_id does not exist) create information with paper_id
-#setp2: get relevant information (paper_id==paper_id)
+#step2: if (imformation for paper_id does not exist) create information with paper_id
+#setp3: get relevant information (paper_id==paper_id)
 @app.route('/get_specific', methods=['GET'])
 def get_specific():
     response_object = []
     response_object.append({'status':     'success'})
-    relevant_categories = ['', 'laboratory experiments']
+    relevant_categories = ['laboratory experiments']
     paper_id = 55
     
     #step1 information filtered by category
-    filtered_category_all = Insights.query.join(Insights.categories).filter(or_(Categories.name==x for x in relevant_categories)).all()
-    matching_insight_ids = []
-    for x in filtered_category_all:
-        matching_insight_ids.append(x.id)
+    matching_insight = Insights.query.join(Insights.categories).filter(or_(Categories.name==x for x in relevant_categories)).all()
 
 
-    #step2 information filtered by id
-    filtered_information_all = Information.query.filter(or_(Information.insightId==int(x) for x in matching_insight_ids)).filter(Information.paperId==paper_id).all()
+
+    #step 2
+    for x in matching_insight:
+        if (Information.query.filter(Information.insightId==int(x.id)).filter(Information.paperId==paper_id).count()==0):
+            i = Information(insightId = x.id, insight_name=x.name, paperId=paper_id)
+            db.session.add(i)
+    db.session.commit()
+
+
+
+    #step3 information filtered by id
+    filtered_information_all = Information.query.filter(or_(Information.insightId==int(x.id) for x in matching_insight)).filter(Information.paperId==paper_id).all()
     for x in filtered_information_all:
         response_object.append(x.to_dict())
     
