@@ -57,16 +57,6 @@ class Insights(db.Model):
         return f'id: {self.id}, name: {self.name}'
 
 
-class InsightSchema(ma.Schema):
-    class Meta:
-        #field which will be returned
-        #categories and information are missing here
-
-        fields = ("id", "name")
-
-insight_schema = InsightSchema()
-insights_schema = InsightSchema(many=True)
-
 
 #table where all supported categories are listed
 class Categories(db.Model):
@@ -82,14 +72,6 @@ class Categories(db.Model):
 
     def __repr__(self):
          return f'CategoryId: {self.category_id}, name: {self.name}'
-
-class CategoriesSchema(ma.Schema):
-    class Meta:
-        #field which will be returned
-        fields = ("insight_id", "category_id", "name")
-
-category_schema = CategoriesSchema()
-categories_schema = CategoriesSchema(many=True)
 
 
 #actual information, linked to paaperId and an insight 
@@ -136,15 +118,6 @@ class Information(db.Model):
     def __repr__(self):
          return f'insight_id: {self.insight_id}, paper_id: {self.paper_id}'
 
-class InformationSchema(ma.Schema):
-    class Meta:
-        #fields which will be returned
-        fields = ("insight_id", "paper_id", "answer1", "answer1_upvotes", "answer1_downvotes", 
-        "answer2", "answer2_upvotes", "answer2_downvotes", "answer3", "answer3_upvotes", "answer3_downvotes",
-        "insight_upvotes", "insight_downvotes", "timestamp")
-
-information_schema = InformationSchema()
-informations_schema = InformationSchema(many=True)
 
 
 
@@ -273,23 +246,6 @@ def add_insight():
         
 
 
-
-
-
-
-@app.route('/all', methods = ["GET"])
-def all_data():
-    response_object = []
-    all_categories = Categories.query.all()
-    all_insights = Insights.query.all()
-    all_information = Information.query.all()
-
-    response_object.append(categories_schema.dump(all_categories))
-    response_object.append(insights_schema.dump(all_insights))
-    response_object.append(informations_schema.dump(all_information))
-    #all data is added to a list which is called response object. This list is then serialized to JSON format 
-    #Todo: maybe add titles | Problems:
-    return jsonify(response_object)
     
 
 
