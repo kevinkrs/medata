@@ -4,11 +4,15 @@ from bs4 import BeautifulSoup
 html_string = requests.get("https://dl.acm.org/doi/10.1145/1921233.1921242").text
 soup = BeautifulSoup(html_string, "lxml")
 
+
+#sub div from soup
 facts = soup.find(class_="citation")
-#article = soup.find("article")
+
+
 title = facts.find("h1", class_="citation__title").text
-#authors_ul = soup.find("ul", class_="rlist--inline loa truncate-list trunc-done")
+
 authors_info = facts.find_all(class_="loa__item")
+
 
 organizational_chart = soup.find("ol", class_="rlist organizational-chart")
 #print(organizational_chart)
