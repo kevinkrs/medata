@@ -4,6 +4,7 @@ import uuid
 from flask import Flask, jsonify, request
 from flask_cors import CORS
 from flask_sqlalchemy import SQLAlchemy
+from sqlalchemy import or_
 from datetime import datetime
 from flask_marshmallow import Marshmallow
 
@@ -30,7 +31,7 @@ ma = Marshmallow(app)
 #
 #
 #Insights with all supported categories and all informations
-#one2many relationship with informtion (one for each paperId)
+#one2many relationship with informtion (one for each paper_id)
 #one2many realtionship with categories (onw row in categories for each supported category (more efficent soluton??))
 class Insights(db.Model):
     __tablename__ = 'insights'
@@ -69,10 +70,10 @@ insights_schema = InsightSchema(many=True)
 
 #table where all supported categories are listed
 class Categories(db.Model):
-    __tableninsame__ = 'categories'
+    __tablename__ = 'categories'
 
-    insightId = db.Column(db.Integer, db.ForeignKey('insights.id'))
-    categoryId = db.Column(db.Integer, primary_key=True)
+    insight_id = db.Column(db.Integer, db.ForeignKey('insights.id'))
+    category_id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(30))
 
     
@@ -80,12 +81,12 @@ class Categories(db.Model):
         return dict(category_name = self.name)
 
     def __repr__(self):
-         return f'CategoryId: {self.categoryId}, name: {self.name}'
+         return f'CategoryId: {self.category_id}, name: {self.name}'
 
 class CategoriesSchema(ma.Schema):
     class Meta:
         #field which will be returned
-        fields = ("insightId", "categoryId", "name")
+        fields = ("insight_id", "category_id", "name")
 
 category_schema = CategoriesSchema()
 categories_schema = CategoriesSchema(many=True)
@@ -96,8 +97,10 @@ categories_schema = CategoriesSchema(many=True)
 class Information(db.Model):
     __tablename__ = 'information'
 
-    insightId = db.Column(db.Integer, db.ForeignKey('insights.id'))
-    paperId = db.Column(db.Integer, primary_key=True)
+    information_id = db.Column(db.Integer, primary_key=True)
+    insight_id = db.Column(db.Integer, db.ForeignKey('insights.id'))
+    insight_name = db.Column(db.String(30))
+    paper_id = db.Column(db.Integer, default=0)
     #3 possible answers to insight with up- and downvotes
     answer1 = db.Column(db.String(30))
     answer1_upvotes = db.Column(db.Integer, default = 0)
@@ -114,8 +117,9 @@ class Information(db.Model):
     timestamp = db.Column(db.DateTime, default = datetime.utcnow)
 
     def to_dict(self):
-        return dict(
-        paperId = self.paperId,
+        return dict(id = self.insight_id,
+        name = self.insight_name, 
+        paper_id = self.paper_id,
         answer1 = self.answer1,
         answer1_upvotes = self.answer1_upvotes,
         answer1_downvotes = self.answer1_downvotes,
@@ -130,12 +134,12 @@ class Information(db.Model):
         )
 
     def __repr__(self):
-         return f'insightId: {self.insightId}, paperId: {self.paperId}'
+         return f'insight_id: {self.insight_id}, paper_id: {self.paper_id}'
 
 class InformationSchema(ma.Schema):
     class Meta:
         #fields which will be returned
-        fields = ("insightId", "paperId", "answer1", "answer1_upvotes", "answer1_downvotes", 
+        fields = ("insight_id", "paper_id", "answer1", "answer1_upvotes", "answer1_downvotes", 
         "answer2", "answer2_upvotes", "answer2_downvotes", "answer3", "answer3_upvotes", "answer3_downvotes",
         "insight_upvotes", "insight_downvotes", "timestamp")
 
@@ -206,6 +210,47 @@ def get_all():
         response_object[f'insight {x}'] = Insights.query.get(x).to_dict()
     
     return jsonify(response_object)
+
+
+#step1: get id's of all supported insights
+#step2: if (imformation for paper_id does not exist) create information with paper_id
+#setp3: get relevant information (paper_id==paper_id)
+@app.route('/get_specific', methods=['GET'])
+def get_specific():
+    response_object = []
+    response_object.append({'status':     'success'})
+    relevant_categories = ['laboratory experiments']
+    paper_id = 55
+    
+    #step1 information filtered by category
+    matching_insight = Insights.query.join(Insights.categories).filter(or_(Categories.name==x for x in relevant_categories)).all()
+
+
+
+    #step 2
+    for x in matching_insight:
+        if (Information.query.filter(Information.insight_id==int(x.id)).filter(Information.paper_id==paper_id).count()==0):
+            i = Information(insight_id = x.id, insight_name=x.name, paper_id=paper_id)
+            db.session.add(i)
+    db.session.commit()
+
+
+
+    #step3 information filtered by id
+    filtered_information_all = Information.query.filter(or_(Information.insight_id==int(x.id) for x in matching_insight)).filter(Information.paper_id==paper_id).all()
+    for x in filtered_information_all:
+        response_object.append(x.to_dict())
+    
+    
+    #filtered_insights = Insights.query.join(Insights.categories).join(Insights.information).filter(or_(Categories.name==x for x in relevant_categories)).filter(Information.paper_id==paper_id).all()
+
+    return jsonify(response_object)
+    
+
+
+
+
+
 
 @app.route('/all', methods = ["GET"])
 def all_data():
