@@ -41,7 +41,7 @@ class Insights(db.Model):
         
 
     id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.String(30))
+    name = db.Column(db.String(30), unique=True)
 
     categories = db.relationship('Categories', backref = 'insights', lazy = True)
     information = db.relationship('Information', backref = 'insights', lazy = True)
@@ -225,16 +225,12 @@ def get_specific():
     #step1 information filtered by category
     matching_insight = Insights.query.join(Insights.categories).filter(or_(Categories.name==x for x in relevant_categories)).all()
 
-
-
     #step 2
     for x in matching_insight:
         if (Information.query.filter(Information.insight_id==int(x.id)).filter(Information.paper_id==paper_id).count()==0):
             i = Information(insight_id = x.id, insight_name=x.name, paper_id=paper_id)
             db.session.add(i)
     db.session.commit()
-
-
 
     #step3 information filtered by id
     filtered_information_all = Information.query.filter(or_(Information.insight_id==int(x.id) for x in matching_insight)).filter(Information.paper_id==paper_id).all()
@@ -246,6 +242,35 @@ def get_specific():
 
     return jsonify(response_object)
     
+@app.route('/add_insight', methods =["POST"])
+def add_insight():
+    response_object = {'status': 'success'}
+    post_data = request.get_json()
+    in_insight_name = post_data.get('insight')
+    in_categories = post_data.get('categories')
+    in_paper_id = post_data.get('paper_id')
+
+    
+    if (Insights.query.filter(Insights.name==in_insight_name).count()==0):
+        #if insight does not yet exist
+        i = Insights(name = str(in_insight_name))
+        db.session.add(i)
+        db.session.commit()
+        for category in in_categories:
+            c = Categories(insight_id = i.id, name = str(category))
+            db.session.add(c)
+        inf = Information(insight_id=i.id, insight_name=i.name, paper_id=in_paper_id)
+        db.session.add(inf)
+        db.session.commit()
+    else:
+        #if insight already exists 
+        i = Insights.query.filter(Insights.name==in_insight_name).first()
+        for category in in_categories:
+            c = Categories(insight_id = i.id, name = str(category))
+            db.session.add(c)
+        db.session.commit()
+    return response_object
+        
 
 
 
