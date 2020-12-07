@@ -252,19 +252,48 @@ def add_answer_to_insight():
     in_insight_name = post_data.get('insight')
     in_answer = post_data.get('answer')
     inf = Information.query.filter(Information.paper_id==int(in_paper_id)).filter(Information.insight_name==str(in_insight_name)).first()
+    answer_added = False 
+
     
-    #add to first free answer, toDo : filter double, answers_full         
-    for x in range(1, 4):
-        answer = 'answer' + str(x)
-        if(getattr(inf, answer)==''):
-            if (answer == 'answer1'):
-                inf.answer1 = in_answer
-            if (answer == 'answer2'):
-                inf.answer2 = in_answer
-            if (answer == 'answer3'):
+    #check if answer already exists
+    if (inf.answer1!=in_answer and inf.answer2!=in_answer and inf.answer3!=in_answer):
+        #add to first free answer
+        for x in range(1, 4):
+            answer = 'answer' + str(x)
+            if(getattr(inf, answer)==''):
+                if (answer == 'answer1'):
+                    inf.answer1 = in_answer
+                    answer_added = True
+                if (answer == 'answer2'):
+                    inf.answer2 = in_answer
+                    answer_added = True
+                if (answer == 'answer3'):
+                    inf.answer3 = in_answer
+                    answer_added = True
+                db.session.commit()
+                break
+
+        #overrides least popular answer with new answer
+        if (answer_added=False):        
+            score_answer1 = int(inf.answer1_upvotes) - int(inf.answer1_downvotes)
+            score_answer2 = int(inf.answer2_upvotes) - int(inf.answer2_downvotes)
+            score_answer3 = int(inf.answer3_upvotes) - int(inf.answer3_downvotes)
+            if (score_answer3 <= score_answer2 and score_answer3 <= score_answer1):
                 inf.answer3 = in_answer
-            db.session.commit()
-            break
+                inf.answer3_upvotes = 0
+                inf.answer3_downvotes = 0
+                db.session.commit()
+            if (score_answer2 <= score_answer3 and score_answer2 <= score_answer1):
+                inf.answer2 = in_answer
+                inf.answer2_upvotes = 0
+                inf.answer2_downvotes = 0
+                db.session.commit()
+            if (score_answer1 <= score_answer3 and score_answer1 <= score_answer2):
+                inf.answer1 = in_answer
+                inf.answer1_upvotes = 0
+                inf.answer1_downvotes = 0
+                db.session.commit()
+
 
 
 
