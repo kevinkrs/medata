@@ -84,13 +84,13 @@ class Information(db.Model):
     insight_name = db.Column(db.String(30))
     paper_id = db.Column(db.Integer, default=0)
     #3 possible answers to insight with up- and downvotes
-    answer1 = db.Column(db.String(30))
+    answer1 = db.Column(db.String(30), default = "")
     answer1_upvotes = db.Column(db.Integer, default = 0)
     answer1_downvotes = db.Column(db.Integer, default = 0)
-    answer2 = db.Column(db.String(30))
+    answer2 = db.Column(db.String(30), default = "")
     answer2_upvotes = db.Column(db.Integer, default = 0)
     answer2_downvotes = db.Column(db.Integer, default = 0)
-    answer3 = db.Column(db.String(30))
+    answer3 = db.Column(db.String(30), default = "")
     answer3_upvotes = db.Column(db.Integer, default = 0)
     answer3_downvotes = db.Column(db.Integer, default = 0)
     #relevance of insight for specific paper
@@ -193,7 +193,7 @@ def get_specific():
     response_object = []
     response_object.append({'status':     'success'})
     relevant_categories = ['laboratory experiments']
-    paper_id = 55
+    paper_id = 56
     
     #step1 information filtered by category
     matching_insight = Insights.query.join(Insights.categories).filter(or_(Categories.name==x for x in relevant_categories)).all()
@@ -244,6 +244,30 @@ def add_insight():
         db.session.commit()
     return response_object
         
+@app.route('/add_answer', methods = ["POST"])
+def add_answer_to_insight():
+    response_object = {'status': 'success'}
+    post_data = request.get_json()
+    in_paper_id = post_data.get('paper_id')
+    in_insight_name = post_data.get('insight')
+    in_answer = post_data.get('answer')
+    inf = Information.query.filter(Information.paper_id==int(in_paper_id)).filter(Information.insight_name==str(in_insight_name)).first()
+    
+    #add to first free answer, toDo : filter double, answers_full         
+    for x in range(1, 4):
+        answer = 'answer' + str(x)
+        if(getattr(inf, answer)==''):
+            if (answer == 'answer1'):
+                inf.answer1 = in_answer
+            if (answer == 'answer2'):
+                inf.answer2 = in_answer
+            if (answer == 'answer3'):
+                inf.answer3 = in_answer
+            db.session.commit()
+            break
+
+
+
 
 
     
