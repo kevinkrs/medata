@@ -239,10 +239,12 @@ def add_insight():
         #if insight already exists 
         i = Insights.query.filter(Insights.name==in_insight_name).first()
         for category in in_categories:
-            c = Categories(insight_id = i.id, name = str(category))
-            db.session.add(c)
+            #check if category already exists, if not -> add
+            if (Categories.query.filter(Categories.insight_id==i.id).filter(Categories.name == str(category)).count()==0):
+                c = Categories(insight_id = i.id, name = str(category))
+                db.session.add(c)
         db.session.commit()
-    return response_object
+    return jsonify(response_object)
         
 @app.route('/add_answer', methods = ["POST"])
 def add_answer_to_insight():
@@ -293,6 +295,7 @@ def add_answer_to_insight():
                 inf.answer1_upvotes = 0
                 inf.answer1_downvotes = 0
                 db.session.commit()
+    return jsonify(response_object)
 
 
 
