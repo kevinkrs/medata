@@ -307,7 +307,7 @@ def rate_answer():
     in_upvote = put_data.get('upvote')
     in_answer =put_data.get('answer')
     inf = Information.query.filter(Information.paper_id == in_paper_id).filter(Information.insight_name==str(in_insight_name)).first()
-    
+
     if (in_upvote):
         if (in_answer=='answer1'):
             inf.answer1_upvotes = inf.answer1_upvotes + 1
@@ -326,6 +326,22 @@ def rate_answer():
     return jsonify(response_object)
 
 
+@app.route('/rate_relevance_insight', methods = ["PUT"])
+def rate_relevance_insight():
+    response_object = {'status': 'success'}
+    put_data = request.get_json()
+    in_insight_name = put_data.get('insight')
+    in_paper_id = put_data.get('paper_id')
+    in_upvote = put_data.get('upvote')
+    inf = Information.query.filter(Information.paper_id == in_paper_id).filter(Information.insight_name==str(in_insight_name)).first()
+
+    if (in_upvote):
+        inf.insight_upvotes = inf.insight_upvotes + 1
+    else :
+        inf.insight_upvotes = inf.insight_upvotes - 1
+    db.session.commit()
+
+    return jsonify(response_object)
 
     
 
