@@ -1,8 +1,11 @@
 import requests
 from bs4 import BeautifulSoup
+import re
 
 
-    #print(organizational_chart)
+
+
+
 
 def main():
     url = "https://dl.acm.org/doi/10.1145/2342541.2342548"
@@ -60,17 +63,32 @@ def name_from_profile(link):
 
 def get_categories(soup):
     organizational_chart = soup.find("ol", class_="rlist organizational-chart")     
-    categories_container = organizational_chart.find_all("ol")
-    print(len(categories_container))
+    categories_container = organizational_chart.find_all("a")
+    #print(len(categories_container))
     categories_text = []
+
+
     for categorie in categories_container:
         try:
-            cat = categorie.find("a").text 
-            categories_text.append(cat)
+            cat = categorie.text 
+            link_to_cat = categorie.get("href")
             print(cat)
-            print("\n\n")
+            print(len(get_infos_of_cat_link(link_to_cat)))
+            print("\n")
         except Exception:
              pass   
+        
+
+def get_infos_of_cat_link(link):
+    #return a ordered list with the category Numbers
+    categories_numbers = []
+    cat_string = re.sub(r"\?[\w*\W*]*","", link)
+    # removes everything after the ?
+    cat_string = re.sub(r"[\w*\W*]*\/", "", cat_string)
+    # removes everything before the last /
+    categories_numbers = re.split(r"\.", cat_string)
+    # splits the numbery by the .
+    return categories_numbers
 
 if __name__ == "__main__":
     main()
