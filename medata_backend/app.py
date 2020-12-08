@@ -264,10 +264,10 @@ def add_answer_to_insight():
                 if (answer == 'answer1'):
                     inf.answer1 = in_answer
                     answer_added = True
-                if (answer == 'answer2'):
+                elif (answer == 'answer2'):
                     inf.answer2 = in_answer
                     answer_added = True
-                if (answer == 'answer3'):
+                else :
                     inf.answer3 = in_answer
                     answer_added = True
                 db.session.commit()
@@ -283,12 +283,12 @@ def add_answer_to_insight():
                 inf.answer3_upvotes = 0
                 inf.answer3_downvotes = 0
                 db.session.commit()
-            if (score_answer2 <= score_answer3 and score_answer2 <= score_answer1):
+            elif (score_answer2 <= score_answer3 and score_answer2 <= score_answer1):
                 inf.answer2 = in_answer
                 inf.answer2_upvotes = 0
                 inf.answer2_downvotes = 0
                 db.session.commit()
-            if (score_answer1 <= score_answer3 and score_answer1 <= score_answer2):
+            else :
                 inf.answer1 = in_answer
                 inf.answer1_upvotes = 0
                 inf.answer1_downvotes = 0
