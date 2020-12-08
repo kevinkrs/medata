@@ -274,7 +274,7 @@ def add_answer_to_insight():
                 break
 
         #overrides least popular answer with new answer
-        if (answer_added=False):        
+        if (answer_added==False):        
             score_answer1 = int(inf.answer1_upvotes) - int(inf.answer1_downvotes)
             score_answer2 = int(inf.answer2_upvotes) - int(inf.answer2_downvotes)
             score_answer3 = int(inf.answer3_upvotes) - int(inf.answer3_downvotes)
