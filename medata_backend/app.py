@@ -144,8 +144,9 @@ def get_all():
 #step1: get id's of all supported insights
 #step2: if (information for paper_id does not exist) create information with paper_id
 #setp3: get relevant information (paper_id==paper_id)
-@app.route('/get_specific', methods=['GET'])
+@app.route('/get_specific', methods=['POST'])
 def get_specific():
+    url = request.get_json().get('url')
     response_object = []
     response_object.append({'status':     'success'})
     relevant_categories = ['laboratory experiments']
