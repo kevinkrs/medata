@@ -1,1 +1,4 @@
 medata_backend/venv
+.vscode
+.idea
+medata_backend/__pycache__
