@@ -9,3 +9,12 @@
 6. on the left side of your command line should be a "(venv)" -> then your venv is activated
 7. Once your venv is activated enter following command: pip install -r requirements.txt
 8. Now your virtual enviroment is ready to rumble!
+
+
+## Vue Frontend testen
+1. chrome:// extension in Chrome öffnen
+2. Developer Mode oben rechts aktivieren
+3. In medata_plugin Datei "npm run build" ausführen
+4. Backend Server starten
+5. "dist" Datei in Chrome oben links als "load unpacked" hochladen
+6. Plug in oben Rechts in der Pluginzeile aussuchen
