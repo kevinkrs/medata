@@ -1,119 +1,213 @@
+/* eslint-disable indent */
 <template>
-  <div id="home">
-    <main>
-      <div class="header">
-        <router-link to ="/"><img src="../assets/medata-white.png" width="300"></router-link>
-        <br>
-           <a href="mailto:support@medata.com" target="_blank">
-         <img class="mail" src="../assets/email.png">
-        </a>
-        <a href="https://github.com/kevinkrs7/medata" target="_blank">
-         <img class="github" src="../assets/github.png">
-        </a>
+<div class = "extension">
+      <div class="main-column">
+        <img class="logo" src="../assets/medata_black.png" width="200">
+        <!--The fieldset element "box-1" contains everything reagardin the legend-->
+        <fieldset class="box-1">
+          <legend>Legend</legend>
+          <!--The three div elements "box-1-content" represent the the three elements inside the legend.
+          Each element consists of a short text and a colored box-->
+          <div class="box-1-content">
+            confirmed insigth
+            <div class="colorboxgreen">
+            </div>
+          </div>
+          <div class="box-1-content">
+            validation needed
+           <div class="colorboxyellow">
+            </div>
+          </div>
+          <div class="box-1-content">
+            enter information
+            <div class="colorboxred">
+            </div>
+          </div>
+        </fieldset>
+        <!--The div element "box 2" represents one insight listed under the legend and also consists of
+        a short text and a colored box. ... (V-for und v-bind:key kommentiere ich noch)-->
+        <div class="box-2" v-for="entry in metadata" :key="entry.id">
+          {{entry.name}}
+          <!--Each insight can have either a green, yellow or red button.
+          An v-if will create these buttons colored red, yellow or green
+          depending on whether the passed numerical value "confirmed" inside the "metadaata" array
+          (recieved inside script from the store file)is 0,1 or something else.-->
+          <button v-if="entry.insight_upvotes < 1 " class="insight-button-red" @click="toggle"> </button> <!--Conditional einbauen, je nach id andere richtige-farbige Box einfügt-->
+          <button v-else-if="entry.insight_upvotes < 8" class="insight-button-yellow" @click="toggle"> </button>
+          <button v-else class="insight-button-green" @click="toggle"> </button>
+        </div>
+        <div class="box-3">
+        <a href="https://dl.acm.org/"><img src="@/assets/direct-download.png" class="downloadPNG"> download insights</a>
+        </div>
+        <div class="box-4">
+          <p> Ad relevant parameters </p>
+          <input type="text" v-model="userInput" class="inputfield"/>
+          <p> {{userInput}} </p>
+        </div>
+        <div class="submit">
+          <input type="button" value="Submit" class="submitbutton">
+        </div>
       </div>
-      <div class="search-box">
-        <input type="text" class="search-bar" placeholder="https://dl.acm.org/..."
-        v-model="query" @keypress.enter="openSearch"/>
-
-        <input type="submit" class="button" id="srch" value="Find" @click="openSearch()" target="self">
-      </div>
-    </main>
-  </div>
+</div>
 </template>
 
 <script>
+// mapState is a function, that maintains a reference to a specific property of the "state" object (state.metadata)
+// if the property is mutated, a component using mapState will react to that change and refresh the UI that is tied to this data
+import {mapState} from 'vuex'
+
 export default {
-  name: 'home',
+  name: 'main',
   data () {
     return {
-      substr: 'https://dl.acm.org/',
-      query: ''
+    // Empty String for possible user input
+      userInput: ''
     }
   },
   methods: {
-    openSearch () {
-    // eslint-disable-next-line no-var
-      var querySub = this.query.substring(0, 19)
-      if (querySub === this.substr) {
-        window.open(this.query, '/embed')
-      } else {
-        alert('Please paste valid URL')
-      }
+    // Function only for testing
+    toggle () {
+      alert('Works!')
     }
+  },
+  // mapstate is a Vuex component (using computed) summarizing the command of this.$store.state.metadata
+  computed: mapState({
+    metadata: state => state.metadata
+  }),
+  // This function starts the method "loadMetadata" belonging to "action" inside the store file
+  // loadMetadata fetches the data from the api folder, which receives metadata from the backend
+  // after metadata is reveived it is passed to the "mutation" component and after that to the "state" to save it
+  beforeMount () {
+    this.$store.dispatch('loadMetadata')
   }
 }
 
 </script>
 
-<style> /* "Scoped" restricts css localy on this view */
+<style scoped>
 
-main {
-  min-height: 100vh;
-  padding: 25px;
-  margin:0px;
-  background-image: linear-gradient(to bottom, rgba(0, 0, 0, 0.25), rgba(0, 0, 0, 0.75));
-  background-image: url('../assets/IMG_1484.jpg');
-  background-size: cover;
-  background-position: bottom;
-  font-family: 'Futura', sans-serif;
+.extension {
+  box-sizing: border-box;
+  width: 300px;
+  background-color: rgb(232, 232, 232);
+  font-family: Arial, Helvetica, sans-serif;
+  font-size: 15px;
 }
-.search-box {
-  width: 30%;
-  margin-top: 30px;
-  margin-bottom: 30px;
-  margin-left: auto;
-  margin-right: auto;
+legend {
+  font-size: 15px, 
+}
+.main-column{
+  display: block;
+  padding-top: 20px;
+  padding-left: 10px;
+  padding-right: 10px;
+}
+.logo{
+  margin-bottom: 15px;
+}
+.box-1{
+  display: flex;
+  flex-direction: column;
+  flex-wrap: wrap;
+  border: 1px solid black;
+  padding: 10px;
+  margin-bottom: 20px;
+}
+
+legend {
+  font-family: 'Courier New', Courier, monospace;
+  margin-left: 5px;
+}
+
+ .box-1 .box-1-content{
+   display: flex;
+   justify-content: space-between;
+   margin: 3px;
+ }
+
+ .box-1 .colorboxgreen {
+   box-sizing: border-box;
+   background: green;
+   width: 30px;
+   height: 30px;
+ }
+
+ .box-1 .colorboxyellow {
+   box-sizing: border-box;
+   background: yellow;
+   width: 30px;
+   height: 30px;
+ }
+
+ .box-1 .colorboxred {
+   box-sizing: border-box;
+   background: red;
+   width: 30px;
+   height: 30px;
+ }
+
+ .insight-button-green {
+   border: none;
+   background: green;
+   width: 30px;
+   height: 30px;
+ }
+  .insight-button-yellow {
+   border: none;
+   background: yellow;
+   width: 30px;
+   height: 30px;
+ }
+  .insight-button-red {
+   border: none;
+   background: red;
+   width: 30px;
+   height: 30px;
+ }
+  .insight-button:focus{
+    width: 60px;
+  }
+.box-2{
+  display: flex;
+  justify-content: space-between;
+  padding: 10px;
+}
+.box-3{
+  padding: 15px;
+  margin-top: 20px;
   text-align: center;
 }
 
-.search-box .button {
-  width: 50%;
-  background-color: rgb(148, 148, 148);
-  border-radius: 15px;
-  outline: none;
-  appearance: none;
-  border: none;
-  padding: 5px;
-}
-.search-box .button:hover{
-  background-color: rgb(42, 75, 160);
-  border-radius: 15px;
-  color: white;
-  outline: none;
-  appearance: none;
-  border: none;
+.box-4{
+  display: block;
+  margin-top: 20px;
+  text-align: center;
 }
 
-.search-box .search-bar {
-  display: block;
-  width: 100%;
+
+.submit {
   padding: 15px;
-  margin-bottom: 5px;
-  color: #313131;
-  font-size: 20px;
-  appearance: none;
-  border:none;
-  outline: none;
-  background: none;
-  box-shadow: 0px 0px 8px rgba(0, 0, 0, 0.25);
-  background-color: rgba(255, 255, 255, 0.5);
-  border-radius: 0px 16px 0px 16px;
-  transition: 0.4s;
-}
-.search-box .search-bar:focus {
-  box-shadow: 0px 0px 16px rgba(0, 0, 0, 0.25);
-  background-color: rgba(255, 255, 255, 0.75);
-  border-radius: 16px 0px 16px 0px;
+  display:flex;
+  justify-content: center;
+  align-content: center;
+  
 }
 
-.header {
-  display: block;
-  text-align: right;
-  margin-bottom: 200px;
+.submit .submitbutton{
+  border: none;
+  color: rgb(235, 235, 235);
+  background: rgb(20, 38, 176);
+  border-radius: 5px;
+  width: 70px;
+  height: 30px;
 }
 
-.header .github{
-  margin-left: 10px;
+.submitbutton:hover{
+  color: black;
+  background: rgb(206, 107, 20);
 }
 
+.downloadPNG {
+  margin-right: 10px;
+}
 </style>
