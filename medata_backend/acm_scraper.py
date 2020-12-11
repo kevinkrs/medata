@@ -3,12 +3,25 @@ from bs4 import BeautifulSoup
 import re
 
 
+class Category():
+    numbers = []
+    name = ""
+    has_children = True
+    children = []
+    
+    def __init__(self, numbers: list, name: str):
+        self.numbers = numbers
+        self.name = name
 
-
+    def to_dict(self):
+        return {
+            "name": this.name,
+            "numbers": this.numbers
+        }
 
 
 def main():
-    url = "https://dl.acm.org/doi/10.1145/2342541.2342548"
+    url = "https://dl.acm.org/doi/10.1145/3230543.3230575"
     soup = get_soup(url)
     get_categories(soup)
 
@@ -61,23 +74,62 @@ def name_from_profile(link):
     return name
     
 
+def get_paper_id(link):
+    id = re.sub(r"https:\/\/dl\.acm\.org\/doi\/[\d*\.\d*]+\/", "", link)
+    return id
+
+
 def get_categories(soup):
     organizational_chart = soup.find("ol", class_="rlist organizational-chart")     
     categories_container = organizational_chart.find_all("a")
     #print(len(categories_container))
     categories_text = []
+    categories_list = []
 
 
     for categorie in categories_container:
         try:
-            cat = categorie.text 
-            link_to_cat = categorie.get("href")
-            print(cat)
-            print(len(get_infos_of_cat_link(link_to_cat)))
-            print("\n")
-        except Exception:
-             pass   
+            name = categorie.text 
+            numbers = get_infos_of_cat_link(categorie.get("href"))
+            cat = Category(numbers,name)
+            categories_list.append(cat)
+
+            # print(cat.name)
+            # print(cat.numbers)
+            # print(name)
+            # print(len(numbers))
+            # print("\n")
+            
+
+        except Exception as e:
+             print(e)   
+
+
+    for categorie in categories_list:
         
+        rest_cats = [cat.numbers for cat in categories_list if not cat == categorie]
+        #rest_cats is a list of the remaining categories
+        rest_numbers = [nr for sublist in rest_cats for nr in sublist]
+        # list comprehension puts all numbers in one list
+        #print(rest_numbers)
+        
+        #print(rest_cats)
+        last_number = categorie.numbers[-1]
+
+        if last_number not in rest_numbers:
+            categorie.has_children = False
+        
+
+
+    for categorie in categories_list:
+        print(categorie.name)
+        # print(categorie.numbers)
+        # print(categorie.has_children)
+        if categorie.has_children == True:
+            print("\n")      
+        else:
+            print("-- Last Element in Tree --\n")
+
 
 def get_infos_of_cat_link(link):
     #return a ordered list with the category Numbers
