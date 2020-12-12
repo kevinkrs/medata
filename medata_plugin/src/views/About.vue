@@ -8,6 +8,11 @@
   </div>
 </template>
 
+<script>
+export default {
+  // TODO URL to backend
+}
+</script>
 
 <style scoped>
 .container {
