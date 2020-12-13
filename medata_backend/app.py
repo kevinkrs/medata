@@ -261,7 +261,7 @@ def add_answer():
     return jsonify(response_object)
 
 #rates answer of specific insight(information)
-@app.route('/rate_answer', methods = ["PUT"])
+@app.route('/rate_answer', methods = ["POST"])
 def rate_answer():
     response_object = {'status': 'success'}
     put_data = request.get_json()
@@ -292,7 +292,7 @@ def rate_answer():
     return jsonify(response_object)
 
 #rates ralevance of specific insight(information)
-@app.route('/rate_relevance_insight', methods = ["PUT"])
+@app.route('/rate_relevance_insight', methods = ["POST"])
 def rate_relevance_insight():
     response_object = {'status': 'success'}
     put_data = request.get_json()
