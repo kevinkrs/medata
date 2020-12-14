@@ -4,15 +4,11 @@ import { fetchMetadata } from '@/api'
 
 export default createStore({
   state: {
-    metadata: [],
-    query: {}
+    metadata: []
   },
   mutations: {
     setMetadata (state, payload) {
         state.metadata = payload.metadata
-      },
-    setURL (state, payload) {
-        state.query = payload
       }
   },
   actions: {
