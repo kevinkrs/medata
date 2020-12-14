@@ -1,8 +1,8 @@
 {
   "manifest_version": 2,
-  "name": "__MSG_extName__",
+  "name": "Medata",
   "homepage_url": "http://localhost:8080/",
-  "description": "A Vue Browser Extension",
+  "description": "Medata Plugin",
   "default_locale": "en",
   "permissions": [
     "<all_urls>",
@@ -21,7 +21,7 @@
   },
   "browser_action": {
     "default_popup": "popup.html",
-    "default_title": "__MSG_extName__",
+    "default_title": "Medata",
     "default_icon": {
       "19": "icons/19.png",
       "38": "icons/38.png"

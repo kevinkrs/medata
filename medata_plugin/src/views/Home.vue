@@ -28,14 +28,52 @@
         a short text and a colored box. ... (V-for und v-bind:key kommentiere ich noch)-->
         <div class="box-2" v-for="entry in metadata" :key="entry.id">
           {{entry.name}}
-          <!--Each insight can have either a green, yellow or red button.
-          An v-if will create these buttons colored red, yellow or green
+          <!--Each insight can have either a green, yellow or red button and the corresponding toggle box.
+          An v-if will create these buttons colored red, yellow or green and the corresponding toggle box
           depending on whether the passed numerical value "confirmed" inside the "metadaata" array
           (recieved inside script from the store file)is 0,1 or something else.-->
-          <button v-if="entry.insight_upvotes < 1 " class="insight-button-red" @click="toggle"> </button> <!--Conditional einbauen, je nach id andere richtige-farbige Box einfügt-->
-          <button v-else-if="entry.insight_upvotes < 8" class="insight-button-yellow" @click="toggle"> </button>
-          <button v-else class="insight-button-green" @click="toggle"> </button>
+          <div v-if="entry.insight_upvotes < 1">
+            <!--With a click on the colored button the function visable is called and the id of the insight
+            is passed. This ensures that the corresponding toggle box becomes visible.-->
+            <button class="insight-button-red" @click="visible(entry.id)"></button>
+            <div :id=entry.id style="display:none">
+              <!--The div elements toggle-box-red/yellow/green define the frame of the three different
+              toggle boxes-->
+              <div class="toggle-box">
+                <p>Please enter information:</p>
+                <button style="width:80%">...</button><br>
+                <button style="background-color:green">submit</button>
+              </div>
+            </div>
+          </div>
+          <div v-else-if="entry.insight_upvotes < 8">
+            <button class="insight-button-yellow" @click="visible(entry.id)"> </button>
+            <div :id=entry.id style="display:none">
+              <div class="toggle-box">
+                <!---->
+                  <p>Please select <br> the correct Answer</p>
+                  <button style="background-color:yellow">58</button>
+                  <button style="background-color:yellow">69</button> <br>
+                  <button>other value</button>
+              </div>
+            </div>
+          </div>
+          <div v-else>
+            <button class="insight-button-green" @click="visible(entry.id)"></button>
+            <div :id=entry style="display:none">
+              <div class="toggle-box">
+                <p>{{entry.name}}: <br>
+                {{entry.value}} <br></p><p>
+                {{entry.numberConfirmed}} users confirmed <br>
+                this information <br>
+                </p>
+                <button style="background-color:green">confirm</button>
+                <button style="background-color:red">report an error</button>
+              </div>
+            </div>
+          </div>
         </div>
+
         <div class="box-3">
         <a href="https://dl.acm.org/"><img src="@/assets/direct-download.png" class="downloadPNG"> download insights</a>
         </div>
@@ -68,7 +106,15 @@ export default {
     // Function only for testing
     toggle () {
       alert('Works!')
-    }
+    },
+    visible: function (divId) {
+      if (document.getElementById(divId).style.display === 'none') {
+        document.getElementById(divId).style.display = 'inline'
+      } else {
+        document.getElementById(divId).style.display = 'none'
+      }
+    },
+
   },
   // mapstate is a Vuex component (using computed) summarizing the command of this.$store.state.metadata
   computed: mapState({
@@ -210,4 +256,12 @@ legend {
 .downloadPNG {
   margin-right: 10px;
 }
+
+.toggle-box {
+  background-color: white;
+  text-align: center;
+  font-size: 130%;
+  padding: 10px;
+}
+
 </style>
