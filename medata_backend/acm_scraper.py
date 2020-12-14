@@ -24,6 +24,7 @@ def main():
     url = "https://dl.acm.org/doi/10.1145/3230543.3230575"
     soup = get_soup(url)
     get_categories(soup)
+    print(get_conference(url))
 
 #todo:
 #paperid as integer
@@ -77,6 +78,18 @@ def name_from_profile(link):
 def get_paper_id(link):
     id = re.sub(r"https:\/\/dl\.acm\.org\/doi\/[\d*\.\d*]+\/", "", link)
     return id
+
+
+def get_conference(link):
+    #first you have to remove the paperid from the link to get the conference link
+
+    conf_link = re.sub(r'\.\d{5,}', "", link)
+    print(conf_link)
+    html = requests.get(conf_link).text
+    soup = BeautifulSoup(html, "lxml")
+
+    conference = soup.find(class_="left-bordered-title").text
+    return conference
 
 
 def get_categories(soup):
