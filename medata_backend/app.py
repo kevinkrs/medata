@@ -149,9 +149,9 @@ def get_specific():
     url = request.get_json().get('url')
     print(url)
     response_object = []
-    response_object.append({'status':     'success'})
-    relevant_categories = ['laboratory experiments']
-    paper_id = 56
+    # response_object.append({'status':     'success'})
+    relevant_categories = ['dfsdgsg']
+    paper_id = 563463443
     
     #step1 information filtered by category
     matching_insight = Insights.query.join(Insights.categories).filter(or_(Categories.name==x for x in relevant_categories)).all()
@@ -168,7 +168,12 @@ def get_specific():
     for x in filtered_information_all:
         response_object.append(x.to_dict())
 
-    return jsonify(response_object)
+    if (Information.query.filter(or_(Information.insight_id==int(x.id) for x in matching_insight)).filter(Information.paper_id==paper_id).count()==0):
+        return jsonify([{'isEmpty':     True}])
+    else:
+        return jsonify(response_object)
+
+    
     
 #adds insight for specific categories    
 @app.route('/add_insight', methods =["POST"])
@@ -262,7 +267,7 @@ def add_answer():
     return jsonify(response_object)
 
 #rates answer of specific insight(information)
-@app.route('/rate_answer', methods = ["PUT"])
+@app.route('/rate_answer', methods = ["POST"])
 def rate_answer():
     response_object = {'status': 'success'}
     put_data = request.get_json()
@@ -293,7 +298,7 @@ def rate_answer():
     return jsonify(response_object)
 
 #rates ralevance of specific insight(information)
-@app.route('/rate_relevance_insight', methods = ["PUT"])
+@app.route('/rate_relevance_insight', methods = ["POST"])
 def rate_relevance_insight():
     response_object = {'status': 'success'}
     put_data = request.get_json()
