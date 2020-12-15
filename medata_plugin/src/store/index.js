@@ -25,9 +25,10 @@ export default createStore({
   },
   loadMetadata ({commit}, state) {
     // TODO: How to access state variable?
-      return fetchMetadata()
-        .then((response) => commit('setMetadata', {metadata: response.data})) 
-        .catch((error) => {console.error(error)}) 
+    alert(state.query)
+    return fetchMetadata(state.query)
+      .then((response) => commit('setMetadata', {metadata: response.data})) 
+      .catch((error) => {console.error(error)}) 
   },
   sendInsight (inPaperId, inInsight, inCategories) {
     //contex?
