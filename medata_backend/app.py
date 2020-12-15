@@ -128,6 +128,13 @@ class Answers(db.Model):
     answer_upvotes = db.Column(db.Integer, default = 0)
     answer_downvotes = db.Column(db.Integer, default = 0)
 
+    def to_dict(self):
+        return dict(
+        answer = self.answer,
+        answer_upvotes = self.answer_upvotes,
+        answer_downvotes = self.answer_downvotes,
+        )
+
 
 #enable CORS
 CORS(app, resources={r'/*': {'origins': '*'}})
