@@ -150,8 +150,8 @@ def get_specific():
     print(url)
     response_object = []
     # response_object.append({'status':     'success'})
-    relevant_categories = ['dfsdgsg']
-    paper_id = 563463443
+    relevant_categories = ['laboratory experiments']
+    paper_id = 56
     
     #step1 information filtered by category
     matching_insight = Insights.query.join(Insights.categories).filter(or_(Categories.name==x for x in relevant_categories)).all()
