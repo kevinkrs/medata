@@ -152,6 +152,9 @@ def get_specific():
     # response_object.append({'status':     'success'})
     relevant_categories = ['laboratory experiments']
     paper_id = 56
+    # testing parameters
+    #relevant_categories = ['cats']
+    #paper_id = 23788597485
     
     #step1 information filtered by category
     matching_insight = Insights.query.join(Insights.categories).filter(or_(Categories.name==x for x in relevant_categories)).all()
@@ -169,7 +172,7 @@ def get_specific():
         response_object.append(x.to_dict())
 
     if (Information.query.filter(or_(Information.insight_id==int(x.id) for x in matching_insight)).filter(Information.paper_id==paper_id).count()==0):
-        return jsonify([{'isEmpty':     True}])
+        return jsonify([])
     else:
         return jsonify(response_object)
 
