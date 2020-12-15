@@ -81,6 +81,7 @@ class Information(db.Model):
 
     information_id = db.Column(db.Integer, primary_key=True)
     insight_id = db.Column(db.Integer, db.ForeignKey('insights.id'))
+    #Error if db.ForeignKey('insights.name') Could not determine join condition between parent/child tables on relationship Insights.information - there are multiple foreign key paths linking the tables.  Specify the 'foreign_keys' argument
     insight_name = db.Column(db.String(30))
     paper_id = db.Column(db.Integer, default=0)
     #3 possible answers to insight with up- and downvotes
@@ -118,7 +119,14 @@ class Information(db.Model):
     def __repr__(self):
          return f'insight_id: {self.insight_id}, paper_id: {self.paper_id}'
 
+class Answers(db.Model):
+    __tablename__ = 'answers'
 
+    answer_id = db.Column(db.Integer, primary_key=True)
+    information_id = db.Column(db.Integer, db.ForeignKey('information.information_id'))
+    answer = db.Column(db.String(30), default = "")
+    answer_upvotes = db.Column(db.Integer, default = 0)
+    answer_downvotes = db.Column(db.Integer, default = 0)
 
 
 #enable CORS
