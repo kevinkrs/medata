@@ -23,10 +23,9 @@ export default createStore({
     // You can either do this in the $store call or inside the action
     commit('setQuery', {query: payload})
   },
-  loadMetadata ({commit}, state) {
+  loadMetadata ({commit}) {
     // TODO: How to access state variable?
-    alert(state.query)
-    return fetchMetadata(state.query)
+    return fetchMetadata(this.state.query)
       .then((response) => commit('setMetadata', {metadata: response.data})) 
       .catch((error) => {console.error(error)}) 
   },
@@ -85,6 +84,11 @@ export default createStore({
       .catch((error) => {console.error(error)})
   },
 },
+  getters: {
+    getQuery (state) {
+      return state.query
+    }
+  },
 
   modules: {
   },

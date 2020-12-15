@@ -130,9 +130,9 @@ export default {
   // This function starts the method "loadMetadata" belonging to "action" inside the store file
   // loadMetadata fetches the data from the api folder, which receives metadata from the backend
   // after metadata is reveived it is passed to the "mutation" component and after that to the "state" to save it
-  beforeMount () {
+  /*beforeMount () {
     this.$store.dispatch('loadMetadata')
-  }
+  }*/
 }
 
 </script>

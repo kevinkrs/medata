@@ -10,7 +10,6 @@ axios.defaults.headers.common ['Content-Type']= 'application/json'
 
 // Query by user is send to backend
 export function fetchMetadata (query) {
-  alert("got here" + query)
   return axios.post(`${'get_specific'}`, {url: query})
 }
 

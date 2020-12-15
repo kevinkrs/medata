@@ -8,7 +8,7 @@
       </div>
       <div v-else>
         <router-link to = "/home"> 
-        <button class ="mainButton">Load Data</button>
+        <button class ="mainButton" @click= 'startLoading()'>Load Data</button>
         </router-link>
       </div>
     </div>
@@ -46,6 +46,9 @@ export default {
     },
     showURL (){
       alert(this.query)
+    },
+    startLoading (){
+      this.$store.dispatch('loadMetadata')
     }
   }
 }
