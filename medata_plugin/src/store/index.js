@@ -4,15 +4,25 @@ import { fetchMetadata, postInsight, postAnswer, postRateAnswer, postRateRelevan
 
 export default createStore({
   state: {
-    metadata: []
+    metadata: [],
+    query: ''
   },
   mutations: {
     setMetadata (state, payload) {
         state.metadata = payload.metadata
+      },
+      setQuery (state, payload) {
+        // ALWAYS use . operator saving data to the state
+        state.query = payload.query
       }
   },
   actions: {
-    loadMetadata (context) {
+  loadQuery(context, payload){
+    // Important: You have to define what variable the payload should be added to! {query: payload}
+    // You can either do this in the $store call or inside the action
+    context.commit('setQuery', {query: payload})
+  },
+  loadMetadata (context) {
       return fetchMetadata()
         .then((response) => context.commit('setMetadata', {metadata: response.data})) 
         .catch((error) => {console.error(error)}) 

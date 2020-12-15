@@ -24,6 +24,9 @@
             </div>
           </div>
         </fieldset>
+      <div>
+        <button @click= "checkURL"> Check URL </button>
+      </div>
         <!--The div element "box 2" represents one insight listed under the legend and also consists of
         a short text and a colored box. ... (V-for und v-bind:key kommentiere ich noch)-->
         <div class="box-2" v-for="entry in metadata" :key="entry.id">
@@ -114,11 +117,15 @@ export default {
         document.getElementById(divId).style.display = 'none'
       }
     },
+    checkURL() {
+      alert(this.query)
+    }
 
   },
   // mapstate is a Vuex component (using computed) summarizing the command of this.$store.state.metadata
   computed: mapState({
-    metadata: state => state.metadata
+    metadata: state => state.metadata,
+    query: state => state.query
   }),
   // This function starts the method "loadMetadata" belonging to "action" inside the store file
   // loadMetadata fetches the data from the api folder, which receives metadata from the backend
