@@ -17,6 +17,7 @@
 
 <script>
 import { mapState } from 'vuex'
+
 export default {
   // TODO URL to backend
   data()  {
@@ -36,7 +37,7 @@ export default {
           function (tabs){
           var querySub = tabs[0].url.substring(0, 19)
           if (querySub == vm.substr) { 
-              alert(tabs[0].url)
+              alert('Valid URL found')
               vm.$store.dispatch('loadQuery', tabs[0].url)
               vm.valid = true}
           else {
@@ -48,7 +49,7 @@ export default {
       alert(this.query)
     },
     startLoading (){
-      this.$store.dispatch('loadMetadata')
+     this.$store.dispatch('loadMetadata')
     }
   }
 }

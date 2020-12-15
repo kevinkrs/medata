@@ -27,6 +27,14 @@
       <div>
         <button @click= "checkURL"> Check URL </button>
       </div>
+      <div v-if='metadata.length == 0'>
+        <div class="noData">
+          <p> No data to this category available yet</p>
+        </div>
+        
+      </div>
+      
+      <div v-else>
         <!--The div element "box 2" represents one insight listed under the legend and also consists of
         a short text and a colored box. ... (V-for und v-bind:key kommentiere ich noch)-->
         <div class="box-2" v-for="entry in metadata" :key="entry.id">
@@ -89,6 +97,9 @@
           <input type="button" value="Submit" class="submitbutton">
         </div>
       </div>
+
+
+    </div>  
 </div>
 </template>
 
@@ -142,12 +153,26 @@ export default {
 .extension {
   box-sizing: border-box;
   width: 300px;
+  padding-bottom: 70px;
   background-color: rgb(232, 232, 232);
   font-family: Arial, Helvetica, sans-serif;
   font-size: 15px;
 }
 legend {
   font-size: 15px, 
+}
+
+.noData{
+  display: block;
+  margin-top: 30px;
+  padding-left: 10px;
+  padding-right: 10px;
+  margin-left: auto;
+  margin-right: auto;
+  height: 100px;
+  border-radius: 5px;
+  background-color: white;
+  border: 1px solid white
 }
 .main-column{
   display: block;
@@ -174,6 +199,7 @@ legend {
 
  .box-1 .box-1-content{
    display: flex;
+   padding-top: 20px;
    justify-content: space-between;
    margin: 3px;
  }
@@ -227,7 +253,7 @@ legend {
 }
 .box-3{
   padding: 15px;
-  margin-top: 20px;
+  margin-top: 30px;
   text-align: center;
 }
 
@@ -257,7 +283,7 @@ legend {
 
 .submitbutton:hover{
   color: black;
-  background: rgb(206, 107, 20);
+  background: rgb(184, 184, 184);
 }
 
 .downloadPNG {
