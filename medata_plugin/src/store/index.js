@@ -17,14 +17,16 @@ export default createStore({
       }
   },
   actions: {
-  loadQuery(context, payload){
+    // {commit} is called "argument destructuring". It's the same as context.commit 
+  loadQuery({commit}, payload){
     // Important: You have to define what variable the payload should be added to! {query: payload}
     // You can either do this in the $store call or inside the action
-    context.commit('setQuery', {query: payload})
+    commit('setQuery', {query: payload})
   },
-  loadMetadata (context) {
+  loadMetadata ({commit}, state) {
+    // TODO: How to access state variable?
       return fetchMetadata()
-        .then((response) => context.commit('setMetadata', {metadata: response.data})) 
+        .then((response) => commit('setMetadata', {metadata: response.data})) 
         .catch((error) => {console.error(error)}) 
   },
   sendInsight (inPaperId, inInsight, inCategories) {

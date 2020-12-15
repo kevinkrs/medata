@@ -5,6 +5,8 @@ import axios from 'axios'
 
 // Query by user is send to backend
 axios.defaults.baseURL = 'http://127.0.0.1:5000/'
+// Doesn't work
+axios.defaults.headers.common ['Content-Type']= 'application/json'
 
 // Query by user is send to backend
 export function fetchMetadata (query) {

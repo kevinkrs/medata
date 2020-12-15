@@ -8,7 +8,7 @@
       </div>
       <div v-else>
         <router-link to = "/home"> 
-        <button class ="mainButton" @click= 'showURL()'>Load Data</button>
+        <button class ="mainButton">Load Data</button>
         </router-link>
       </div>
     </div>
@@ -67,8 +67,8 @@ export default {
 }
 .mainButton{
   border-radius: 5px;
-  width: 70px;
-  height: 30px;
+  width: 90px;
+  height: 50px;
   color: white;
   background-color: rgb(41, 17, 160);
 }
