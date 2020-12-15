@@ -5,7 +5,10 @@ import { fetchMetadata, postInsight, postAnswer, postRateAnswer, postRateRelevan
 export default createStore({
   state: {
     metadata: [],
-    query: ''
+    query: '',
+    inID: '',
+    inName:'',
+    inCategorie: ''
   },
   mutations: {
     setMetadata (state, payload) {
