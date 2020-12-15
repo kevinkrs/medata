@@ -85,6 +85,8 @@ class Information(db.Model):
     insight_name = db.Column(db.String(30))
     paper_id = db.Column(db.Integer, default=0)
     #3 possible answers to insight with up- and downvotes
+        # throws AttributeError: 'Table' object has no attribute 'answer_score'
+        # answers = db.relationship('Answers', order_by = 'desc(answers.answer_score)', backref = 'information', lazy = True)
     answer1 = db.Column(db.String(30), default = "")
     answer1_upvotes = db.Column(db.Integer, default = 0)
     answer1_downvotes = db.Column(db.Integer, default = 0)
@@ -113,8 +115,13 @@ class Information(db.Model):
         answer3_upvotes = self.answer3_upvotes,
         answer3_downvotes =self.answer3_downvotes,
         insight_upvotes = self.insight_upvotes,
-        insight_downvotes = self.insight_downvotes
+        insight_downvotes = self.insight_downvotes,
+        answer=limit_answers(self)
         )
+
+    def limit_answers(self):
+        four_answers = Answer.query.filter(Answers.information_id==self.information_id).limit(4).all()
+        return [answer.to_dict() for answer in four_answers]
 
     def __repr__(self):
          return f'insight_id: {self.insight_id}, paper_id: {self.paper_id}'
@@ -127,6 +134,7 @@ class Answers(db.Model):
     answer = db.Column(db.String(30), default = "")
     answer_upvotes = db.Column(db.Integer, default = 0)
     answer_downvotes = db.Column(db.Integer, default = 0)
+    answer_score = db.Column(db.Integer, default = 0)
 
     def to_dict(self):
         return dict(
@@ -208,7 +216,7 @@ def add_insight():
     else:
         i = Insights.query.filter(Insights.name==in_insight_name).first()
         for category in in_categories:
-            #check if category already exists, if not -> add
+            #check if category already exists, if not -> add, answer logic needs to be added here
             if (Categories.query.filter(Categories.insight_id==i.id).filter(Categories.name == str(category)).count()==0):
                 c = Categories(insight_id = i.id, name = str(category))
                 db.session.add(c)
