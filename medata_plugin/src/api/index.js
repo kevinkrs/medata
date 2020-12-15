@@ -7,8 +7,8 @@ import axios from 'axios'
 axios.defaults.baseURL = 'http://127.0.0.1:5000/'
 
 // Query by user is send to backend
-export function fetchMetadata () {
-  return axios.get(`${'get_specific'}`)
+export function fetchMetadata (query) {
+  return axios.get(`${'get_specific'}`, {url: query})
 }
 
 // Function for the userInput of new relevant metadata
