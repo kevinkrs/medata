@@ -27,6 +27,8 @@ def create_mock_dataa():
         print(f"db.session.add(inf{x})")
         print(f"db.session.add(inf{x+100})")
 
+    print("abc = Answer(information_id = '1', answer = 'newtypeofanswer', answer_upvotes = 1000)")
+    print("db.session.add(abc)")
     print("db.session.commit()")
-print('from app import db, Information, Insights, Categories')
+print('from app import db, Information, Insights, Categories, Answers')
 create_mock_dataa()

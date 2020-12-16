@@ -1,5 +1,4 @@
 from enum import unique
-import uuid
 
 from flask import Flask, jsonify, request
 from flask_cors import CORS
@@ -26,13 +25,9 @@ ma = Marshmallow(app)
 
 
 #models
-#__tablename__ needs to be used if refered to tabel not class name 
 #
 #
-#
-#Insights with all supported categories and all informations
-#one2many relationship with informtion (one for each paper_id)
-#one2many realtionship with categories (onw row in categories for each supported category (more efficent soluton??))
+#insights with all supported categories and matching information incl. answers
 class Insights(db.Model):
     __tablename__ = 'insights'
     #constructor
@@ -43,7 +38,9 @@ class Insights(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(30), unique=True)
 
+    #one2many with categories
     categories = db.relationship('Categories', backref = 'insights', lazy = True)
+    #one2many with information
     information = db.relationship('Information', backref = 'insights', lazy = True)
 
     def to_dict(self):
@@ -58,7 +55,7 @@ class Insights(db.Model):
 
 
 
-#table where all supported categories are listed
+#all supported categories for insights
 class Categories(db.Model):
     __tablename__ = 'categories'
 
@@ -74,8 +71,7 @@ class Categories(db.Model):
          return f'CategoryId: {self.category_id}, name: {self.name}'
 
 
-#actual information, linked to paaperId and an insight 
-#add author, articel no., title, publication date, update defaults!
+#information representations for insights 
 class Information(db.Model):
     __tablename__ = 'information'
 
@@ -83,42 +79,49 @@ class Information(db.Model):
     insight_id = db.Column(db.Integer, db.ForeignKey('insights.id'))
     insight_name = db.Column(db.String(30))
     paper_id = db.Column(db.Integer, default=0)
-    #3 possible answers to insight with up- and downvotes
-    answer1 = db.Column(db.String(30), default = "")
-    answer1_upvotes = db.Column(db.Integer, default = 0)
-    answer1_downvotes = db.Column(db.Integer, default = 0)
-    answer2 = db.Column(db.String(30), default = "")
-    answer2_upvotes = db.Column(db.Integer, default = 0)
-    answer2_downvotes = db.Column(db.Integer, default = 0)
-    answer3 = db.Column(db.String(30), default = "")
-    answer3_upvotes = db.Column(db.Integer, default = 0)
-    answer3_downvotes = db.Column(db.Integer, default = 0)
-    #relevance of insight for specific paper
     insight_upvotes = db.Column(db.Integer, default = 0)
     insight_downvotes = db.Column(db.Integer, default = 0)
     timestamp = db.Column(db.DateTime, default = datetime.utcnow)
+
+    #one2many with answers
+    answers = db.relationship('Answers', order_by = 'desc(Answers.answer_score)', backref = 'information', lazy = True)
 
     def to_dict(self):
         return dict(id = self.insight_id,
         name = self.insight_name, 
         paper_id = self.paper_id,
-        answer1 = self.answer1,
-        answer1_upvotes = self.answer1_upvotes,
-        answer1_downvotes = self.answer1_downvotes,
-        answer2 = self.answer2,
-        answer2_upvotes = self.answer2_upvotes,
-        answer2_downvotes = self.answer2_downvotes,
-        answer3 = self.answer3,
-        answer3_upvotes = self.answer3_upvotes,
-        answer3_downvotes =self.answer3_downvotes,
         insight_upvotes = self.insight_upvotes,
-        insight_downvotes = self.insight_downvotes
+        insight_downvotes = self.insight_downvotes,
+        answer = self.limit_answers()
+        )
+
+    def limit_answers(self):
+        four_answers = Answers.query.filter(Answers.information_id==self.information_id).order_by(Answers.answer_score.desc()).limit(4).all()
+        return [answer.to_dict() for answer in four_answers]
+
+    def __repr__(self):
+        return f'insight_id: {self.insight_id}, paper_id: {self.paper_id}'
+
+#answer representations for information
+class Answers(db.Model):
+    __tablename__ = 'answers'
+
+    answer_id = db.Column(db.Integer, primary_key=True)
+    information_id = db.Column(db.Integer, db.ForeignKey('information.information_id'), nullable=False)
+    answer = db.Column(db.String(30), default = "")
+    answer_upvotes = db.Column(db.Integer, default = 0)
+    answer_downvotes = db.Column(db.Integer, default = 0)
+    answer_score = db.Column(db.Integer, default = 0)
+
+    def to_dict(self):
+        return dict(
+        answer = self.answer,
+        answer_upvotes = self.answer_upvotes,
+        answer_downvotes = self.answer_downvotes,
         )
 
     def __repr__(self):
-         return f'insight_id: {self.insight_id}, paper_id: {self.paper_id}'
-
-
+        return f'answer: {self.answer}, answer_upvotes: {self.answer_upvotes}, answer_downvotes: {self.answer_downvotes}'
 
 
 #enable CORS
@@ -140,33 +143,33 @@ def get_all():
     
     return jsonify(response_object)
 
+
 #returns relevant insights with information
-#step1: get id's of all supported insights
-#step2: if (information for paper_id does not exist) create information with paper_id
-#setp3: get relevant information (paper_id==paper_id)
 @app.route('/get_specific', methods=['POST'])
 def get_specific():
-    url = request.get_json().get('url')
-    print(url)
     response_object = []
-    # response_object.append({'status':     'success'})
+    response_object.append({'status':     'success'})
+    #fetch data from request
+    url = request.get_json().get('url')
+
+    #relevant_categories = scraper.categories(url)
+    #paper_id = scraper.paper_id(url)
+
+    #hardcoded for now 
     relevant_categories = ['laboratory experiments']
-    paper_id = 56
-    # testing parameters
-    #relevant_categories = ['cats']
-    #paper_id = 23788597485
+    paper_id = 50
     
-    #step1 information filtered by category
+    #information filtered by category
     matching_insight = Insights.query.join(Insights.categories).filter(or_(Categories.name==x for x in relevant_categories)).all()
 
-    #step 2
+    #if (information for paper_id does not exist) create information with paper_id
     for x in matching_insight:
         if (Information.query.filter(Information.insight_id==int(x.id)).filter(Information.paper_id==paper_id).count()==0):
             i = Information(insight_id = x.id, insight_name=x.name, paper_id=paper_id)
             db.session.add(i)
     db.session.commit()
 
-    #step3 information filtered by (paper)id
+    #filtered information 
     filtered_information_all = Information.query.filter(or_(Information.insight_id==int(x.id) for x in matching_insight)).filter(Information.paper_id==paper_id).all()
     for x in filtered_information_all:
         response_object.append(x.to_dict())
@@ -176,12 +179,11 @@ def get_specific():
     else:
         return jsonify(response_object)
 
-    
-    
 #adds insight for specific categories    
 @app.route('/add_insight', methods =["POST"])
 def add_insight():
     response_object = {'status': 'success'}
+    #fetch data from request
     post_data = request.get_json()
     in_insight_name = post_data.get('insight')
     in_categories = post_data.get('categories')
@@ -195,6 +197,7 @@ def add_insight():
         for category in in_categories:
             c = Categories(insight_id = i.id, name = str(category))
             db.session.add(c)
+        #creats empty information
         inf = Information(insight_id=i.id, insight_name=i.name, paper_id=in_paper_id)
         db.session.add(inf)
         db.session.commit()
@@ -202,113 +205,85 @@ def add_insight():
     else:
         i = Insights.query.filter(Insights.name==in_insight_name).first()
         for category in in_categories:
-            #check if category already exists, if not -> add
+            #check if category already exists, if not -> add, answer logic needs to be added here
             if (Categories.query.filter(Categories.insight_id==i.id).filter(Categories.name == str(category)).count()==0):
                 c = Categories(insight_id = i.id, name = str(category))
                 db.session.add(c)
         db.session.commit()
     return jsonify(response_object)
 
-#adds answer to specific insight(information)        
+#adds new answer        
 @app.route('/add_answer', methods = ["POST"])
 def add_answer():
     response_object = {'status': 'success'}
+    #fetch data from request
     post_data = request.get_json()
     in_paper_id = post_data.get('paper_id')
     in_insight_name = post_data.get('insight')
     in_answer = post_data.get('answer')
-    #get relevant information repr
-    inf = Information.query.filter(Information.paper_id==int(in_paper_id)).filter(Information.insight_name==str(in_insight_name)).first()
-    answer_added = False 
 
-    
-    #check if answer already exists, if not dont do anything
-    if (inf.answer1!=in_answer and inf.answer2!=in_answer and inf.answer3!=in_answer):
-        #add to first free answer in answer1, answer2, answer3
-        for x in range(1, 4):
-            answer = 'answer' + str(x)
-            #getattr(inf, answer) calls inf.answer123
-            #check if empty
-            if(getattr(inf, answer)==''):
-                #override correct answer in answer123
-                if (answer == 'answer1'):
-                    inf.answer1 = in_answer
-                    answer_added = True
-                elif (answer == 'answer2'):
-                    inf.answer2 = in_answer
-                    answer_added = True
-                else :
-                    inf.answer3 = in_answer
-                    answer_added = True
-                db.session.commit()
-                break
+    #get information 
+    inf = Information.query.filter(Information.paper_id==in_paper_id).filter(Information.insight_name==str(in_insight_name)).first()
+    #get answers 
+    ans = Answers.query.filter(Answers.information_id==inf.information_id).all()
+  
+    answer_already_exists = False
 
-        #overrides least popular answer with new answer
-        if (answer_added==False):
-            #scre depends on up/downvotes        
-            score_answer1 = int(inf.answer1_upvotes) - int(inf.answer1_downvotes)
-            score_answer2 = int(inf.answer2_upvotes) - int(inf.answer2_downvotes)
-            score_answer3 = int(inf.answer3_upvotes) - int(inf.answer3_downvotes)
-            #override answer3
-            if (score_answer3 <= score_answer2 and score_answer3 <= score_answer1):
-                inf.answer3 = in_answer
-                inf.answer3_upvotes = 0
-                inf.answer3_downvotes = 0
-                db.session.commit()
-            #override answer2
-            elif (score_answer2 <= score_answer3 and score_answer2 <= score_answer1):
-                inf.answer2 = in_answer
-                inf.answer2_upvotes = 0
-                inf.answer2_downvotes = 0
-                db.session.commit()
-            #override answer1
-            else :
-                inf.answer1 = in_answer
-                inf.answer1_upvotes = 0
-                inf.answer1_downvotes = 0
-                db.session.commit()
+    for a in ans:
+        if (a.answer==in_answer):
+            answer_already_exists = True
+
+    if (answer_already_exists==False):
+        new_answer = Answers(information_id=inf.information_id, answer = in_answer, answer_upvotes = 1, answer_score = 1)
+        db.session.add(new_answer)
+        db.session.commit()
+
     return jsonify(response_object)
 
-#rates answer of specific insight(information)
+#rates answer
 @app.route('/rate_answer', methods = ["POST"])
 def rate_answer():
     response_object = {'status': 'success'}
-    put_data = request.get_json()
-    in_insight_name = put_data.get('insight')
-    in_paper_id = put_data.get('paper_id')
-    in_upvote = put_data.get('upvote')
-    in_answer =put_data.get('answer')
-    #get relevant information repr
-    inf = Information.query.filter(Information.paper_id == in_paper_id).filter(Information.insight_name==str(in_insight_name)).first()
+    #fetch data from request
+    post_data = request.get_json()
+    in_insight_name = post_data.get('insight')
+    in_paper_id = post_data.get('paper_id')
+    in_upvote = post_data.get('upvote')
+    in_answer = post_data.get('answer')
 
-    #upvote correct answer
+    #get information 
+    inf = Information.query.filter(Information.paper_id == in_paper_id).filter(Information.insight_name==str(in_insight_name)).first()
+    #get answers
+    ans = Answers.query.filter(Answers.information_id==inf.information_id).all()
+
+    #upvote answer
     if (in_upvote):
-        if (in_answer=='answer1'):
-            inf.answer1_upvotes = inf.answer1_upvotes + 1
-        elif (in_answer=='answer2'):
-            inf.answer2_upvotes = inf.answer2_upvotes + 1
-        else :
-            inf.answer3_upvotes = inf.answer3_upvotes + 1
-    #downvote correct answer
+        for a in ans:
+            if (a.answer==in_answer):
+                a.answer_upvotes = a.answer_upvotes + 1
+                a.answer_score = a.answer_score + 1
+
+    #downvote answer
     else :
-        if (in_answer=='answer1'):
-            inf.answer1_upvotes = inf.answer1_upvotes - 1
-        elif (in_answer=='answer2'):
-            inf.answer2_upvotes = inf.answer2_upvotes - 1
-        else :
-            inf.answer3_upvotes = inf.answer3_upvotes - 1
+        for a in ans:
+            if (a.answer==in_answer):
+                a.answer_upvotes = a.answer_upvotes - 1
+                a.answer_score = a.answer_score - 1
+
     db.session.commit()
     return jsonify(response_object)
 
-#rates ralevance of specific insight(information)
+#rates ralevance of specific insight
 @app.route('/rate_relevance_insight', methods = ["POST"])
 def rate_relevance_insight():
     response_object = {'status': 'success'}
-    put_data = request.get_json()
-    in_insight_name = put_data.get('insight')
-    in_paper_id = put_data.get('paper_id')
-    in_upvote = put_data.get('upvote')
-    #get relevant information repr
+    #fetch data from request
+    post_data = request.get_json()
+    in_insight_name = post_data.get('insight')
+    in_paper_id = post_data.get('paper_id')
+    in_upvote = post_data.get('upvote')
+
+    #get information 
     inf = Information.query.filter(Information.paper_id == in_paper_id).filter(Information.insight_name==str(in_insight_name)).first()
 
     #upvote insight
@@ -317,8 +292,8 @@ def rate_relevance_insight():
     #downvote insight
     else :
         inf.insight_upvotes = inf.insight_upvotes - 1
-    db.session.commit()
 
+    db.session.commit()
     return jsonify(response_object)
 
     
