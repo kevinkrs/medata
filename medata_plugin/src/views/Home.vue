@@ -24,18 +24,67 @@
             </div>
           </div>
         </fieldset>
+      <div>
+        <button @click= "checkURL"> Check URL </button>
+      </div>
+      <div v-if='metadata.length == 0'>
+        <div class="noData">
+          <p> No data to this category available yet</p>
+        </div>
+        
+      </div>
+      
+      <div v-else>
         <!--The div element "box 2" represents one insight listed under the legend and also consists of
         a short text and a colored box. ... (V-for und v-bind:key kommentiere ich noch)-->
         <div class="box-2" v-for="entry in metadata" :key="entry.id">
           {{entry.name}}
-          <!--Each insight can have either a green, yellow or red button.
-          An v-if will create these buttons colored red, yellow or green
+          <!--Each insight can have either a green, yellow or red button and the corresponding toggle box.
+          An v-if will create these buttons colored red, yellow or green and the corresponding toggle box
           depending on whether the passed numerical value "confirmed" inside the "metadaata" array
           (recieved inside script from the store file)is 0,1 or something else.-->
-          <button v-if="entry.insight_upvotes < 1 " class="insight-button-red" @click="toggle"> </button> <!--Conditional einbauen, je nach id andere richtige-farbige Box einfügt-->
-          <button v-else-if="entry.insight_upvotes < 8" class="insight-button-yellow" @click="toggle"> </button>
-          <button v-else class="insight-button-green" @click="toggle"> </button>
+          <div v-if="entry.insight_upvotes < 1">
+            <!--With a click on the colored button the function visable is called and the id of the insight
+            is passed. This ensures that the corresponding toggle box becomes visible.-->
+            <button class="insight-button-red" @click="visible(entry.id)"></button>
+            <div :id=entry.id style="display:none">
+              <!--The div elements toggle-box-red/yellow/green define the frame of the three different
+              toggle boxes-->
+              <div class="toggle-box">
+                <p>Please enter information:</p>
+                <button style="width:80%">...</button><br>
+                <button style="background-color:green">submit</button>
+              </div>
+            </div>
+          </div>
+          <div v-else-if="entry.insight_upvotes < 8">
+            <button class="insight-button-yellow" @click="visible(entry.id)"> </button>
+            <div :id=entry.id style="display:none">
+              <div class="toggle-box">
+                <!---->
+                  <p>Please select <br> the correct Answer</p>
+                  <button style="background-color:yellow">58</button>
+                  <button style="background-color:yellow">69</button> <br>
+                  <button>other value</button>
+              </div>
+            </div>
+          </div>
+          <div v-else>
+            <button class="insight-button-green" @click="visible(entry.id)"></button>
+            <div :id=entry style="display:none">
+              <div class="toggle-box">
+                <p>{{entry.name}}: <br>
+                {{entry.value}} <br></p><p>
+                {{entry.numberConfirmed}} users confirmed <br>
+                this information <br>
+                </p>
+                <button style="background-color:green">confirm</button>
+                <button style="background-color:red">report an error</button>
+              </div>
+            </div>
+          </div>
         </div>
+
         <div class="box-3">
         <a href="https://dl.acm.org/"><img src="@/assets/direct-download.png" class="downloadPNG"> download insights</a>
         </div>
@@ -48,6 +97,9 @@
           <input type="button" value="Submit" class="submitbutton">
         </div>
       </div>
+
+
+    </div>  
 </div>
 </template>
 
@@ -68,18 +120,30 @@ export default {
     // Function only for testing
     toggle () {
       alert('Works!')
+    },
+    visible: function (divId) {
+      if (document.getElementById(divId).style.display === 'none') {
+        document.getElementById(divId).style.display = 'inline'
+      } else {
+        document.getElementById(divId).style.display = 'none'
+      }
+    },
+    checkURL() {
+      alert(this.query)
     }
+
   },
   // mapstate is a Vuex component (using computed) summarizing the command of this.$store.state.metadata
   computed: mapState({
-    metadata: state => state.metadata
+    metadata: state => state.metadata,
+    query: state => state.query
   }),
   // This function starts the method "loadMetadata" belonging to "action" inside the store file
   // loadMetadata fetches the data from the api folder, which receives metadata from the backend
   // after metadata is reveived it is passed to the "mutation" component and after that to the "state" to save it
-  beforeMount () {
+  /*beforeMount () {
     this.$store.dispatch('loadMetadata')
-  }
+  }*/
 }
 
 </script>
@@ -89,12 +153,26 @@ export default {
 .extension {
   box-sizing: border-box;
   width: 300px;
+  padding-bottom: 70px;
   background-color: rgb(232, 232, 232);
   font-family: Arial, Helvetica, sans-serif;
   font-size: 15px;
 }
 legend {
   font-size: 15px, 
+}
+
+.noData{
+  display: block;
+  margin-top: 30px;
+  padding-left: 10px;
+  padding-right: 10px;
+  margin-left: auto;
+  margin-right: auto;
+  height: 100px;
+  border-radius: 5px;
+  background-color: white;
+  border: 1px solid white
 }
 .main-column{
   display: block;
@@ -121,6 +199,7 @@ legend {
 
  .box-1 .box-1-content{
    display: flex;
+   padding-top: 20px;
    justify-content: space-between;
    margin: 3px;
  }
@@ -174,7 +253,7 @@ legend {
 }
 .box-3{
   padding: 15px;
-  margin-top: 20px;
+  margin-top: 30px;
   text-align: center;
 }
 
@@ -204,10 +283,18 @@ legend {
 
 .submitbutton:hover{
   color: black;
-  background: rgb(206, 107, 20);
+  background: rgb(184, 184, 184);
 }
 
 .downloadPNG {
   margin-right: 10px;
 }
+
+.toggle-box {
+  background-color: white;
+  text-align: center;
+  font-size: 130%;
+  padding: 10px;
+}
+
 </style>

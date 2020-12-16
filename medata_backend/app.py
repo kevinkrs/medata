@@ -148,7 +148,7 @@ def get_all():
 @app.route('/get_specific', methods=['POST'])
 def get_specific():
     response_object = []
-    response_object.append({'status':     'success'})
+    # response_object.append({'status':     'success'})
     #fetch data from request
     url = request.get_json().get('url')
 
@@ -158,6 +158,10 @@ def get_specific():
     #hardcoded for now 
     relevant_categories = ['laboratory experiments']
     paper_id = 50
+    #for testing conditionals
+    #relevant_categories = ['cats']
+    #paper_id = 545654645
+
     
     #information filtered by category
     matching_insight = Insights.query.join(Insights.categories).filter(or_(Categories.name==x for x in relevant_categories)).all()
