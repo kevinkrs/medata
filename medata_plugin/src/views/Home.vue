@@ -25,14 +25,16 @@
           </div>
         </fieldset>
         <!--The div element "box 2" represents one insight listed under the legend and also consists of
-        a short text and a colored box. ... (V-for und v-bind:key kommentiere ich noch)-->
+        a short text and a colored box.-->
         <div class="box-2" v-for="entry in metadata" :key="entry.id">
-          {{entry.name}}
+          <div class="box-2-name">
+            {{entry.name}}
+          </div>
           <!--Each insight can have either a green, yellow or red button and the corresponding toggle box.
           An v-if will create these buttons colored red, yellow or green and the corresponding toggle box
           depending on whether the passed numerical value "confirmed" inside the "metadaata" array
           (recieved inside script from the store file)is 0,1 or something else.-->
-          <div v-if="entry.insight_upvotes < 1">
+          <div v-if="entry.insight_upvotes < 1" class="test">
             <!--With a click on the colored button the function visable is called and the id of the insight
             is passed. This ensures that the corresponding toggle box becomes visible.-->
             <button class="insight-button-red" @click="visible(entry.id)"></button>
@@ -46,7 +48,7 @@
               </div>
             </div>
           </div>
-          <div v-else-if="entry.insight_upvotes < 8">
+          <div v-else-if="entry.insight_upvotes < 8" class="test">
             <button class="insight-button-yellow" @click="visible(entry.id)"> </button>
             <div :id=entry.id style="display:none">
               <div class="toggle-box">
@@ -58,7 +60,7 @@
               </div>
             </div>
           </div>
-          <div v-else>
+          <div v-else class="test">
             <button class="insight-button-green" @click="visible(entry.id)"></button>
             <div :id=entry style="display:none">
               <div class="toggle-box">
@@ -197,27 +199,43 @@ legend {
    background: green;
    width: 30px;
    height: 30px;
+   float: right;
  }
   .insight-button-yellow {
    border: none;
    background: yellow;
    width: 30px;
    height: 30px;
+   float: right;
  }
   .insight-button-red {
    border: none;
    background: red;
    width: 30px;
    height: 30px;
+   float: right;
  }
   .insight-button:focus{
     width: 60px;
   }
+
 .box-2{
   display: flex;
   justify-content: space-between;
   padding: 10px;
 }
+
+.box-2-name {
+  width: 50%;
+  height: 30px;
+  padding-top: 8px;
+  text-align: left;
+}
+
+.test {
+  width: 50%;
+}
+
 .box-3{
   padding: 15px;
   margin-top: 20px;
@@ -262,6 +280,8 @@ legend {
   text-align: center;
   font-size: 130%;
   padding: 10px;
+  margin-top: 30px;
+  margin-left: -100%;
 }
 
 </style>
