@@ -7,16 +7,30 @@ export default createStore({
     metadata: [],
     query: '',
     inID: '',
-    inName:'',
+    inPaperID:'',
     inCategorie: ''
   },
   mutations: {
+    // Saving the data from backend to the "metadata array"
     setMetadata (state, payload) {
         state.metadata = payload.metadata
       },
+      // This method saves url on acm that user is visiting while using the plugin. The url is submitted to the backend in order to provide the right data
       setQuery (state, payload) {
         // ALWAYS use . operator saving data to the state
         state.query = payload.query
+      },
+      // sets insight ID from backend to local variable in state
+      setInsightID (state) {
+        state.inID = this.metadata.id
+      },
+       // sets paper ID from backend to local variable in state
+      setPaperID (state) {
+        state.inPaperId = this.metadata.paper_id
+      },
+       // sets category from backend to local variable in state
+      setCategory(state) {
+        state.inCategorie = this.metadata.categorie
       }
   },
   actions: {
@@ -26,12 +40,13 @@ export default createStore({
     // You can either do this in the $store call or inside the action
     commit('setQuery', {query: payload})
   },
+  // Loads methadata and submits acm URL from site user is visiting at the moment to check if data is available
   loadMetadata ({commit}) {
-    // TODO: How to access state variable?
     return fetchMetadata(this.state.query)
       .then((response) => commit('setMetadata', {metadata: response.data})) 
       .catch((error) => {console.error(error)}) 
   },
+  // Sends insight
   sendInsight (inPaperId, inInsight, inCategories) {
     //contex?
     let a = inPaperId
@@ -88,11 +103,9 @@ export default createStore({
   },
 },
   getters: {
-    getQuery (state) {
-      return state.query
-    }
   },
 
   modules: {
   },
 })
+

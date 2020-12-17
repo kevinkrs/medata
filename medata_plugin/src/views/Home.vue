@@ -27,6 +27,8 @@
       <div>
         <button @click= "checkURL"> Check URL </button>
       </div>
+      <!--If backend has no information to given category it's responding with an empty list. Here we check if the list is truly empty.
+      If it is, we display first the first div class "noData". If not empty we display second div -->
       <div v-if='metadata.length == 0'>
         <div class="noData">
           <p> No data to this category available yet</p>
@@ -121,6 +123,7 @@ export default {
     toggle () {
       alert('Works!')
     },
+    // TODO commments
     visible: function (divId) {
       if (document.getElementById(divId).style.display === 'none') {
         document.getElementById(divId).style.display = 'inline'

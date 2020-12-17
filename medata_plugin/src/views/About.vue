@@ -31,13 +31,18 @@ export default {
   }),
 
   methods: {
+    // With this method we check the current URL if it's on dl.acm.org. If so, we save the URl inside a state variable to submit it to the backend in order
+    // to start the webscraper and search for the right category for providing the right data from our database
     checkURL() {
+      // because of a function inside the function, we can't access data directly with "this". Hence we need this help-variable var vm = this
       var vm = this
+      // Takes current chrome tab window
       chrome.tabs.query({currentWindow: true, active: true}, 
           function (tabs){
           var querySub = tabs[0].url.substring(0, 19)
           if (querySub == vm.substr) { 
               alert('Valid URL found')
+              // if URL is a dl.acm.org URl we save it to our state 
               vm.$store.dispatch('loadQuery', tabs[0].url)
               vm.valid = true}
           else {
@@ -48,6 +53,7 @@ export default {
     showURL (){
       alert(this.query)
     },
+    // After the URL got checked and saved we load the data from our database in order to provide the funcionalities on our main operation page
     startLoading (){
      this.$store.dispatch('loadMetadata')
     }
