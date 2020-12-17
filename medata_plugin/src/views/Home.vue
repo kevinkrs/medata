@@ -54,8 +54,9 @@
               <div class="toggle-box">
                 <!---->
                   <p>Please select <br> the correct Answer</p>
-                  <button style="background-color:yellow">58</button>
-                  <button style="background-color:yellow">69</button> <br>
+                  <button style="background-color:yellow">{{entry.answer1}}</button>
+                  <button style="background-color:yellow">{{entry.answer2}}</button> <br>
+                  <button style="background-color:yellow">{{entry.answer3}}</button> <br>
                   <button>other value</button>
               </div>
             </div>
