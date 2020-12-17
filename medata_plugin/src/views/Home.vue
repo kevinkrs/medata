@@ -34,7 +34,7 @@
           An v-if will create these buttons colored red, yellow or green and the corresponding toggle box
           depending on whether the passed numerical value "confirmed" inside the "metadaata" array
           (recieved inside script from the store file)is 0,1 or something else.-->
-          <div v-if="entry.insight_upvotes < 1" class="test">
+          <div v-if="entry.insight_upvotes < 1" class="box-2-button">
             <!--With a click on the colored button the function visable is called and the id of the insight
             is passed. This ensures that the corresponding toggle box becomes visible.-->
             <button class="insight-button-red" @click="visible(entry.id)"></button>
@@ -48,8 +48,8 @@
               </div>
             </div>
           </div>
-          <div v-else-if="entry.insight_upvotes < 8" class="test">
-            <button class="insight-button-yellow" @click="visible(entry.id)"> </button>
+          <div v-else-if="entry.insight_upvotes < 8" class="box-2-button">
+            <button class="insight-button-yellow" @click="visible(entry.id)"></button>
             <div :id=entry.id style="display:none">
               <div class="toggle-box">
                 <!---->
@@ -60,9 +60,9 @@
               </div>
             </div>
           </div>
-          <div v-else class="test">
+          <div v-else-if="entry.insight_upvotes > 8" class="box-2-button">
             <button class="insight-button-green" @click="visible(entry.id)"></button>
-            <div :id=entry style="display:none">
+            <div :id=entry.id style="display:none">
               <div class="toggle-box">
                 <p>{{entry.name}}: <br>
                 {{entry.value}} <br></p><p>
@@ -194,6 +194,23 @@ legend {
    height: 30px;
  }
 
+.box-2{
+  display: flex;
+  justify-content: space-between;
+  padding: 10px;
+}
+
+  .box-2-name {
+    width: 50%;
+    height: 30px;
+    padding-top: 8px;
+    text-align: left;
+  }
+
+  .box-2-button {
+    width: 50%;
+  }
+
  .insight-button-green {
    border: none;
    background: green;
@@ -218,23 +235,6 @@ legend {
   .insight-button:focus{
     width: 60px;
   }
-
-.box-2{
-  display: flex;
-  justify-content: space-between;
-  padding: 10px;
-}
-
-.box-2-name {
-  width: 50%;
-  height: 30px;
-  padding-top: 8px;
-  text-align: left;
-}
-
-.test {
-  width: 50%;
-}
 
 .box-3{
   padding: 15px;
