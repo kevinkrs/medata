@@ -5,8 +5,8 @@ from flask_cors import CORS
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy import or_
 from datetime import datetime
-
 from sqlalchemy.orm import backref
+import acm_scraper 
 
 
 #configuration
@@ -151,15 +151,15 @@ def get_specific():
     #fetch data from request
     url = request.get_json().get('url')
 
-    #relevant_categories = scraper.categories(url)
-    #paper_id = url
+    #relevant_categories_scraper = acm_scraper.get_leaf_categories(url)
+    #print(relevant_categories_scraper)
 
     #hardcoded for now 
     relevant_categories = ['laboratory experiments']
     paper_id = 50
     #for testing conditionals
     #relevant_categories = ['cats']
-    #paper_id = 545654645
+    #paper_id = "545654645"
 
     
     #insights filtered by category
