@@ -5,10 +5,10 @@ import { fetchMetadata, postInsight, postAnswer, postRateAnswer, postRateRelevan
 export default createStore({
   state: {
     metadata: [],
-    query: '',
-    inID: '',
-    inPaperID:'',
-    inCategorie: ''
+    query: '', //query = paperID
+    currentIn: '', // TODO
+    currentInID: '', // TODO
+    currentCategory: '', // TODO
   },
   mutations: {
     // Saving the data from backend to the "metadata array"
@@ -20,17 +20,16 @@ export default createStore({
         // ALWAYS use . operator saving data to the state
         state.query = payload.query
       },
-      // sets insight ID from backend to local variable in state
-      setInsightID (state) {
-        state.inID = this.metadata.id
-      },
-       // sets paper ID from backend to local variable in state
-      setPaperID (state) {
-        state.inPaperId = this.metadata.paper_id
-      },
+      // 
+    setCurrentInName (state, payload){
+      state.currentIn = payload.currentIn
+    },
+    setcurrentInID (state, payload){
+      state.currentIn = payload.currentIn
+    },
        // sets category from backend to local variable in state
       setCategory(state) {
-        state.inCategorie = this.metadata.categorie
+        state.currentCategory = this.getters.getCategory
       }
   },
   actions: {
@@ -93,6 +92,9 @@ export default createStore({
   },
 },
   getters: {
+    getCategory: state => {
+                          // Name is not right -> asking backend how it's called
+      return state.metadata.inCategories
   },
 
   modules: {
