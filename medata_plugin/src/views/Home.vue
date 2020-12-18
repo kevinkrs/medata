@@ -37,7 +37,10 @@
           <div v-if="entry.insight_upvotes < 1" class="box-2-button">
             <!--With a click on the colored button the function visable is called and the id of the insight
             is passed. This ensures that the corresponding toggle box becomes visible.-->
-            <button class="insight-button-red" @click="visible(entry.id)">⮟</button>
+            <button class="insight-button-red" @click="visible(entry.id)">
+              <div :id=entry.id+1000  class="pfeil-runter" style="display:inline">⮟</div>
+              <div :id=entry.id+2000  class="pfeil-hoch" style="display:none">⮝</div>              
+            </button>
             <div :id=entry.id style="display:none">
               <!--The div elements toggle-box-red/yellow/green define the frame of the three different
               toggle boxes-->
@@ -49,7 +52,10 @@
             </div>
           </div>
           <div v-else-if="entry.insight_upvotes < 8" class="box-2-button">
-            <button class="insight-button-yellow" @click="visible(entry.id)">⮟</button>
+            <button class="insight-button-yellow" @click="visible(entry.id)">
+              <div :id=entry.id+1000  class="pfeil-runter" style="display:inline">⮟</div>
+              <div :id=entry.id+2000  class="pfeil-hoch" style="display:none">⮝</div>
+            </button>
             <div :id=entry.id style="display:none">
               <div class="toggle-box">
                 <!---->
@@ -62,7 +68,10 @@
             </div>
           </div>
           <div v-else-if="entry.insight_upvotes > 8" class="box-2-button">
-            <button class="insight-button-green" @click="visible(entry.id)">⮟</button>
+            <button class="insight-button-green" @click="visible(entry.id)">
+              <div :id=entry.id+1000  class="pfeil-runter" style="display:inline">⮟</div>
+              <div :id=entry.id+2000  class="pfeil-hoch" style="display:none">⮝</div>
+            </button>
             <div :id=entry.id style="display:none">
               <div class="toggle-box">
                 <p>{{entry.name}}: <br>
@@ -112,9 +121,13 @@ export default {
     },
     visible: function (divId) {
       if (document.getElementById(divId).style.display === 'none') {
-        document.getElementById(divId).style.display = 'inline'
+        document.getElementById(divId).style.display = 'inline';
+        document.getElementById(1000+divId).style.display = 'none';
+        document.getElementById(2000+divId).style.display = 'inline';
       } else {
-        document.getElementById(divId).style.display = 'none'
+        document.getElementById(divId).style.display = 'none';
+        document.getElementById(1000+divId).style.display = 'inline';
+        document.getElementById(2000+divId).style.display = 'none';
       }
     },
 
