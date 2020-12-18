@@ -41,9 +41,11 @@
       
       <div v-else>
         <!--The div element "box 2" represents one insight listed under the legend and also consists of
-        a short text and a colored box. ... (V-for und v-bind:key kommentiere ich noch)-->
+        a short text and a colored box.-->
         <div class="box-2" v-for="entry in metadata" :key="entry.id">
-          {{entry.name}}
+          <div class="box-2-name">
+            {{entry.name}}
+          </div>
           <!--Each insight can have either a green, yellow or red button and the corresponding toggle box.
           An v-if will create these buttons colored red, yellow or green and the corresponding toggle box
           depending on whether the passed numerical value "confirmed" inside the "metadaata" array
@@ -240,32 +242,48 @@ legend {
    height: 30px;
  }
 
+.box-2{
+  display: flex;
+  justify-content: space-between;
+  padding: 10px;
+}
+
+  .box-2-name {
+    width: 50%;
+    height: 30px;
+    padding-top: 8px;
+    text-align: left;
+  }
+
+  .box-2-button {
+    width: 50%;
+  }
+
  .insight-button-green {
    border: none;
    background: green;
    width: 30px;
    height: 30px;
+   float: right;
  }
   .insight-button-yellow {
    border: none;
    background: yellow;
    width: 30px;
    height: 30px;
+   float: right;
  }
   .insight-button-red {
    border: none;
    background: red;
    width: 30px;
    height: 30px;
+   float: right;
  }
   .insight-button:focus{
     width: 60px;
   }
-.box-2{
-  display: flex;
-  justify-content: space-between;
-  padding: 10px;
-}
+
 .box-3{
   padding: 15px;
   margin-top: 30px;
@@ -310,6 +328,8 @@ legend {
   text-align: center;
   font-size: 130%;
   padding: 10px;
+  margin-top: 30px;
+  margin-left: -100%;
 }
 
 </style>
