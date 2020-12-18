@@ -5,9 +5,8 @@ from flask_cors import CORS
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy import or_
 from datetime import datetime
-from flask_marshmallow import Marshmallow
-
 from sqlalchemy.orm import backref
+import acm_scraper 
 
 
 #configuration
@@ -21,7 +20,6 @@ app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///database.db'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 db = SQLAlchemy(app)
 #!! Order matters here, SQLAlchemy has to be installed first!
-ma = Marshmallow(app)
 
 
 #models
@@ -77,8 +75,10 @@ class Information(db.Model):
 
     information_id = db.Column(db.Integer, primary_key=True)
     insight_id = db.Column(db.Integer, db.ForeignKey('insights.id'))
+    #only one foreignkey works...
     insight_name = db.Column(db.String(30))
-    paper_id = db.Column(db.Integer, default=0)
+    #url -> String
+    paper_id = db.Column(db.String(50), default = "")
     insight_upvotes = db.Column(db.Integer, default = 0)
     insight_downvotes = db.Column(db.Integer, default = 0)
     timestamp = db.Column(db.DateTime, default = datetime.utcnow)
@@ -118,6 +118,7 @@ class Answers(db.Model):
         answer = self.answer,
         answer_upvotes = self.answer_upvotes,
         answer_downvotes = self.answer_downvotes,
+        answer_score = self.answer_score
         )
 
     def __repr__(self):
@@ -148,22 +149,21 @@ def get_all():
 @app.route('/get_specific', methods=['POST'])
 def get_specific():
     response_object = []
-    # response_object.append({'status':     'success'})
     #fetch data from request
     url = request.get_json().get('url')
 
-    #relevant_categories = scraper.categories(url)
-    #paper_id = scraper.paper_id(url)
+    #relevant_categories_scraper = acm_scraper.get_leaf_categories(url)
+    #print(relevant_categories_scraper)
 
     #hardcoded for now 
     relevant_categories = ['laboratory experiments']
-    paper_id = 50
+    paper_id = "50"
     #for testing conditionals
     #relevant_categories = ['cats']
-    #paper_id = 545654645
+    #paper_id = "545654645"
 
     
-    #information filtered by category
+    #insights filtered by category
     matching_insight = Insights.query.join(Insights.categories).filter(or_(Categories.name==x for x in relevant_categories)).all()
 
     #if (information for paper_id does not exist) create information with paper_id
@@ -238,6 +238,7 @@ def add_answer():
             answer_already_exists = True
 
     if (answer_already_exists==False):
+        #default 1 upvote
         new_answer = Answers(information_id=inf.information_id, answer = in_answer, answer_upvotes = 1, answer_score = 1)
         db.session.add(new_answer)
         db.session.commit()
@@ -271,7 +272,7 @@ def rate_answer():
     else :
         for a in ans:
             if (a.answer==in_answer):
-                a.answer_upvotes = a.answer_upvotes - 1
+                a.answer_downvotes = a.answer_downvotes + 1
                 a.answer_score = a.answer_score - 1
 
     db.session.commit()
@@ -295,7 +296,7 @@ def rate_relevance_insight():
         inf.insight_upvotes = inf.insight_upvotes + 1
     #downvote insight
     else :
-        inf.insight_upvotes = inf.insight_upvotes - 1
+        inf.insight_downvotes = inf.insight_downvotes + 1
 
     db.session.commit()
     return jsonify(response_object)

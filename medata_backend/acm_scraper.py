@@ -42,7 +42,7 @@ def get_leaf_categories(url):
         leaf_list (list of str): List of Strings with the names of all Leaf categories
     """
     soup = get_soup(url)
-    leaf_list = get_categories
+    leaf_list = get_categories(soup)
     return leaf_list
 #todo:
 #paperid as integer

@@ -18,8 +18,8 @@ def create_mock_dataa():
         print(f"c{x}=Categories(insight_id={x}, name = '{categories_names.pop()}')")
         print(f"c{x+100}=Categories(insight_id={x}, name = '{categories_names.pop()}')")
 
-        print(f"inf{x} =Information(information_id = {x}, insight_id={x}, insight_name = '{insight_names[x]}', paper_id={random.randint(50,60)}, answer1='first answer: {random.random()}', answer1_upvotes={random.randint(2,13)}, insight_upvotes={random.randint(1,14)})")
-        print(f"inf{x+100} =Information(information_id = {x+100}, insight_id={x}, insight_name = '{insight_names[x]}', paper_id={random.randint(60,70)}, answer1='first answer: {random.random()}', answer1_upvotes={random.randint(2,13)}, insight_upvotes={random.randint(1,14)})")
+        print(f"inf{x} =Information(information_id = {x}, insight_id={x}, insight_name = '{insight_names[x]}', paper_id='{random.randint(50,60)}', insight_upvotes={random.randint(1,14)})")
+        print(f"inf{x+100} =Information(information_id = {x+100}, insight_id={x}, insight_name = '{insight_names[x]}', paper_id='{random.randint(60,70)}', insight_upvotes={random.randint(1,14)})")
         score1 = random.randint(1,4)
         score2 = random.randint(1,4)
         score3 = random.randint(1,4)
