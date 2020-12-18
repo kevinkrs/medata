@@ -118,6 +118,7 @@ class Answers(db.Model):
         answer = self.answer,
         answer_upvotes = self.answer_upvotes,
         answer_downvotes = self.answer_downvotes,
+        answer_score = self.answer_score
         )
 
     def __repr__(self):
@@ -156,7 +157,7 @@ def get_specific():
 
     #hardcoded for now 
     relevant_categories = ['laboratory experiments']
-    paper_id = 50
+    paper_id = "50"
     #for testing conditionals
     #relevant_categories = ['cats']
     #paper_id = "545654645"
