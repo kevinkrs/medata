@@ -51,8 +51,9 @@
           depending on whether the passed numerical value "confirmed" inside the "metadaata" array
           (recieved inside script from the store file)is 0,1 or something else.-->
           
-          <!--TODO insigth_upvores is not the right variable for comparision-->
-          <div v-if='entry.answer.length == 0'>
+          <!--TODO insigth_upvores is not the right variable for comparision
+          entry.answer.length == 0 -->
+          <div v-if=' entry.answer.length == 0'>
             <!--With a click on the colored button the function visable is called and the id of the insight
             is passed. This ensures that the corresponding toggle box becomes visible.-->
             <button class="insight-button-red" @click="visible(entry.id)"></button>
@@ -61,23 +62,45 @@
               toggle boxes-->
               <div class="toggle-box">
                 <p>Please enter information:</p>
+                  <!--TODO: implement button styles in CSS file-->
                 <button style="width:80%">...</button><br>
                 <button style="background-color:green">submit</button>
               </div>
             </div>
           </div>
           <!--TODO entry.answer[0].answer_score -> kills the frontend -->
-          <div v-else-if="entry.answer.answer_score < 6">
+          <div v-else-if="entry.answer[0].answer_score < 5">
             <button class="insight-button-yellow" @click="visible(entry.id)"> </button>
             <div :id=entry.id style="display:none">
               <div class="toggle-box">
-                <!---->
+                <div class="answers">
                   <p>Please select <br> the correct Answer</p>
-                  {{entry.answer}}
-                  <button>other value</button>
+                  <div class="row">
+                    <div v-for="(index) in 4" :key ="index">
+                      <button class="answerButton">{{entry.answer[index-1].answer}}</button>
+                    </div>
+                  </div>
+                </div>
+                <!-- Code works, in worst case we take this one 
+                <div class="answers">
+                  <p>Please select <br> the correct Answer</p>
+                  <div class="row1">
+                    <button class="answerButton">{{entry.answer[0].answer}}</button>
+                    <button class="answerButton">{{entry.answer[1].answer}}</button>
+                  </div>
+                  <div class="row2">
+                    <button class="answerButton">{{entry.answer[2].answer}}</button>
+                    <button class="answerButton">{{entry.answer[3].answer}}</button>
+                </div>
+                -->
+                <br>
+                <p> Add value </p>
+                  <input class="userInput" v-model="userInput"> 
+                  <button class="submit-insight" @click="submitUserInput">Submit </button>
               </div>
             </div>
           </div>
+        
 
           <div v-else>
             <button class="insight-button-green" @click="visible(entry.id)"></button>
@@ -105,12 +128,10 @@
           <p> {{userInput}} </p>
         </div>
         <div class="submit">
-          <input type="button" value="Submit" class="submitbutton">
+          <input type="button" value="Submit" class="submit-button">
         </div>
       </div>
-
-
-    </div>  
+    </div> 
 </div>
 </template>
 
@@ -124,7 +145,7 @@ export default {
   data () {
     return {
     // Empty String for possible user input
-      userInput: ''
+      userInput: '',
     }
   },
   methods: {
@@ -144,7 +165,7 @@ export default {
       alert(this.query)
     },
     checkAnswers() {
-      alert()
+      alert(this.metadata.answer)
     }
   },
   // mapstate is a Vuex component (using computed) summarizing the command of this.$store.state.metadata
@@ -284,6 +305,20 @@ legend {
     width: 60px;
   }
 
+.submit-insight {
+  margin: 15px;
+  border: none;
+  color: rgb(235, 235, 235);
+  background: rgb(20, 38, 176);
+  border-radius: 5px;
+  width: 70px;
+  height: 30px;
+}
+
+.submit-insight:hover { 
+  color: black;
+  background: rgb(184, 184, 184);}
+
 .box-3{
   padding: 15px;
   margin-top: 30px;
@@ -298,14 +333,15 @@ legend {
 
 
 .submit {
-  padding: 15px;
   display:flex;
   justify-content: center;
   align-content: center;
+  padding: 15px;
   
 }
 
-.submit .submitbutton{
+.submit .submit-button{
+  margin: 15px;
   border: none;
   color: rgb(235, 235, 235);
   background: rgb(20, 38, 176);
@@ -314,7 +350,7 @@ legend {
   height: 30px;
 }
 
-.submitbutton:hover{
+.submit-button:hover{
   color: black;
   background: rgb(184, 184, 184);
 }
@@ -325,11 +361,29 @@ legend {
 
 .toggle-box {
   background-color: white;
-  text-align: center;
-  font-size: 130%;
+  display: flexbox;
+  border-radius: 5px;
+  justify-content: center;
+  align-items: center;
+  font-size: 15px;
   padding: 10px;
-  margin-top: 30px;
-  margin-left: -100%;
+  margin-top: 50px;
 }
-
+.answerButton {
+  height: 30px;
+  width: 50px;
+  margin: 5px;
+  padding: 5px;
+  background-color: rgb(225, 225, 92);
+  border: 1px solid rgba(48, 48, 48, 0.94)
+}
+.answer{
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+}
+.answerButton:hover {
+  background-color: lightgray;
+  border: 1px solid rgba(48, 48, 48, 0.94)
+}
 </style>

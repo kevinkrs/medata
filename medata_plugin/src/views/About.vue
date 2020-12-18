@@ -41,7 +41,7 @@ export default {
           function (tabs){
           var querySub = tabs[0].url.substring(0, 19)
           if (querySub == vm.substr) { 
-              alert('Valid URL found')
+             // alert('Valid URL found')
               // if URL is a dl.acm.org URl we save it to our state 
               vm.$store.dispatch('loadQuery', tabs[0].url)
               vm.valid = true}
