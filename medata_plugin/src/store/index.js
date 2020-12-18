@@ -46,58 +46,48 @@ export default createStore({
       .then((response) => commit('setMetadata', {metadata: response.data})) 
       .catch((error) => {console.error(error)}) 
   },
-  // Sends insight
-  sendInsight (inPaperId, inInsight, inCategories) {
-    //contex?
-    let a = inPaperId
-    let b = inInsight
-    let c = inCategories
-    //e.g. hardcoded 4 now
-    a = 102
-    b = "postman_insight3"
-    c = ["cat5", "cat6"]
-    return postInsight(a, b, c)
-      .then((response) => {console.log(response)})
-      .catch((error) => {console.error(error)})
-  },
+  // for user answer input -> yellow and red status 
   sendAnswer (inPaperId, inInsight, inAnswer) {
     //contex?
     let a = inPaperId
     let b = inInsight
     let c = inAnswer
-    //e.g. hardcoded 4 now
-    a = 56
-    b = "number_inputs"
-    c = "POSTMAN_from_vue"
+    
     return postAnswer(a, b, c)
       .then((response) => {console.log(response)})
       .catch((error) => {console.error(error)})
   },
-  sendRateAnswer (inPaperId, inInsight, inAnswer, inUpvote) {
+  // User can rate answer by clicking on it -> green & yellow
+  sendRateAnswer (inName, inAnswer, inUpvote) {
     //contex?
-    let a = inPaperId
-    let b = inInsight
+    let b = inName
     let c = inAnswer
-    let d = inUpvote
-    //e.g. hardcoded 4 now
-    a = 56
-    b = "number_inputs"
-    c = "answer1"
-    d = True
-    return postRateAnswer(a, b, c, d)
+    let d = inUpvote // boolean -> onClick: true 
+  
+    return postRateAnswer(this.state.query, b, c, d)
       .then((response) => {console.log(response)})
       .catch((error) => {console.error(error)})
   },
-  sendRateRelevanceInsight (inPaperId, inInsight, inUpvote) {
+  // Not implemented as frontend element yet -> Feature for later 
+  sendRateRelevanceInsight ( inInsight, inUpvote) {
     //contex?
-    let a = inPaperId
+    
     let b = inInsight
-    let c = inUpvote
+    let c = inUpvote // boolean 
     //e.g. hardcoded 4 now
-    a = 56
-    b = "number_inputs"
-    c = True
-    return postRateRelevanceInsight(a, b, c)
+    
+    return postRateRelevanceInsight(this.state.query, b, c)
+      .then((response) => {console.log(response)})
+      .catch((error) => {console.error(error)})
+  },
+  // User input for new insights -> Last div in frontend
+  sendInsight (inName) {
+  
+    let a = inPaperId
+    let b = inName
+    let c = inCategories
+  
+    return postInsight(this.state.query, b, this.state.inCategorie)
       .then((response) => {console.log(response)})
       .catch((error) => {console.error(error)})
   },

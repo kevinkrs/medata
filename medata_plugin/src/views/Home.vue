@@ -25,7 +25,10 @@
           </div>
         </fieldset>
       <div>
-        <button @click= "checkURL"> Check URL </button>
+        <button @click="checkURL"> Check URL </button>
+      </div>
+      <div>
+        <button @click="checkAnswers" >Check answers</button>
       </div>
       <!--If backend has no information to given category it's responding with an empty list. Here we check if the list is truly empty.
       If it is, we display first the first div class "noData". If not empty we display second div -->
@@ -45,7 +48,9 @@
           An v-if will create these buttons colored red, yellow or green and the corresponding toggle box
           depending on whether the passed numerical value "confirmed" inside the "metadaata" array
           (recieved inside script from the store file)is 0,1 or something else.-->
-          <div v-if="entry.insight_upvotes < 1">
+          
+          <!--TODO insigth_upvores is not the right variable for comparision-->
+          <div v-if='entry.answer.length == 0'>
             <!--With a click on the colored button the function visable is called and the id of the insight
             is passed. This ensures that the corresponding toggle box becomes visible.-->
             <button class="insight-button-red" @click="visible(entry.id)"></button>
@@ -59,25 +64,27 @@
               </div>
             </div>
           </div>
-          <div v-else-if="entry.insight_upvotes < 8">
+          <!--TODO entry.answer[0].answer_score -> kills the frontend -->
+          <div v-else-if="entry.answer.answer_score < 6">
             <button class="insight-button-yellow" @click="visible(entry.id)"> </button>
             <div :id=entry.id style="display:none">
               <div class="toggle-box">
                 <!---->
                   <p>Please select <br> the correct Answer</p>
-                  <button style="background-color:yellow">58</button>
-                  <button style="background-color:yellow">69</button> <br>
+                  {{entry.answer}}
                   <button>other value</button>
               </div>
             </div>
           </div>
+
           <div v-else>
             <button class="insight-button-green" @click="visible(entry.id)"></button>
-            <div :id=entry style="display:none">
+            <div :id=entry.id style="display:none">
               <div class="toggle-box">
-                <p>{{entry.name}}: <br>
-                {{entry.value}} <br></p><p>
-                {{entry.numberConfirmed}} users confirmed <br>
+                <!--If function, for checking if the answer has highest upvotes-->
+                <p>{{entry.name}}: <br></p>
+              <p>
+                {{entry.insight_upvotes}} users confirmed <br>
                 this information <br>
                 </p>
                 <button style="background-color:green">confirm</button>
@@ -133,14 +140,19 @@ export default {
     },
     checkURL() {
       alert(this.query)
+    },
+    checkAnswers() {
+      alert()
     }
-
   },
   // mapstate is a Vuex component (using computed) summarizing the command of this.$store.state.metadata
-  computed: mapState({
-    metadata: state => state.metadata,
-    query: state => state.query
-  }),
+  computed: 
+    mapState([
+      'metadata',
+      'answer',
+      'query',
+    ]),
+
   // This function starts the method "loadMetadata" belonging to "action" inside the store file
   // loadMetadata fetches the data from the api folder, which receives metadata from the backend
   // after metadata is reveived it is passed to the "mutation" component and after that to the "state" to save it
