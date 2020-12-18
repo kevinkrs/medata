@@ -4,6 +4,11 @@ import re
 
 
 class Category():
+    """Class to store one Categorie found in the paper
+
+    Returns:
+        None: simply there to store more information 
+    """
     numbers = []
     name = ""
     has_children = True
@@ -26,6 +31,19 @@ def main():
     get_categories(soup)
     print(get_conference(url))
 
+
+def get_leaf_categories(url):
+    """ Get all leaf Categories as a list of Strings
+
+    Args:
+        url (str): url of the paper on ACM. Url is not checked
+
+    Returns:
+        leaf_list (list of str): List of Strings with the names of all Leaf categories
+    """
+    soup = get_soup(url)
+    leaf_list = get_categories
+    return leaf_list
 #todo:
 #paperid as integer
 #categories as list of strings
@@ -76,6 +94,9 @@ def name_from_profile(link):
     
 
 def get_paper_id(link):
+    '''
+    returns conference.paperid
+    '''
     id = re.sub(r"https:\/\/dl\.acm\.org\/doi\/[\d*\.\d*]+\/", "", link)
     return id
 
@@ -93,13 +114,15 @@ def get_conference(link):
 
 
 def get_categories(soup):
+    #todo: just return the leaf categories as a list
     organizational_chart = soup.find("ol", class_="rlist organizational-chart")     
     categories_container = organizational_chart.find_all("a")
     #print(len(categories_container))
     categories_text = []
     categories_list = []
+    leaf_categories_list = []
 
-
+    # creates Categorie objects and appends them to a list
     for categorie in categories_container:
         try:
             name = categorie.text 
@@ -117,7 +140,7 @@ def get_categories(soup):
         except Exception as e:
              print(e)   
 
-
+    # checks if the categorie has children or not
     for categorie in categories_list:
         
         rest_cats = [cat.numbers for cat in categories_list if not cat == categorie]
@@ -132,20 +155,20 @@ def get_categories(soup):
         if last_number not in rest_numbers:
             categorie.has_children = False
         
-
-
+    # appends leaf categories to a list
     for categorie in categories_list:
-        print(categorie.name)
+        #print(categorie.name)
         # print(categorie.numbers)
         # print(categorie.has_children)
-        if categorie.has_children == True:
-            print("\n")      
-        else:
-            print("-- Last Element in Tree --\n")
+        if categorie.has_children == False:
+            leaf_categories_list.append(categorie.name)
+
+
+    return leaf_categories_list
 
 
 def get_infos_of_cat_link(link):
-    #return a ordered list with the category Numbers
+    #return an ordered list with all category and subcategories Numbers
     categories_numbers = []
     cat_string = re.sub(r"\?[\w*\W*]*","", link)
     # removes everything after the ?
