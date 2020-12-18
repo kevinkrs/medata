@@ -37,7 +37,7 @@
           <div v-if="entry.insight_upvotes < 1" class="box-2-button">
             <!--With a click on the colored button the function visable is called and the id of the insight
             is passed. This ensures that the corresponding toggle box becomes visible.-->
-            <button class="insight-button-red" @click="visible(entry.id)"></button>
+            <button class="insight-button-red" @click="visible(entry.id)">⮟</button>
             <div :id=entry.id style="display:none">
               <!--The div elements toggle-box-red/yellow/green define the frame of the three different
               toggle boxes-->
@@ -49,7 +49,7 @@
             </div>
           </div>
           <div v-else-if="entry.insight_upvotes < 8" class="box-2-button">
-            <button class="insight-button-yellow" @click="visible(entry.id)"></button>
+            <button class="insight-button-yellow" @click="visible(entry.id)">⮟</button>
             <div :id=entry.id style="display:none">
               <div class="toggle-box">
                 <!---->
@@ -62,7 +62,7 @@
             </div>
           </div>
           <div v-else-if="entry.insight_upvotes > 8" class="box-2-button">
-            <button class="insight-button-green" @click="visible(entry.id)"></button>
+            <button class="insight-button-green" @click="visible(entry.id)">⮟</button>
             <div :id=entry.id style="display:none">
               <div class="toggle-box">
                 <p>{{entry.name}}: <br>
@@ -211,13 +211,16 @@ legend {
     padding: 8px;
     text-align: left;
     background-color: white;
+    box-shadow: 3px 3px 3px silver;
+    border-radius: 5px 0px 0px 5px;
   }
 
   .box-2-button {
     width: 20%;
-        padding: 8px;
-
+    padding: 8px;
     background-color: white;
+    box-shadow: 3px 3px 3px silver;
+    border-radius: 0px 5px 5px 0px;
   }
 
  .insight-button-green {
@@ -226,7 +229,7 @@ legend {
    width: 30px;
    height: 30px;
    float: right;
- }
+   }
   .insight-button-yellow {
    border: none;
    background: yellow;
@@ -240,6 +243,7 @@ legend {
    width: 30px;
    height: 30px;
    float: right;
+   font-weight: bold;
  }
   .insight-button:focus{
     width: 60px;
@@ -287,10 +291,13 @@ legend {
 .toggle-box {
   background-color: white;
   text-align: center;
-  font-size: 130%;
   padding: 10px;
   margin-top: 30px;
-  margin-left: -400%;
+  margin-left: -384%;
+  margin-right: -8px;
+  margin-bottom: -8px;
+  border-radius: 0px 0px 5px 5px;
+  box-shadow: 3px 3px 3px silver;
 }
 
 </style>
