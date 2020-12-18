@@ -150,6 +150,8 @@ legend {
   padding-top: 20px;
   padding-left: 10px;
   padding-right: 10px;
+  font-family: Arial, Helvetica, sans-serif;
+  font-size: 120%;
 }
 .logo{
   margin-bottom: 15px;
@@ -164,7 +166,6 @@ legend {
 }
 
 legend {
-  font-family: 'Courier New', Courier, monospace;
   margin-left: 5px;
 }
 
@@ -198,18 +199,25 @@ legend {
 .box-2{
   display: flex;
   justify-content: space-between;
-  padding: 10px;
+  padding-left: 20px;
+  padding-right: 20px;
+  padding-top: 5px;
+  padding-bottom: 5px;
 }
 
   .box-2-name {
-    width: 50%;
+    width: 80%;
     height: 30px;
-    padding-top: 8px;
+    padding: 8px;
     text-align: left;
+    background-color: white;
   }
 
   .box-2-button {
-    width: 50%;
+    width: 20%;
+        padding: 8px;
+
+    background-color: white;
   }
 
  .insight-button-green {
@@ -282,7 +290,7 @@ legend {
   font-size: 130%;
   padding: 10px;
   margin-top: 30px;
-  margin-left: -100%;
+  margin-left: -400%;
 }
 
 </style>
