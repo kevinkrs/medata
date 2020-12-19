@@ -57,8 +57,8 @@
             <!--With a click on the colored button the function visable is called and the id of the insight
             is passed. This ensures that the corresponding toggle box becomes visible.-->
             <button class="insight-button-red" @click="visible(entry.id)">
-              <div :id=entry.id-1000  class="pfeil-runter" style="display:inline"><img src="../assets/arrow-down.png"></div>
-              <div :id=entry.id-2000  class="pfeil-hoch" style="display:none"><img src="../assets/arrow-up.png"></div>      
+              <div :id=entry.id-1000 style="display:inline"><img class="arrow" src="../assets/arrow-down.png" ></div>
+              <div :id=entry.id-2000 style="display:none"><img class="arrow" src="../assets/arrow-up.png" ></div>      
             </button>
             <div :id=entry.id style="display:none">
               <!--The div elements toggle-box-red/yellow/green define the frame of the three different
@@ -71,10 +71,10 @@
               </div>
             </div>
           </div>
-          <div div v-else-if="entry.answer[0].answer_score < 5" class="box-2-button">
+          <div div v-else-if="entry.answer[0].answer_score < 3" class="box-2-button">
             <button class="insight-button-yellow" @click="visible(entry.id)">
-              <div :id=entry.id-1000  class="pfeil-runter" style="display:inline"><img src="../assets/arrow-down.png"></div>
-              <div :id=entry.id-2000  class="pfeil-hoch" style="display:none"><img src="../assets/arrow-up.png"></div>
+              <div :id=entry.id-1000 style="display:inline"><img class="arrow" src="../assets/arrow-down.png" ></div>
+              <div :id=entry.id-2000 style="display:none"><img class="arrow" src="../assets/arrow-up.png" ></div>
             </button>
             <div :id=entry.id style="display:none">
               <div class="toggle-box">
@@ -110,8 +110,8 @@
           </div>
           <div v-else class="box-2-button">
             <button class="insight-button-green" @click="visible(entry.id)">
-              <div :id=entry.id-1000  class="pfeil-runter" style="display:inline"><img src="../assets/arrow-down.png" ></div>
-              <div :id=entry.id-2000  class="pfeil-hoch" style="display:none"><img src="../assets/arrow-up.png" ></div>
+              <div :id=entry.id-1000 style="display:inline"><img class="arrow" src="../assets/arrow-down.png" ></div>
+              <div :id=entry.id-2000 style="display:none"><img class="arrow" src="../assets/arrow-up.png" ></div>
             </button>
             <div :id=entry.id style="display:none">
               <div class="toggle-box">
@@ -413,13 +413,8 @@ legend {
   border: 1px solid rgba(48, 48, 48, 0.94)
 }
 
-.pfeil-runter {
-  display: block;
-  text-align: center;
-}
-
-.pfeil-hoch{
-  display: block;
-  text-align: center;
+.arrow {
+ width: 90%;
+ margin-top: 22%;
 }
 </style>
