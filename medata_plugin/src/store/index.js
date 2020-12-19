@@ -6,7 +6,7 @@ export default createStore({
   state: {
     metadata: [],
     query: '', //query = paperID
-    currentIn: '', // TODO
+    currentIn: '', // Name is not neccessary 
     currentInID: '', // TODO
     currentCategory: '', // TODO
   },

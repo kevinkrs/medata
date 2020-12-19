@@ -83,6 +83,9 @@
                   <div class="row">
                     <div v-for="(index) in 4" :key ="index">
                       <button class="answerButton">{{entry.answer[index-1].answer}}</button>
+                     <!-- TODO: When user clicks on one answer, it gets submitted and all the other answer switch to label (not interactable)
+                      <label class="answerButton">{{entry.answer[index-1].answer}} </label>
+                      -->
                     </div>
                   </div>
                 </div>
@@ -101,7 +104,7 @@
                 <br>
                 <p> Add value </p>
                   <input class="userInput" v-model="userInput"> 
-                  <button class="submit-insight" @click="submitUserInput">Submit </button>
+                  <button class="submit-insight" @click="submitUserInput">Submit</button>
               </div>
             </div>
           </div>
