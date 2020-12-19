@@ -67,11 +67,11 @@
                 <p>Please enter information:</p>
                   <!--TODO: implement button styles in CSS file-->
                 <input placeholder="your relevant data"><br>
-                <button>submit</button>
+                <button class="submit-insight">submit</button>
               </div>
             </div>
           </div>
-          <div div v-else-if="entry.answer[0].answer_score < 5" class="box-2-button">
+          <div div v-else-if="entry.answer[0].answer_score < 3" class="box-2-button">
             <button class="insight-button-yellow" @click="visible(entry.id)">
               <div :id=entry.id-1000  class="pfeil-runter" style="display:inline"><img src="../assets/arrow-down.png"></div>
               <div :id=entry.id-2000  class="pfeil-hoch" style="display:none"><img src="../assets/arrow-up.png"></div>
@@ -121,8 +121,8 @@
                 {{entry.insight_upvotes}} users confirmed <br>
                 this information <br>
                 </p>
-                <button style="background-color:green">confirm</button>
-                <button style="background-color:red">report an error</button>
+                <button class="submit-insight">confirm</button>
+                <button class="report-insight" >report an error</button>
               </div>
             </div>
           </div>
@@ -341,6 +341,20 @@ legend {
 }
 
 .submit-insight:hover { 
+  color: black;
+  background: rgb(184, 184, 184);}
+
+.report-insight {
+  margin: 15px;
+  border: none;
+  color: rgb(235, 235, 235);
+  background: rgb(186, 15, 15);
+  border-radius: 5px;
+  width: 70px;
+  height: 30px;
+}
+
+.report-insight:hover { 
   color: black;
   background: rgb(184, 184, 184);}
 
