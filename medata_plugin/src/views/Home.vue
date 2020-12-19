@@ -56,7 +56,10 @@
           <div v-if=' entry.answer.length == 0'>
             <!--With a click on the colored button the function visable is called and the id of the insight
             is passed. This ensures that the corresponding toggle box becomes visible.-->
-            <button class="insight-button-red" @click="visible(entry.id)"></button>
+            <button class="insight-button-red" @click="visible(entry.id)">
+              <div :id=entry.id+1000  class="pfeil-runter" style="display:inline">⮟</div>
+              <div :id=entry.id+2000  class="pfeil-hoch" style="display:none">⮝</div>              
+            </button>
             <div :id=entry.id style="display:none">
               <!--The div elements toggle-box-red/yellow/green define the frame of the three different
               toggle boxes-->
@@ -68,9 +71,11 @@
               </div>
             </div>
           </div>
-          <!--TODO entry.answer[0].answer_score -> kills the frontend -->
-          <div v-else-if="entry.answer[0].answer_score < 5">
-            <button class="insight-button-yellow" @click="visible(entry.id)"> </button>
+          <div div v-else-if="entry.answer[0].answer_score < 5" class="box-2-button">
+            <button class="insight-button-yellow" @click="visible(entry.id)">
+              <div :id=entry.id+1000  class="pfeil-runter" style="display:inline">⮟</div>
+              <div :id=entry.id+2000  class="pfeil-hoch" style="display:none">⮝</div>
+            </button>
             <div :id=entry.id style="display:none">
               <div class="toggle-box">
                 <div class="answers">
@@ -100,10 +105,11 @@
               </div>
             </div>
           </div>
-        
-
-          <div v-else>
-            <button class="insight-button-green" @click="visible(entry.id)"></button>
+          <div v-else class="box-2-button">
+            <button class="insight-button-green" @click="visible(entry.id)">
+              <div :id=entry.id+1000  class="pfeil-runter" style="display:inline">⮟</div>
+              <div :id=entry.id+2000  class="pfeil-hoch" style="display:none">⮝</div>
+            </button>
             <div :id=entry.id style="display:none">
               <div class="toggle-box">
                 <!--If function, for checking if the answer has highest upvotes-->
@@ -156,9 +162,13 @@ export default {
     // TODO commments
     visible: function (divId) {
       if (document.getElementById(divId).style.display === 'none') {
-        document.getElementById(divId).style.display = 'inline'
+        document.getElementById(divId).style.display = 'inline';
+        document.getElementById(1000+divId).style.display = 'none';
+        document.getElementById(2000+divId).style.display = 'inline';
       } else {
-        document.getElementById(divId).style.display = 'none'
+        document.getElementById(divId).style.display = 'none';
+        document.getElementById(1000+divId).style.display = 'inline';
+        document.getElementById(2000+divId).style.display = 'none';
       }
     },
     checkURL() {
@@ -217,6 +227,8 @@ legend {
   padding-top: 20px;
   padding-left: 10px;
   padding-right: 10px;
+  font-family: Arial, Helvetica, sans-serif;
+  font-size: 120%;
 }
 .logo{
   margin-bottom: 15px;
@@ -231,7 +243,6 @@ legend {
 }
 
 legend {
-  font-family: 'Courier New', Courier, monospace;
   margin-left: 5px;
 }
 
@@ -266,18 +277,28 @@ legend {
 .box-2{
   display: flex;
   justify-content: space-between;
-  padding: 10px;
+  padding-left: 20px;
+  padding-right: 20px;
+  padding-top: 5px;
+  padding-bottom: 5px;
 }
 
   .box-2-name {
-    width: 50%;
+    width: 80%;
     height: 30px;
-    padding-top: 8px;
+    padding: 8px;
     text-align: left;
+    background-color: white;
+    box-shadow: 3px 3px 3px silver;
+    border-radius: 5px 0px 0px 5px;
   }
 
   .box-2-button {
-    width: 50%;
+    width: 20%;
+    padding: 8px;
+    background-color: white;
+    box-shadow: 3px 3px 3px silver;
+    border-radius: 0px 5px 5px 0px;
   }
 
  .insight-button-green {
@@ -286,7 +307,7 @@ legend {
    width: 30px;
    height: 30px;
    float: right;
- }
+   }
   .insight-button-yellow {
    border: none;
    background: yellow;
@@ -300,6 +321,7 @@ legend {
    width: 30px;
    height: 30px;
    float: right;
+   font-weight: bold;
  }
   .insight-button:focus{
     width: 60px;
@@ -369,6 +391,7 @@ legend {
   margin-bottom: -8px;
   border-radius: 0px 0px 5px 5px;
   box-shadow: 3px 3px 3px silver;
+<<<<<<< HEAD
 }
 .answerButton {
   height: 30px;
@@ -386,5 +409,7 @@ legend {
 .answerButton:hover {
   background-color: lightgray;
   border: 1px solid rgba(48, 48, 48, 0.94)
+=======
+>>>>>>> 336b2d80012c80084048af5d44662f7f8430d630
 }
 </style>
