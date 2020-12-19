@@ -4,23 +4,56 @@
       <div class="main-column">
         <img class="logo" src="../assets/medata_black.png" width="200">
         <!--The fieldset element "box-1" contains everything reagardin the legend-->
-        <fieldset class="box-1">
+        <fieldset class="legend-frame">
           <legend>Legend</legend>
           <!--The three div elements "box-1-content" represent the the three elements inside the legend.
           Each element consists of a short text and a colored box-->
-          <div class="box-1-content">
-            confirmed insigth
-            <div class="colorboxgreen">
+          <div class="legend-insight">
+            <div class="legend-insight-name">
+              confirmed insigth
+            </div>
+            <div class="legend-insight-button">
+              <button class="insight-button-green" @click="visible(-1)">
+                <div id=-1001 style="display:inline"><img class="arrow" src="../assets/info.png" ></div>
+                <div id=-2001 style="display:none"><img class="arrow" src="../assets/arrow-up.png" ></div>      
+              </button>
+              <div id=-1 style="display:none">
+                <div class="legend-toggleBox">
+                  <p>Detailed explanation of a green insight</p>
+                </div>
+              </div>
             </div>
           </div>
-          <div class="box-1-content">
-            validation needed
-           <div class="colorboxyellow">
+          <div class="legend-insight">
+            <div class="legend-insight-name">
+              validation needed
+            </div>
+            <div class="legend-insight-button">
+              <button class="insight-button-yellow" @click="visible(-2)">
+                <div id=-1002 style="display:inline"><img class="arrow" src="../assets/info.png" ></div>
+                <div id=-2002 style="display:none"><img class="arrow" src="../assets/arrow-up.png" ></div>      
+              </button>
+              <div id=-2 style="display:none">
+                <div class="legend-toggleBox">
+                  <p>Detailed explanation of a yellow insight </p>
+                </div>
+              </div>
             </div>
           </div>
-          <div class="box-1-content">
-            enter information
-            <div class="colorboxred">
+          <div class="legend-insight">
+            <div class="legend-insight-name">
+              enter information
+            </div>
+            <div class="legend-insight-button">
+              <button class="insight-button-red" @click="visible(-3)">
+                <div id=-1003 style="display:inline"><img class="arrow" src="../assets/info.png" ></div>
+                <div id=-2003 style="display:none"><img class="arrow" src="../assets/arrow-up.png" ></div>      
+              </button>
+              <div id=-3 style="display:none">
+                <div class="legend-toggleBox">
+                  <p>Detailed explanation of a red insight </p>
+                </div>
+              </div>
             </div>
           </div>
         </fieldset>
@@ -43,7 +76,7 @@
         <!--The div element "box 2" represents one insight listed under the legend and also consists of
         a short text and a colored box.-->
         <div class="box-2" v-for="entry in metadata" :key="entry.id">
-          <div class="box-2-name">
+          <div class="insight-name">
             {{entry.name}}
           </div>
           <!--Each insight can have either a green, yellow or red button and the corresponding toggle box.
@@ -53,7 +86,7 @@
           
           <!--TODO insigth_upvores is not the right variable for comparision
           entry.answer.length == 0 -->
-          <div v-if='entry.answer.length == 0' class= "box-2-button">
+          <div v-if='entry.answer.length == 0' class= "insight-button">
             <!--With a click on the colored button the function visable is called and the id of the insight
             is passed. This ensures that the corresponding toggle box becomes visible.-->
             <button class="insight-button-red" @click="visible(entry.id)">
@@ -71,7 +104,7 @@
               </div>
             </div>
           </div>
-          <div div v-else-if="entry.answer[0].answer_score < 3" class="box-2-button">
+          <div div v-else-if="entry.answer[0].answer_score < 3" class="insight-button">
             <button class="insight-button-yellow" @click="visible(entry.id)">
               <div :id=entry.id-1000 style="display:inline"><img class="arrow" src="../assets/arrow-down.png" ></div>
               <div :id=entry.id-2000 style="display:none"><img class="arrow" src="../assets/arrow-up.png" ></div>
@@ -108,7 +141,7 @@
               </div>
             </div>
           </div>
-          <div v-else class="box-2-button">
+          <div v-else class="insight-button">
             <button class="insight-button-green" @click="visible(entry.id)">
               <div :id=entry.id-1000 style="display:inline"><img class="arrow" src="../assets/arrow-down.png" ></div>
               <div :id=entry.id-2000 style="display:none"><img class="arrow" src="../assets/arrow-up.png" ></div>
@@ -236,47 +269,66 @@ legend {
 .logo{
   margin-bottom: 15px;
 }
-.box-1{
-  display: flex;
-  flex-direction: column;
-  flex-wrap: wrap;
+
+/*Legend*/
+  .legend-frame {
+    display: flex;
+    flex-direction: column;
+    flex-wrap: wrap;
+    border: 1px solid black;
+    padding: 10px;
+    margin-bottom: 20px;
+    box-shadow: 3px 3px 3px silver;
+  }
+
+  legend {
+    margin-left: 5px;
+  }
+
+ .legend-insight {
+    display: flex;
+    justify-content: space-between;
+    padding-top: 5px;
+    padding-bottom: 5px;
+ }
+
+  .legend-insight-name {
+    width: 80%;
+    height: 30px;
+    padding: 8px;
+    text-align: left;
+    background-color:  rgb(232, 232, 232);
+    box-shadow: 3px 3px 3px silver;
+    border-radius: 5px 0px 0px 5px;
+    border: 1px solid black;
+    border-right-style: none;
+  }
+
+  .legend-insight-button {
+    width: 20%;
+    padding: 8px;
+    background-color: rgb(232, 232, 232);
+    box-shadow: 3px 3px 3px silver;
+    border-radius: 0px 5px 5px 0px;
+    border: 1px solid black;
+    border-left-style: none;
+  }
+
+  .legend-toggleBox {
+  text-align: center;
+  padding: 8px;
+  margin-top: 30px;
+  margin-left: -382%;
+  margin-right: -9px;
+  margin-bottom: -8px;
+  border-radius: 0px 0px 5px 5px;
+  background-color:rgb(232, 232, 232);
+  box-shadow: 3px 3px 3px silver;
   border: 1px solid black;
-  padding: 10px;
-  margin-bottom: 20px;
-}
+  border-top-style: none;
+} 
 
-legend {
-  margin-left: 5px;
-}
-
- .box-1 .box-1-content{
-   display: flex;
-   padding-top: 20px;
-   justify-content: space-between;
-   margin: 3px;
- }
-
- .box-1 .colorboxgreen {
-   box-sizing: border-box;
-   background: green;
-   width: 30px;
-   height: 30px;
- }
-
- .box-1 .colorboxyellow {
-   box-sizing: border-box;
-   background: yellow;
-   width: 30px;
-   height: 30px;
- }
-
- .box-1 .colorboxred {
-   box-sizing: border-box;
-   background: red;
-   width: 30px;
-   height: 30px;
- }
-
+/*Insight List*/
 .box-2{
   display: flex;
   justify-content: space-between;
@@ -286,7 +338,7 @@ legend {
   padding-bottom: 5px;
 }
 
-  .box-2-name {
+  .insight-name {
     width: 80%;
     height: 30px;
     padding: 8px;
@@ -296,7 +348,7 @@ legend {
     border-radius: 5px 0px 0px 5px;
   }
 
-  .box-2-button {
+  .insight-button {
     width: 20%;
     padding: 8px;
     background-color: white;
