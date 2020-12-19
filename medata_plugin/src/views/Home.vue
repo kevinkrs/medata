@@ -53,7 +53,7 @@
           
           <!--TODO insigth_upvores is not the right variable for comparision
           entry.answer.length == 0 -->
-          <div v-if=' entry.answer.length == 0'>
+          <div v-if='entry.answer.length == 0' class= "box-2-button">
             <!--With a click on the colored button the function visable is called and the id of the insight
             is passed. This ensures that the corresponding toggle box becomes visible.-->
             <button class="insight-button-red" @click="visible(entry.id)">
@@ -391,7 +391,6 @@ legend {
   margin-bottom: -8px;
   border-radius: 0px 0px 5px 5px;
   box-shadow: 3px 3px 3px silver;
-<<<<<<< HEAD
 }
 .answerButton {
   height: 30px;
@@ -409,7 +408,5 @@ legend {
 .answerButton:hover {
   background-color: lightgray;
   border: 1px solid rgba(48, 48, 48, 0.94)
-=======
->>>>>>> 336b2d80012c80084048af5d44662f7f8430d630
 }
 </style>
