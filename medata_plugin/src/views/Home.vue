@@ -75,7 +75,7 @@
       <div v-else>
         <!--The div element "box 2" represents one insight listed under the legend and also consists of
         a short text and a colored box.-->
-        <div class="box-2" v-for="entry in metadata" :key="entry.id">
+        <div class="insight" v-for="entry in metadata" :key="entry.id">
           <div class="insight-name">
             {{entry.name}}
           </div>
@@ -96,7 +96,7 @@
             <div :id=entry.id style="display:none">
               <!--The div elements toggle-box-red/yellow/green define the frame of the three different
               toggle boxes-->
-              <div class="toggle-box">
+              <div class="insight-toggleBox">
                 <p>Please enter information:</p>
                   <!--TODO: implement button styles in CSS file-->
                 <input placeholder="your relevant data"><br>
@@ -110,7 +110,7 @@
               <div :id=entry.id-2000 style="display:none"><img class="arrow" src="../assets/arrow-up.png" ></div>
             </button>
             <div :id=entry.id style="display:none">
-              <div class="toggle-box">
+              <div class="insight-toggleBox">
                 <div class="answers">
                   <p>Please select <br> the correct Answer</p>
                   <div class="row">
@@ -147,7 +147,7 @@
               <div :id=entry.id-2000 style="display:none"><img class="arrow" src="../assets/arrow-up.png" ></div>
             </button>
             <div :id=entry.id style="display:none">
-              <div class="toggle-box">
+              <div class="insight-toggleBox">
                 <!--If function, for checking if the answer has highest upvotes-->
                 <p>{{entry.name}}: <br></p>
               <p>
@@ -161,17 +161,52 @@
           </div>
         </div>
 
-        <div class="box-3">
-        <a href="https://dl.acm.org/"><img src="@/assets/direct-download.png" class="downloadPNG"> download insights</a>
-        </div>
-        <div class="box-4">
-          <p> Ad relevant parameters </p>
-          <input type="text" v-model="userInput" class="inputfield"/>
-          <p> {{userInput}} </p>
-        </div>
-        <div class="submit">
-          <input type="button" value="Submit" class="submit-button">
-        </div>
+        <div><br><br></div>
+
+
+        <fieldset class="legend-frame">
+          <legend>More functions</legend>
+          <!--The three div elements "box-1-content" represent the the three elements inside the legend.
+          Each element consists of a short text and a colored box-->
+          <div class="legend-insight">
+            <div class="legend-insight-name">
+              download insights
+            </div>
+            <div class="legend-insight-button">
+              <button class="function-button" @click="visible(-4)">
+                <div id=-1004 style="display:inline"><img class="arrow" src="../assets/direct-download.png" ></div>
+                <div id=-2004 style="display:none"><img class="arrow" src="../assets/arrow-up.png" ></div>      
+              </button>
+              <div id=-4 style="display:none">
+                <div class="legend-toggleBox">
+                  <a href="https://dl.acm.org/">all insights<img src="../assets/direct-download.png" class="downloadPNG"></a> <br>
+                  <a href="https://dl.acm.org/">only confirmed insights<img src="../assets/direct-download.png" class="downloadPNG"></a>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="legend-insight">
+            <div class="legend-insight-name">
+              add relevant insight
+            </div>
+            <div class="legend-insight-button">
+              <button class="function-button" @click="visible(-5)">
+                <div id=-1005 style="display:inline"><img class="arrow" src="../assets/add.png" ></div>
+                <div id=-2005 style="display:none"><img class="arrow" src="../assets/arrow-up.png" ></div>      
+              </button>
+              <div id=-5 style="display:none">
+                <div class="legend-toggleBox">
+                  <input type="text" v-model="userInput" class="function-inputfield"/>
+                  <p> {{userInput}} </p>
+                 <div class="submit">
+                    <input type="button" value="Submit" class="submit-button">
+                 </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </fieldset>
+
       </div>
     </div> 
 </div>
@@ -237,7 +272,7 @@ export default {
 .extension {
   box-sizing: border-box;
   width: 300px;
-  padding-bottom: 70px;
+  padding-bottom: 10px;
   background-color: rgb(232, 232, 232);
   font-family: Arial, Helvetica, sans-serif;
   font-size: 15px;
@@ -329,14 +364,14 @@ legend {
 } 
 
 /*Insight List*/
-.box-2{
-  display: flex;
-  justify-content: space-between;
-  padding-left: 20px;
-  padding-right: 20px;
-  padding-top: 5px;
-  padding-bottom: 5px;
-}
+  .insight {
+    display: flex;
+    justify-content: space-between;
+    padding-left: 20px;
+    padding-right: 20px;
+    padding-top: 5px;
+    padding-bottom: 5px;
+  }
 
   .insight-name {
     width: 80%;
@@ -363,6 +398,7 @@ legend {
    height: 30px;
    float: right;
    }
+
   .insight-button-yellow {
    border: none;
    background: yellow;
@@ -378,9 +414,37 @@ legend {
    float: right;
    font-weight: bold;
  }
+
   .insight-button:focus{
     width: 60px;
   }
+
+  .insight-toggleBox {
+    background-color: white;
+    text-align: center;
+    padding: 10px;
+    margin-top: 30px;
+    margin-left: -384%;
+    margin-right: -8px;
+    margin-bottom: -8px;
+    border-radius: 0px 0px 5px 5px;
+    box-shadow: 3px 3px 3px silver;
+  }
+
+/*More Fonctions*/
+  .function-button {
+    border: none;
+    background: white;
+    width: 30px;
+    height: 30px;
+    float: right;
+  }
+
+  .function-inputfield {
+    width: 60%;
+    padding-top: 8px;
+  }
+
 
 .submit-insight {
   margin: 15px;
@@ -447,20 +511,10 @@ legend {
 }
 
 .downloadPNG {
-  margin-right: 10px;
+  width: 10%;
+  margin-bottom: -5px;
 }
 
-.toggle-box {
-  background-color: white;
-  text-align: center;
-  padding: 10px;
-  margin-top: 30px;
-  margin-left: -384%;
-  margin-right: -8px;
-  margin-bottom: -8px;
-  border-radius: 0px 0px 5px 5px;
-  box-shadow: 3px 3px 3px silver;
-}
 .answerButton {
   height: 30px;
   width: 50px;
