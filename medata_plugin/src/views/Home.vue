@@ -63,8 +63,8 @@
               <div class="toggle-box">
                 <p>Please enter information:</p>
                   <!--TODO: implement button styles in CSS file-->
-                <button style="width:80%">...</button><br>
-                <button style="background-color:green">submit</button>
+                <input placeholder="your relevant data"><br>
+                <button>submit</button>
               </div>
             </div>
           </div>
@@ -361,13 +361,14 @@ legend {
 
 .toggle-box {
   background-color: white;
-  display: flexbox;
-  border-radius: 5px;
-  justify-content: center;
-  align-items: center;
-  font-size: 15px;
+  text-align: center;
   padding: 10px;
-  margin-top: 50px;
+  margin-top: 30px;
+  margin-left: -384%;
+  margin-right: -8px;
+  margin-bottom: -8px;
+  border-radius: 0px 0px 5px 5px;
+  box-shadow: 3px 3px 3px silver;
 }
 .answerButton {
   height: 30px;

@@ -95,6 +95,7 @@ export default createStore({
     getCategory: state => {
                           // Name is not right -> asking backend how it's called
       return state.metadata.inCategories
+    },
   },
 
   modules: {
