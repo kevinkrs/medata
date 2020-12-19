@@ -67,7 +67,7 @@
                 <p>Please enter information:</p>
                   <!--TODO: implement button styles in CSS file-->
                 <input placeholder="your relevant data"><br>
-                <button>submit</button>
+                <button class="submit-insight">submit</button>
               </div>
             </div>
           </div>
@@ -121,8 +121,8 @@
                 {{entry.insight_upvotes}} users confirmed <br>
                 this information <br>
                 </p>
-                <button style="background-color:green">confirm</button>
-                <button style="background-color:red">report an error</button>
+                <button class="submit-insight">confirm</button>
+                <button class="report-insight" >report an error</button>
               </div>
             </div>
           </div>
@@ -341,6 +341,20 @@ legend {
 }
 
 .submit-insight:hover { 
+  color: black;
+  background: rgb(184, 184, 184);}
+
+.report-insight {
+  margin: 15px;
+  border: none;
+  color: rgb(235, 235, 235);
+  background: rgb(186, 15, 15);
+  border-radius: 5px;
+  width: 70px;
+  height: 30px;
+}
+
+.report-insight:hover { 
   color: black;
   background: rgb(184, 184, 184);}
 
