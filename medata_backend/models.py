@@ -12,6 +12,21 @@ db = SQLAlchemy()
 
 #insights with all supported categories and matching information incl. answers
 class Insights(db.Model):
+    """Insights Model
+
+    Args:
+        db (Model)
+
+    Explanation:
+        An Insight Object has its unique name
+        One Insight Object can have links to mulitple Categories as the same Information can occur in different papers among different categories
+        One Insight Object can have links to multiple Information Objects. 
+
+        the to_dict method is very powerful and returns a lot of Information
+
+    Returns:
+        to_dict(): returns Objects information as a JSON
+    """
     __tablename__ = 'insights'
     #constructor
     def __init__(self, **kwargs):
@@ -27,6 +42,11 @@ class Insights(db.Model):
     information = db.relationship('Information', backref = 'insights', lazy = True)
 
     def to_dict(self):
+        """Insights to dict
+
+        Returns:
+            dict: with all categories and all Information. The Information to_dict also contains all the answers. Very powerful method which returns quite a lot of data!
+        """
         return dict(id = self.id,
         name = self.name,
         categories=[category.to_dict() for category in self.categories],
@@ -38,6 +58,12 @@ class Insights(db.Model):
 
 #all supported categories for insights
 class Categories(db.Model):
+    """Category Model
+
+    Explanation:
+        To store the categories with their names and an unique id which is assigned by the db.
+
+    """
     __tablename__ = 'categories'
 
     insight_id = db.Column(db.Integer, db.ForeignKey('insights.id'))
@@ -46,6 +72,11 @@ class Categories(db.Model):
 
     
     def to_dict(self):
+        """Category name to a dict
+
+        Returns:
+            dict: name of the category as a string
+        """
         return dict(category_name = self.name)
 
     def __repr__(self):
@@ -53,6 +84,16 @@ class Categories(db.Model):
 
 #information representations for insights 
 class Information(db.Model):
+    """Information to link the Insight to the paperId
+
+    Explanation:
+        Information_id is assigned by the db
+        insight_id is determined by a foreign key from the Insight db
+        insight_name is doubled but necessary. Otherwise we run into problems as two foreign keys are used
+        paper_id is the link to the paper stored as a String
+        insight_up/downvotes is selfexplanatory
+        timestamp is not used yet
+    """
     __tablename__ = 'information'
 
     information_id = db.Column(db.Integer, primary_key=True)
@@ -69,6 +110,13 @@ class Information(db.Model):
     answers = db.relationship('Answers', order_by = 'desc(Answers.answer_score)', backref = 'information', lazy = True)
 
     def to_dict(self):
+        """returns a dict with the insights votes and also the corresponding answers
+
+        Answers are limited by limit_answers()
+
+        Returns:
+            dict:as seen below
+        """
         return dict(id = self.insight_id,
         name = self.insight_name, 
         paper_id = self.paper_id,
@@ -78,14 +126,29 @@ class Information(db.Model):
         )
 
     def limit_answers(self):
-        four_answers = Answers.query.filter(Answers.information_id==self.information_id).order_by(Answers.answer_score.desc()).limit(4).all()
-        return [answer.to_dict() for answer in four_answers]
+        """limit the returned answers to answer_limit
+
+        Returns:
+            list: of answer.to_dict() ranked by descending answer score
+        """
+        answer_limit = 4
+        limited_answers = Answers.query.filter(Answers.information_id==self.information_id).order_by(Answers.answer_score.desc()).limit(answer_limit).all()
+        return [answer.to_dict() for answer in limited_answers]
 
     def __repr__(self):
         return f'insight_id: {self.insight_id}, paper_id: {self.paper_id}'
 
 #answer representations for information
 class Answers(db.Model):
+    """Model to store Answers
+
+    Explanation:
+        answer_id is given by the db
+        information_id is the information this answer is linked to
+        answer is the actual Information to the insight asked for in the paper. Stored as a string
+        answer_up/downvotes selfexplanatory, stored as ints
+        answer_score makes it easier to rank the answers
+    """
     __tablename__ = 'answers'
 
     answer_id = db.Column(db.Integer, primary_key=True)
@@ -96,6 +159,11 @@ class Answers(db.Model):
     answer_score = db.Column(db.Integer, default = 0)
 
     def to_dict(self):
+        """Answer as a dict
+
+        Returns:
+            dict: all information stored in this object
+        """
         return dict(
         answer = self.answer,
         answer_upvotes = self.answer_upvotes,

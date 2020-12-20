@@ -80,7 +80,7 @@ def get_specific():
 def add_insight():
     """Add an insight to a specific category
 
-    Takes:
+    Args:
         json: 
             { 
             "insight" : String with the name of the Insight
@@ -127,7 +127,7 @@ def add_insight():
 def add_answer():
     """Add a new answer to an existing Information  
 
-    Takes:
+    Args:
         json: 
             { 
             "paper_id" : String with the paper_id which is in our case the completet link to the paper
@@ -176,7 +176,7 @@ def add_answer():
 def rate_answer():
     """Rate an already given answer
 
-      Takes:
+      Args:
         json: 
             { 
             "insight" : String with the name of the Insight
@@ -224,7 +224,7 @@ def rate_answer():
 def rate_relevance_insight():
     """Rate the relevance of an already given Insight for a specific paper
 
-      Takes:
+      Args:
         json: 
             { 
             "insight" : String with the name of the Insight
