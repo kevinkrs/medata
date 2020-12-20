@@ -1,17 +1,14 @@
 '''
 Database Models
-
 '''
 
-
-
+from enum import unique
 
 from datetime import datetime
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy.orm import backref
 
 db = SQLAlchemy()
-
 
 #insights with all supported categories and matching information incl. answers
 class Insights(db.Model):
@@ -39,8 +36,6 @@ class Insights(db.Model):
     def __repr__(self):
         return f'id: {self.id}, name: {self.name}'
 
-
-
 #all supported categories for insights
 class Categories(db.Model):
     __tablename__ = 'categories'
@@ -55,7 +50,6 @@ class Categories(db.Model):
 
     def __repr__(self):
          return f'CategoryId: {self.category_id}, name: {self.name}'
-
 
 #information representations for insights 
 class Information(db.Model):
