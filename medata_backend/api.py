@@ -148,7 +148,7 @@ def add_answer():
 
     try:
         in_anwer.strip()
-    except Exception e:
+    except Exception as e:
         print(f"{e} - given answer is not a String object!")
 
 
@@ -181,7 +181,7 @@ def rate_answer():
             { 
             "insight" : String with the name of the Insight
             "paper_id" : String with the paper_id which is in our case the completet link to the paper
-            "upvote" : Boolean if the answer was upvoted(= True) or downvoted (= False)
+            "upvote" : Boolean if the answer was upvoted(= true) or downvoted (= false)
             "answer" : String with the Answer
             }
 
@@ -229,7 +229,7 @@ def rate_relevance_insight():
             { 
             "insight" : String with the name of the Insight
             "paper_id" : String with the paper_id which is in our case the completet link to the paper
-            "upvote" : Boolean if the insight was upvoted(= True) or downvoted (= False)
+            "upvote" : Boolean if the insight was upvoted(= true) or downvoted (= false)
             }
 
 
