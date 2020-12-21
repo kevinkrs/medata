@@ -71,11 +71,11 @@ def get_specific():
         response_object.append(x.to_dict())
 
     if (Information.query.filter(or_(Information.insight_id==int(x.id) for x in matching_insight)).filter(Information.paper_id==paper_id).count()==0):
-        response_object = []
-        response_object.append(relevant_categories)
+        #response_object = []
+        #response_object.append(relevant_categories)
         return jsonify([])
     else:
-        response_object.append(relevant_categories)
+        #response_object.append(relevant_categories)
         return jsonify(response_object)
 
 
