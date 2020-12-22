@@ -48,8 +48,8 @@ def get_specific():
     #print(relevant_categories_scraper)
 
     #hardcoded for now 
-    relevant_categories = ['laboratory experiments']
-    paper_id = "50"
+    relevant_categories = ['laboratory experiments', 'supervised learning by classification']
+    paper_id = "55"
     #for testing conditionals
     #relevant_categories = ['cats']
     #paper_id = "545654645"
@@ -66,6 +66,12 @@ def get_specific():
     db.session.commit()
 
     #filtered information 
+    abc = Information.query.all()
+    #for a in abc:
+    #    print(a.answers[0].answer_score)
+
+    #filtered_information_exists = Information.query(Information.query.filter_by(Information.answers[0].answer_score).exists()).filter(or_(Information.insight_id==int(x.id) for x in matching_insight)).filter(Information.paper_id==paper_id).all()
+    #filtered_information_not_exists = Information.query(Information.query.filter_by(Information.answers[0].answer_score).not_(exists())).filter(or_(Information.insight_id==int(x.id) for x in matching_insight)).filter(Information.paper_id==paper_id).all()
     #filtered_information_all = Information.query.filter(or_(Information.insight_id==int(x.id) for x in matching_insight)).filter(Information.paper_id==paper_id).order_by(Information.answers[0].answer_score.desc()).all()
     filtered_information_all = Information.query.filter(or_(Information.insight_id==int(x.id) for x in matching_insight)).filter(Information.paper_id==paper_id).all()
     for x in filtered_information_all:
