@@ -66,6 +66,7 @@ def get_specific():
     db.session.commit()
 
     #filtered information 
+    #filtered_information_all = Information.query.filter(or_(Information.insight_id==int(x.id) for x in matching_insight)).filter(Information.paper_id==paper_id).order_by(Information.answers[0].answer_score.desc()).all()
     filtered_information_all = Information.query.filter(or_(Information.insight_id==int(x.id) for x in matching_insight)).filter(Information.paper_id==paper_id).all()
     for x in filtered_information_all:
         response_object.append(x.to_dict())
