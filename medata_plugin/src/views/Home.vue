@@ -92,24 +92,45 @@
             <div :id=entry.id-1000 style="display:inline"><img class="img-button" src="../assets/arrow-down.png" ></div>
             <div :id=entry.id-2000 style="display:none"><img class="img-button" src="../assets/arrow-up.png" ></div>      
           </button>
+
+            <div :id=entry.id+1000 style="display:none">
+              <div class="insight-toggleBox">
+                <button class="error-button" @click="visible2(entry.id+1000)">back</button>
+                <button class="error-button-2">Incorrect spelling/duplication</button> <br> 
+                <button class="error-button-2">Not needed for this paper</button>
+              </div>
+            </div> 
+
           <div :id=entry.id style="display:none">
             <!--The div elements toggle-box-red/yellow/green define the frame of the three different
             toggle boxes-->
             <div class="insight-toggleBox">
+              <button class="error-button" @click="visible2(entry.id+1000)">report an error</button>
               <p>Please enter information:</p>
                 <!--TODO: implement button styles in CSS file-->
               <input placeholder="your relevant data"><br>
               <button class="submit-button">submit</button>
             </div>
           </div>
+
         </div>
         <div div v-else-if="entry.answer[0].answer_score < 5" class="insight-button">
           <button class="insight-button-yellow" @click="visible(entry.id)">
             <div :id=entry.id-1000 style="display:inline"><img class="img-button" src="../assets/arrow-down.png" ></div>
             <div :id=entry.id-2000 style="display:none"><img class="img-button" src="../assets/arrow-up.png" ></div>
           </button>
+
+            <div :id=entry.id+1000 style="display:none">
+              <div class="insight-toggleBox">
+                <button class="error-button" @click="visible2(entry.id+1000)">back</button>
+                <button class="error-button-2">Incorrect spelling/duplication</button> <br> 
+                <button class="error-button-2">Not needed for this paper</button>
+              </div>
+            </div> 
+
           <div :id=entry.id style="display:none">
             <div class="insight-toggleBox">
+            <button class="error-button" @click="visible2(entry.id+1000)">report an error</button>
               <div class="insight-answers">
                 <p>Please select <br> the correct Answer</p>
                 <div class="row">
@@ -145,8 +166,18 @@
             <div :id=entry.id-1000 style="display:inline"><img class="img-button" src="../assets/arrow-down.png" ></div>
             <div :id=entry.id-2000 style="display:none"><img class="img-button" src="../assets/arrow-up.png" ></div>
           </button>
+
+            <div :id=entry.id+1000 style="display:none">
+              <div class="insight-toggleBox">
+                <button class="error-button" @click="visible2(entry.id+1000)">back</button>
+                <button class="error-button-2">Incorrect spelling/duplication</button> <br> 
+                <button class="error-button-2">Not needed for this paper</button>
+              </div>
+            </div> 
+
           <div :id=entry.id style="display:none">
             <div class="insight-toggleBox">
+            <button class="error-button" @click="visible2(entry.id+1000)">report an error</button>
               <!--If function, for checking if the answer has highest upvotes-->
               <p>{{entry.name}}: <br></p>
             <p>
@@ -235,12 +266,24 @@ export default {
         document.getElementById(divId).style.display = 'inline';
         document.getElementById(divId-1000).style.display = 'none';
         document.getElementById(divId-2000).style.display = 'inline';
+        document.getElementById(divId+1000).style.display = 'none';
       } else {
         document.getElementById(divId).style.display = 'none';
         document.getElementById(divId-1000).style.display = 'inline';
         document.getElementById(divId-2000).style.display = 'none';
       }
     },
+
+    visible2: function (divId) {
+      if (document.getElementById(divId).style.display === 'none') {
+        document.getElementById(divId).style.display = 'inline';
+        document.getElementById(divId-1000).style.display = 'none';
+      } else {
+        document.getElementById(divId).style.display = 'none';
+        document.getElementById(divId-1000).style.display = 'inline';
+      }
+    },
+
     checkURL() {
       alert(this.query)
     },
@@ -490,6 +533,29 @@ export default {
   .img-button {
     width: 90%;
     margin-top: 22%;
+  }
+
+  .error-button {
+    float: left;
+    font-size: 50%;
+    width: 35%;
+    border: 1px solid rgba(48, 48, 48, 0.94);
+    border-radius: 2px;
+    margin-bottom: 10px;
+    margin-top: -10px;
+  }
+
+  .error-button:hover { 
+    color: black;
+    background: rgb(184, 184, 184);
+  }
+  
+  .error-button-2 {
+    width: 90%;
+    border: 1px solid rgba(48, 48, 48, 0.94);
+    background-color: red;
+    border-radius: 5px;
+    margin-bottom: 10px;
   }
 
 .noData{
