@@ -1,5 +1,5 @@
 from flask import Blueprint, jsonify, request
-from sqlalchemy import or_, exists, and_
+from sqlalchemy import or_, exists, and_, not_
 from datetime import datetime
 from models import db, Insights, Information, Answers, Categories
 
@@ -40,6 +40,7 @@ def get_specific():
     Returns:
         [json]: [if no insights yet an empty string is returned, otherwise a json object with all relevant Insights is returned]
     """
+    response_object_length = 7
     response_object = []
     #fetch data from request
     url = request.get_json().get('url')
@@ -49,7 +50,7 @@ def get_specific():
 
     #hardcoded for now 
     relevant_categories = ['laboratory experiments', 'supervised learning by classification', 'category3']
-    paper_id = "55"
+    paper_id = "50"
     #for testing conditionals
     #relevant_categories = ['cats']
     #paper_id = "545654645"
@@ -66,9 +67,16 @@ def get_specific():
     db.session.commit()
 
     #filtered information, ordered by answer_score 
-    filtered_information_all = Information.query.join(Information.answers).filter(or_(Information.insight_id==int(x.id) for x in matching_insight)).filter(Information.paper_id==paper_id).order_by(Answers.answer_score.desc()).all()
-    for x in filtered_information_all:
+    filtered_information_answers = Information.query.join(Information.answers).filter(or_(Information.insight_id==int(x.id) for x in matching_insight)).filter(Information.paper_id==paper_id).order_by(Answers.answer_score.desc()).all()
+    response_object_length = response_object_length - len(filtered_information_answers)
+    
+    filtered_information_without_answers = Information.query.filter(or_(Information.insight_id==int(x.id) for x in matching_insight)).filter(Information.paper_id==paper_id).order_by(Information.insight_upvotes-Information.insight_downvotes).limit(response_object_length).all()
+    for x in filtered_information_answers:
         response_object.append(x.to_dict())
+
+    for x in filtered_information_without_answers:
+        if (x.answers == []):
+            response_object.append(x.to_dict())
 
     if (Information.query.filter(or_(Information.insight_id==int(x.id) for x in matching_insight)).filter(Information.paper_id==paper_id).count()==0):
         #response_object = []
