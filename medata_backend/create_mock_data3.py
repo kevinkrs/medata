@@ -1,9 +1,12 @@
-def create_mock_dataa():
+from models import db, Insights, Information, Answers, Categories
+import random
+
+def create_mock_data():
     insight_names = ["number_inputs", "recall", "number_outputs", "accuracy", "f2 Score", "color", 
     "height", "gender", "foo", "bar", "moin", "Bode", "Krauss", "Heydemann", "Effenberger", "K-Town", "IISM"]
     b = len(insight_names)
     categories_names = ["laboratory experiments", "supervised learning by classification", "category3"]
-    db.create_all()
+    #db.create_all()
     
     for x in range(0, b):
         categories_names = ["laboratory experiments", "supervised learning by classification", "category3"]
@@ -14,8 +17,8 @@ def create_mock_dataa():
         c2=Categories(insight_id=x, name = categories_names.pop())
 
 
-        inf =Information(information_id = x, insight_id=x, insight_name = insight_names[x], paper_id=f'{random.randint(50,60)}', insight_upvotes={random.randint(1,14)})
-        inf100 =Information(information_id = x+100, insight_id=x, insight_name = insight_names[x], paper_id=f'{random.randint(60,70)}', insight_upvotes={random.randint(1,14)})
+        inf =Information(information_id = x, insight_id=x, insight_name = insight_names[x], paper_id=f'{random.randint(50,60)}', insight_upvotes=random.randint(1,14))
+        inf100 =Information(information_id = x+100, insight_id=x, insight_name = insight_names[x], paper_id=f'{random.randint(60,70)}', insight_upvotes=random.randint(1,14))
         score1 = random.randint(1,4)
         score2 = random.randint(1,4)
         score3 = random.randint(1,4)
@@ -41,5 +44,5 @@ def create_mock_dataa():
         db.session.add(ans4)
         db.session.add(ans5)
         db.session.add(ans6)
+        db.session.commit()
     
-    db.session.commit()

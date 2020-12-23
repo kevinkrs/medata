@@ -6,7 +6,7 @@ from models import db, Insights, Information, Answers, Categories
 
 api = Blueprint('api', __name__)
 
- 
+
 
 
 @api.route('/ping', methods=['GET'])
