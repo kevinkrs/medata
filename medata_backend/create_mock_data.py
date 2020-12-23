@@ -6,7 +6,7 @@ import random
 def create_mock_dataa():
     insight_names = ["number_inputs", "recall", "number_outputs", "accuracy", "f2 Score", "color", 
     "height", "gender", "foo", "bar", "moin", "Bode", "Krauss", "Heydemann", "Effenberger", "K-Town", "IISM"]
-    b =len(insight_names)
+    b = len(insight_names)
     categories_names = ["laboratory experiments", "supervised learning by classification", "category3"]
     print("db.create_all()")
     
