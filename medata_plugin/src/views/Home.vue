@@ -430,8 +430,11 @@ export default {
     box-shadow: 3px 3px 3px silver;
   }
 
+  /*
   .insight-answers{
+    
   }
+  */
 
 /* -button | design for buttons*/
   .submit-button {
