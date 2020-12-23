@@ -6,7 +6,7 @@ from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy import or_
 from datetime import datetime
 from sqlalchemy.orm import backref
-#import acm_scraper
+import acm_scraper
 
 
 #configuration
