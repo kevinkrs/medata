@@ -134,7 +134,7 @@
                <div class="row">
                     <div v-for="answer in entry.answer" :key ="answer">
                       <!--How can i connect v-model directly -->
-                      <button type="button"  class="answerButton" @click="saveAnswerSelection(answer.answer), sendUpvote()">
+                      <button type="button"  class="answer-button" @click="saveAnswerSelection(answer.answer), sendUpvote()">
                         {{answer.answer}}
                       </button>
                     </div>
@@ -282,13 +282,7 @@ export default {
         document.getElementById(divId-1000).style.display = 'inline';
       }
     },
-
-   checkURL() {
-      alert(this.query)
-    },
-    check() {
-     
-    },
+    
     saveInName(name) {
       this.$store.dispatch('fetchInName', name)
     },
