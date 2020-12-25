@@ -282,7 +282,7 @@ export default {
         document.getElementById(divId-1000).style.display = 'inline';
       }
     },
-    
+    // All the following methods are merely for saving data as state objects
     saveInName(name) {
       this.$store.dispatch('fetchInName', name)
     },
@@ -293,18 +293,21 @@ export default {
       this.$store.dispatch('fetchUserInput', this.userInput)
     },
 
-    // Methods for sending to backend
+    // This methods dispatch functions that are sending given user interaction to the backend 
     sendUserAnswer() {
+      //This method sends the answer (yellow-status, red-status) the user has written into the input field
       this.$store.dispatch('sendAnswer')
       alert('Thanks for submitting!')
       this.userInput = ''
     },
     sendUpvote() {
+      // This method sends the answer (yellow-status, green-status) the user has selected as the right one, or in the green-status case just confirming it as true once more
       this.$store.dispatch("sendRateAnswer")
       alert('Thanks vor submitting!')
     }
   },
   // mapstate is a Vuex component (using computed) summarizing the command of this.$store.state.metadata
+  // we can easily load all our state objects inside our Home-Component and access it by calling this."propertyname"
   computed: {
     ...mapState([
         'metadata', 
@@ -315,12 +318,6 @@ export default {
 
   }
 
-  // This function starts the method "loadMetadata" belonging to "action" inside the store file
-  // loadMetadata fetches the data from the api folder, which receives metadata from the backend
-  // after metadata is reveived it is passed to the "mutation" component and after that to the "state" to save it
-  /*beforeMount () {
-    this.$store.dispatch('loadMetadata')
-  }*/
 }
 
 </script>
