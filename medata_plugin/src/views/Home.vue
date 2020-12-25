@@ -1,4 +1,4 @@
-/* eslint-disable indent */
+
 <template>
 <div class = "extension">
   <div class="main-column">
@@ -106,13 +106,13 @@
               <button class="error-button" @click="visible2(entry.id+1000)">report an error</button>
               <p>Please enter information:</p>
                 <!--TODO: implement button styles in CSS file-->
-              <input placeholder="your relevant data"><br>
+              <input placeholder="your relevant data" v-model='userInput'><br>
               <button class="submit-insight" @click="saveUserInput(), sendUserAnswer()">Submit</button>
             </div>
           </div>
 
         </div>
-        <div div v-else-if="entry.answer[0].answer_score < 5" class="insight-button">
+        <div div v-else-if="entry.answer[0].answer_score < 3" class="insight-button">
           <button class="insight-button-yellow" @click="visible(entry.id), saveInName(entry.name)">
             <div :id=entry.id-1000 style="display:inline"><img class="img-button" src="../assets/arrow-down.png" ></div>
             <div :id=entry.id-2000 style="display:none"><img class="img-button" src="../assets/arrow-up.png" ></div>
@@ -178,10 +178,9 @@
             <button class="error-button" @click="visible2(entry.id+1000)">report an error</button>
               <!--If function, for checking if the answer has highest upvotes-->
                 <p class="displayAnswer">{{entry.answer[0].answer}} <br></p>
-            <p>
-              {{entry.name[0].answer_upvotes}} users confirmed <br>
-              this information <br>
-              </p>
+                <p> {{entry.answer[0].answer_upvotes}} users confirmed <br>
+                    this information <br>
+                </p>
               <button class="submit-button" @click='sendUpvote()'>confirm</button>
               <button class="report-button" >report an error</button>
             </div>

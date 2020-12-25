@@ -150,7 +150,7 @@ def add_answer():
     in_answer = post_data.get('answer')
 
     try:
-        in_anwer.strip()
+        in_answer.strip()
     except Exception as e:
         print(f"{e} - given answer is not a String object!")
 
