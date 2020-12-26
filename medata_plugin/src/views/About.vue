@@ -3,13 +3,8 @@
   <img src="../assets/medata_black.png" width="200">
   <div class="about">
       <h1>Welcome to Medata!</h1>
-      <div v-if= "!valid">
-        <button class ="mainButton" @click= 'checkURL()'>Check</button>
-      </div>
-      <div v-else>
-        <router-link to = "/home"> 
-        <button class ="mainButton" @click= 'startLoading()'>Load Data</button>
-        </router-link>
+      <div>
+        <button class ="mainButton" @click= 'checkURL()'>Load Data</button>
       </div>
     </div>
   </div>
@@ -22,8 +17,7 @@ export default {
   // TODO URL to backend
   data()  {
     return{
-        valid: false,
-        substr: 'https://dl.acm.org/'
+        substr: 'https://dl.acm.org/',
     }
   },
   computed: mapState({
@@ -41,22 +35,18 @@ export default {
           function (tabs){
           var querySub = tabs[0].url.substring(0, 19)
           if (querySub == vm.substr) { 
-             // alert('Valid URL found')
+              // alert('Valid URL found')
               // if URL is a dl.acm.org URl we save it to our state 
               vm.$store.dispatch('loadQuery', tabs[0].url)
-              vm.valid = true}
+              .then(vm.$store.dispatch('loadMetadata'))
+              // With router.push we can route to another url automatically
+              vm.$router.push({path : '/home'})
+          }
           else {
             alert("You're currently not on dl.acm.org")
           }
       })
     },
-    showURL (){
-      alert(this.query)
-    },
-    // After the URL got checked and saved we load the data from our database in order to provide the funcionalities on our main operation page
-    startLoading (){
-     this.$store.dispatch('loadMetadata')
-    }
   }
 }
 </script>
