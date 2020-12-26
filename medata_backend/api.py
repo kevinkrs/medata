@@ -1,7 +1,8 @@
-from flask import Blueprint, jsonify, request
+from flask import Blueprint, jsonify, request, send_file
 from sqlalchemy import or_, exists, and_, not_
 from datetime import datetime
 from models import db, Insights, Information, Answers, Categories
+import pandas as pd
 
 
 api = Blueprint('api', __name__)
@@ -69,7 +70,6 @@ def get_specific():
     #filtered information, ordered by answer_score 
     filtered_information_answers = Information.query.join(Information.answers).filter(or_(Information.insight_id==int(x.id) for x in matching_insight)).filter(Information.paper_id==paper_id).order_by(Answers.answer_score.desc()).all()
     response_object_length = response_object_length - len(filtered_information_answers)
-    
     filtered_information_without_answers = Information.query.filter(or_(Information.insight_id==int(x.id) for x in matching_insight)).filter(Information.paper_id==paper_id).order_by(Information.insight_upvotes-Information.insight_downvotes).limit(response_object_length).all()
     for x in filtered_information_answers:
         response_object.append(x.to_dict())
@@ -267,4 +267,24 @@ def rate_relevance_insight():
     db.session.commit()
     return jsonify(response_object)
 
-    
+
+
+@api.route('/download', methods = ["POST"])
+def download():
+    url = request.get_json().get('url')
+    inf = Information.query.join(Information.answers).filter(Information.paper_id==url).filter(Answers.answer_score > 1).order_by(Answers.answer_score.desc()).all()
+    #catch aioor
+    data = [f"Title: {inf[0].title}", f"Author(s): {inf[0].authors}", f"Link to Profile: {inf[0].authors_profile_link}"]
+    data = [["Title: ", inf[0].title], ["Author(s): ", inf[0].authors], ["Link to Profile: ", inf[0].authors_profile_link]]
+
+    for i in inf:
+        data.append(["", ""])
+        data.append(["Insight: ", i.insight_name])
+        for a in i.answers:
+            data.append(["Answer: ", a.answer])
+            data.append(["Score: ", a.answer_upvotes])
+
+    df = pd.DataFrame(data, columns = ["", "data"])
+    print(df)
+    df.to_csv(r"medata_backend\exports\export_data.csv")
+    return send_file("exports/export_data.csv")
