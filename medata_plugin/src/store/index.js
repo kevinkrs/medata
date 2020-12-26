@@ -1,6 +1,6 @@
 import Vue from 'vue'
 import { createStore } from 'vuex'
-import { fetchMetadata, postInsight, postAnswer, postRateAnswer, postRateRelevanceInsight } from '@/api'
+import { fetchMetadata, postInsight, postAnswer, postRateAnswer, postRateRelevanceInsight, fetchDownload } from '@/api'
 
 export default createStore({
   state: {
@@ -9,6 +9,7 @@ export default createStore({
     currentIn: '', // Name is not neccessary 
     currentInID: '', // TODO
     currentCategory: '', // TODO
+    download: new Blob()
   },
   mutations: {
     // Saving the data from backend to the "metadata array"
@@ -23,6 +24,10 @@ export default createStore({
       // 
     setCurrentInName (state, payload){
       state.currentIn = payload.currentIn
+    },
+    setDownload (state, payload) {
+      //may have to use filesaver
+      state.download = new Blob([payload.download], { type: 'text/csv;charset=utf-8;' })
     },
     setcurrentInID (state, payload){
       state.currentIn = payload.currentIn
@@ -43,6 +48,11 @@ export default createStore({
       return fetchMetadata(this.state.query)
         .then((response) => commit('setMetadata', {metadata: response.data})) 
         .catch((error) => {console.error(error)}) 
+    },
+    loadDownload ({commit}) {
+      return fetchDownload(this.state.query)
+        .then((response) => commit('setDownload', {download: response.data}))
+        .catch((error) => {console.error(error)})
     },
     saveUserInput ({commit}, payload) {
   
