@@ -48,7 +48,8 @@ export function postInsight (inPaperId, inInsight, inCategories) {
 }
 
 export function fetchDownload (query) {
+  query = "50"
   return axios.post(`${'download'}`, {url: query}, {
     responseType: 'blob',
-})
+  })
 }
