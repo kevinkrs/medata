@@ -8,7 +8,6 @@ export default createStore({
     currentIn: '', // Name is not neccessary 
     currentInID: '', // TODO
     currentCategory: '', // TODO
-    download: new Blob(),
     currentIn: '', 
     currentAnswer: '', 
     currentCategory: '', 
@@ -29,10 +28,6 @@ export default createStore({
       // 
     setCurrentInName (state, payload){
       state.currentIn = payload.currentIn
-    },
-    setDownload (state, payload) {
-      //may have to use filesaver
-      state.download = new Blob([payload.download], { type: 'text/csv;charset=utf-8;' })
     },
     setcurrentInID (state, payload){
       state.currentIn = payload.currentIn
@@ -65,7 +60,14 @@ export default createStore({
     },
     loadDownload ({commit}) {
       return fetchDownload(this.state.query)
-        .then((response) => commit('setDownload', {download: response.data}))
+        .then((response) => {
+          var fileURL = window.URL.createObjectURL(new Blob([response.data]))
+          var fileLink = document.createElement('a')
+          fileLink.href = fileURL
+          fileLink.setAttribute('download', 'insights.csv')
+          document.body.appendChild(fileLink)
+          fileLink.click()
+        })
         .catch((error) => {console.error(error)})
     },
     saveUserInput ({commit}, payload) {

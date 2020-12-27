@@ -200,7 +200,7 @@
             download insights
           </div>
           <div class="grey-insight-button">
-            <button class="grey-button" @click="visible(-4)">
+            <button class="grey-button" @click="sendDownloadRequest()">
             <div id=-1004 style="display:inline"><img class="img-button" src="../assets/direct-download.png" ></div>
             <div id=-2004 style="display:none"><img class="img-button" src="../assets/arrow-up.png" ></div>      
             </button>
@@ -304,6 +304,9 @@ export default {
       // This method sends the answer (yellow-status, green-status) the user has selected as the right one, or in the green-status case just confirming it as true once more
       this.$store.dispatch("sendRateAnswer")
       alert('Thanks vor submitting!')
+    },
+    sendDownloadRequest() {
+      this.$store.dispatch("loadDownload")
     }
   },
   // mapstate is a Vuex component (using computed) summarizing the command of this.$store.state.metadata

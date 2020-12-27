@@ -269,9 +269,10 @@ def rate_relevance_insight():
 
 
 
-@api.route('/download', methods = ["POST"])
+@api.route('/download', methods = ["GET"])
 def download():
-    url = request.get_json().get('url')
+    #url = request.get_json().get('url')
+    url = "50"
     inf = Information.query.join(Information.answers).filter(Information.paper_id==url).filter(Answers.answer_score > 1).order_by(Answers.answer_score.desc()).all()
     #catch aioor
     data = [f"Title: {inf[0].title}", f"Author(s): {inf[0].authors}", f"Link to Profile: {inf[0].authors_profile_link}"]
