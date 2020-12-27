@@ -1,15 +1,19 @@
 import { createStore } from 'vuex'
-import { fetchMetadata, postInsight, postAnswer, postRateAnswer, postRateRelevanceInsight } from '@/api'
+import { fetchMetadata, postInsight, postAnswer, postRateAnswer, postRateRelevanceInsight, fetchDownload } from '@/api'
 
 export default createStore({
   state: {
     metadata: [],
     query: '', //query = paperID
-    currentIn: '', // Name is not neccessary
-    currentAnswer: '', 
+    currentIn: '', // Name is not neccessary 
+    currentInID: '', // TODO
     currentCategory: '', // TODO
-    currentBool: true,
+    currentIn: '', 
+    currentAnswer: '', 
+    currentCategory: '', 
+    answerUpvoteBool: true,
     currentUserInput: '',
+    insightVoteBool: null //This boolean is for up- or downvoting insights by the user
   },
   mutations: {
     // Saving the data from backend to the "metadata array"
@@ -25,15 +29,21 @@ export default createStore({
     setCurrentInName (state, payload){
       state.currentIn = payload.currentIn
     },
+    setcurrentInID (state, payload){
+      state.currentIn = payload.currentIn
+    },
     setCurrentAnswer (state, payload){
       state.currentAnswer = payload.currentAnswer
     },
-       // sets category from backend to local variable in state
     setCategory(state, payload) {
+      // TODO when category from backend is available 
       //  state.currentCategory = payload.currentCategory
       },
     setUserInput(state, payload) {
         state.currentUserInput = payload.currentUserInput
+    },
+    serInsightVoteBool (state, payload) {
+          // TODO
     }
   },
   actions: {
@@ -48,15 +58,34 @@ export default createStore({
         .then((response) => commit('setMetadata', {metadata: response.data})) 
         .catch((error) => {console.error(error)}) 
     },
-    // Saves user input for an answer or an insight
+    loadDownload ({commit}) {
+      return fetchDownload(this.state.query)
+        .then((response) => {
+          var fileURL = window.URL.createObjectURL(new Blob([response.data]))
+          var fileLink = document.createElement('a')
+          fileLink.href = fileURL
+          fileLink.setAttribute('download', 'insights.csv')
+          document.body.appendChild(fileLink)
+          fileLink.click()
+        })
+        .catch((error) => {console.error(error)})
+    },
+    saveUserInput ({commit}, payload) {
+  
+      commit('setUserInput', {userInput: payload})
+    },
+    // Saves user input for an answer or an insight (yellow and red-status)
+    // The difference is that the after commiting the input to the state property, we call slightly different methods "sendAnswer" or "sendInsight"
     fetchUserInput ({commit}, payload) {
       commit('setUserInput', {currentUserInput: payload})
     },
-    // Saves user answer (yellow answer fields)
+    // Saves user answer (green and yellow-status) that is choosen from the 4 answer posibilites in the Home-Component
+    // Not to be confused with the "userInput" that is explaint above 
+    // Afterwards "sendRateAnswer" is beeing called with an additional boolean parameter "currentBool"
     fetchUserAnswer ({commit}, payload) {
       commit('setCurrentAnswer', {currentAnswer: payload})
     },
-    // Saves current insight name
+    // Saves current insight name passed from Home-Component
     fetchInName ({commit}, payload) {
       commit('setCurrentInName', {currentIn: payload})
     },
@@ -68,29 +97,29 @@ export default createStore({
   */
 
 
-    // for user answer input -> yellow and red status 
-    sendAnswer () {   
-      //await dispatch('fetchUserInput') 
+    // TODO: Implement query as paperID when backend is ready
+    sendAnswer () {   // DONE
       return postAnswer('50', this.state.currentIn, this.state.currentUserInput)
         .then((response) => {console.log(response)})
         .catch((error) => {console.error(error)})
     },
     // User can rate answer by clicking on it -> green & yellow
-    sendRateAnswer () {
-      return postRateAnswer("50", this.state.currentIn, this.state.currentAnswer, this.state.currentBool)
+    sendRateAnswer () { // DONE
+      return postRateAnswer("50", this.state.currentIn, this.state.currentAnswer, this.state.answerUpvoteBool)
         .then((response) => {console.log(response)})
         .catch((error) => {console.error(error)})
     },
   
-    // User input for new insights -> Last div in frontend
-    sendInsight () {
+    sendInsight () { // TODO when currentyCategory from backend is available 
       return postInsight("50", this.state.userInput, this.state.currentCategory)
         .then((response) => {console.log(response)})
         .catch((error) => {console.error(error)})
     },
+
+
   // TODO LAST: When everything else works, we might implement this feature
     sendRateRelevanceInsight () {
-      return postRateRelevanceInsight("50", this.state.currentIn, this.state.currentBool)
+      return postRateRelevanceInsight("50", this.state.currentIn, this.state.insightVoteBool)
         .then((response) => {console.log(response)})
         .catch((error) => {console.error(error)})
     }

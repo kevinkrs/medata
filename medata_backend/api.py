@@ -285,6 +285,5 @@ def download():
             data.append(["Score: ", a.answer_upvotes])
 
     df = pd.DataFrame(data, columns = ["", "data"])
-    print(df)
     df.to_csv(r"medata_backend\exports\export_data.csv")
     return send_file("exports/export_data.csv")
