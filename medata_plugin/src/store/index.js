@@ -1,6 +1,5 @@
-import Vue from 'vue'
 import { createStore } from 'vuex'
-import { fetchMetadata, postInsight, postAnswer, postRateAnswer, postRateRelevanceInsight } from '@/api'
+import { fetchMetadata, postInsight, postAnswer, postRateAnswer, postRateRelevanceInsight, fetchDownload } from '@/api'
 
 export default createStore({
   state: {
@@ -9,6 +8,12 @@ export default createStore({
     currentIn: '', // Name is not neccessary 
     currentInID: '', // TODO
     currentCategory: '', // TODO
+    currentIn: '', 
+    currentAnswer: '', 
+    currentCategory: '', 
+    answerUpvoteBool: true,
+    currentUserInput: '',
+    insightVoteBool: null //This boolean is for up- or downvoting insights by the user
   },
   mutations: {
     // Saving the data from backend to the "metadata array"
@@ -16,7 +21,7 @@ export default createStore({
         state.metadata = payload.metadata
       },
       // This method saves url on acm that user is visiting while using the plugin. The url is submitted to the backend in order to provide the right data
-      setQuery (state, payload) {
+    setQuery (state, payload) {
         // ALWAYS use . operator saving data to the state
         state.query = payload.query
       },
@@ -27,78 +32,106 @@ export default createStore({
     setcurrentInID (state, payload){
       state.currentIn = payload.currentIn
     },
-       // sets category from backend to local variable in state
-      setCategory(state) {
-        state.currentCategory = this.getters.getCategory
-      }
+    setCurrentAnswer (state, payload){
+      state.currentAnswer = payload.currentAnswer
+    },
+    setCategory(state, payload) {
+      // TODO when category from backend is available 
+      //  state.currentCategory = payload.currentCategory
+      },
+    setUserInput(state, payload) {
+        state.currentUserInput = payload.currentUserInput
+    },
+    serInsightVoteBool (state, payload) {
+          // TODO
+    }
   },
   actions: {
-    // {commit} is called "argument destructuring". It's the same as context.commit 
-  loadQuery({commit}, payload){
-    // Important: You have to define what variable the payload should be added to! {query: payload}
-    // You can either do this in the $store call or inside the action
-    commit('setQuery', {query: payload})
-  },
-  // Loads methadata and submits acm URL from site user is visiting at the moment to check if data is available
-  loadMetadata ({commit}) {
-    return fetchMetadata(this.state.query)
-      .then((response) => commit('setMetadata', {metadata: response.data})) 
-      .catch((error) => {console.error(error)}) 
-  },
-  // for user answer input -> yellow and red status 
-  sendAnswer (inPaperId, inInsight, inAnswer) {
-    //contex?
-    let a = inPaperId
-    let b = inInsight
-    let c = inAnswer
-    
-    return postAnswer(a, b, c)
-      .then((response) => {console.log(response)})
-      .catch((error) => {console.error(error)})
-  },
-  // User can rate answer by clicking on it -> green & yellow
-  sendRateAnswer (inName, inAnswer, inUpvote) {
-    //contex?
-    let b = inName
-    let c = inAnswer
-    let d = inUpvote // boolean -> onClick: true 
-  
-    return postRateAnswer(this.state.query, b, c, d)
-      .then((response) => {console.log(response)})
-      .catch((error) => {console.error(error)})
-  },
-  // Not implemented as frontend element yet -> Feature for later 
-  sendRateRelevanceInsight ( inInsight, inUpvote) {
-    //contex?
-    
-    let b = inInsight
-    let c = inUpvote // boolean 
-    //e.g. hardcoded 4 now
-    
-    return postRateRelevanceInsight(this.state.query, b, c)
-      .then((response) => {console.log(response)})
-      .catch((error) => {console.error(error)})
-  },
-  // User input for new insights -> Last div in frontend
-  sendInsight (inName) {
-  
-    let a = inPaperId
-    let b = inName
-    let c = inCategories
-  
-    return postInsight(this.state.query, b, this.state.inCategorie)
-      .then((response) => {console.log(response)})
-      .catch((error) => {console.error(error)})
-  },
-},
-  getters: {
-    getCategory: state => {
-                          // Name is not right -> asking backend how it's called
-      return state.metadata.inCategories
+    loadQuery({commit}, payload){
+      // Important: You have to define what variable the payload should be added to! {query: payload}
+      // You can either do this in the $store call or inside the action
+      commit('setQuery', {query: payload})
     },
-  },
+    // Loads methadata and submits acm URL from site user is visiting at the moment to check if data is available
+    loadMetadata ({commit}) {
+      return fetchMetadata(this.state.query)
+        .then((response) => commit('setMetadata', {metadata: response.data})) 
+        .catch((error) => {console.error(error)}) 
+    },
+    loadDownload ({commit}) {
+      return fetchDownload(this.state.query)
+        .then((response) => {
+          var fileURL = window.URL.createObjectURL(new Blob([response.data]))
+          var fileLink = document.createElement('a')
+          fileLink.href = fileURL
+          fileLink.setAttribute('download', 'insights.csv')
+          document.body.appendChild(fileLink)
+          fileLink.click()
+        })
+        .catch((error) => {console.error(error)})
+    },
+    saveUserInput ({commit}, payload) {
+  
+      commit('setUserInput', {userInput: payload})
+    },
+    // Saves user input for an answer or an insight (yellow and red-status)
+    // The difference is that the after commiting the input to the state property, we call slightly different methods "sendAnswer" or "sendInsight"
+    fetchUserInput ({commit}, payload) {
+      commit('setUserInput', {currentUserInput: payload})
+    },
+    // Saves user answer (green and yellow-status) that is choosen from the 4 answer posibilites in the Home-Component
+    // Not to be confused with the "userInput" that is explaint above 
+    // Afterwards "sendRateAnswer" is beeing called with an additional boolean parameter "currentBool"
+    fetchUserAnswer ({commit}, payload) {
+      commit('setCurrentAnswer', {currentAnswer: payload})
+    },
+    // Saves current insight name passed from Home-Component
+    fetchInName ({commit}, payload) {
+      commit('setCurrentInName', {currentIn: payload})
+    },
 
-  modules: {
-  },
-})
+    /*async fetchCurrentCategory ({commit}, payload) {
+      await disptach('loadMetadata')
+      commit('setCurrentCategory', {currentCategory: payload})
+    },
+  */
 
+
+    // TODO: Implement query as paperID when backend is ready
+    sendAnswer () {   // DONE
+      return postAnswer('50', this.state.currentIn, this.state.currentUserInput)
+        .then((response) => {console.log(response)})
+        .catch((error) => {console.error(error)})
+    },
+    // User can rate answer by clicking on it -> green & yellow
+    sendRateAnswer () { // DONE
+      return postRateAnswer("50", this.state.currentIn, this.state.currentAnswer, this.state.answerUpvoteBool)
+        .then((response) => {console.log(response)})
+        .catch((error) => {console.error(error)})
+    },
+  
+    sendInsight () { // TODO when currentyCategory from backend is available 
+      return postInsight("50", this.state.userInput, this.state.currentCategory)
+        .then((response) => {console.log(response)})
+        .catch((error) => {console.error(error)})
+    },
+
+
+  // TODO LAST: When everything else works, we might implement this feature
+    sendRateRelevanceInsight () {
+      return postRateRelevanceInsight("50", this.state.currentIn, this.state.insightVoteBool)
+        .then((response) => {console.log(response)})
+        .catch((error) => {console.error(error)})
+    }
+  },
+    getters: {
+      getCategory() {
+       // return this.state.metadata.category
+      }
+    },
+  
+    modules: {
+      
+    },
+  })
+  
