@@ -1,5 +1,6 @@
 import { createStore } from 'vuex'
 import { fetchMetadata, postInsight, postAnswer, postRateAnswer, postRateRelevanceInsight, fetchDownload } from '@/api'
+import { createCommentVNode } from 'vue'
 
 export default createStore({
   state: {
@@ -13,6 +14,7 @@ export default createStore({
     currentCategory: '', 
     answerUpvoteBool: true,
     currentUserInput: '',
+    selectedError: '', // User can report an error and select on of three possibilites
     insightVoteBool: null //This boolean is for up- or downvoting insights by the user
   },
   mutations: {
@@ -42,7 +44,10 @@ export default createStore({
     setUserInput(state, payload) {
         state.currentUserInput = payload.currentUserInput
     },
-    serInsightVoteBool (state, payload) {
+    setSelectedError(state,payload) {
+        state.selectedError = payload
+    },
+    setInsightVoteBool (state, payload) {
           // TODO
     }
   },
@@ -58,6 +63,7 @@ export default createStore({
         .then((response) => commit('setMetadata', {metadata: response.data})) 
         .catch((error) => {console.error(error)}) 
     },
+    // Triggers function to get a csv file with the current insights and send it to the FE. User gets possibility to download data
     loadDownload ({commit}) {
       return fetchDownload(this.state.query)
         .then((response) => {
@@ -89,7 +95,12 @@ export default createStore({
     fetchInName ({commit}, payload) {
       commit('setCurrentInName', {currentIn: payload})
     },
-
+    // Saves user selected error type
+    fetchError ({commit}, payload) {
+      commit('setSelectedError', payload)
+    },
+    
+    // TODO
     /*async fetchCurrentCategory ({commit}, payload) {
       await disptach('loadMetadata')
       commit('setCurrentCategory', {currentCategory: payload})

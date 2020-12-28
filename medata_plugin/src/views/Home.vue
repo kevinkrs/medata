@@ -57,10 +57,6 @@
       </div>
     </fieldset>
 
-    <div>
-      <button @click="checkURL"> Check URL </button>
-    </div>
-    
     <!--If backend has no information to given category it's responding with an empty list. Here we check if the list is truly empty.
     If it is, we display first the first div class "noData". If not empty we display second div -->
     <div v-if='metadata.length == 0'>
@@ -94,8 +90,8 @@
             <div :id=entry.id+1000 style="display:none">
               <div class="insight-toggleBox">
                 <button class="error-button" @click="visible2(entry.id+1000)">back</button>
-                <button class="error-button-2">Incorrect spelling/duplication</button> <br> 
-                <button class="error-button-2">Not needed for this paper</button>
+                <button id ="error1" class="error-button-2" @click='saveSelectedError("spell_dub")'>Incorrect spelling/duplication</button> <br> 
+                <button id ="error2" class="error-button-2" @click='saveSelectedError("irrelevance")'>Not needed for this paper</button>
               </div>
             </div> 
 
@@ -121,8 +117,8 @@
             <div :id=entry.id+1000 style="display:none">
               <div class="insight-toggleBox">
                 <button class="error-button" @click="visible2(entry.id+1000)">back</button>
-                <button class="error-button-2">Incorrect spelling/duplication</button> <br> 
-                <button class="error-button-2">Not needed for this paper</button>
+                <button id ="error1" class="error-button-2" @click='saveSelectedError("spell_dub")'>Incorrect spelling/duplication</button> <br> 
+                <button id ="error2" class="error-button-2" @click='saveSelectedError("irrelevance")'>Not needed for this paper</button>
               </div>
             </div> 
 
@@ -134,7 +130,7 @@
                <div class="row">
                     <div v-for="answer in entry.answer" :key ="answer">
                       <!--How can i connect v-model directly -->
-                      <button type="button"  class="answer-button" @click="saveAnswerSelection(answer.answer), sendUpvote()">
+                      <button type="button"  class="answer-button" @click="saveAnswerSelection(answer.answer)">
                         {{answer.answer}}
                       </button>
                     </div>
@@ -168,8 +164,8 @@
             <div :id=entry.id+1000 style="display:none">
               <div class="insight-toggleBox">
                 <button class="error-button" @click="visible2(entry.id+1000)">back</button>
-                <button class="error-button-2">Incorrect spelling/duplication</button> <br> 
-                <button class="error-button-2">Not needed for this paper</button>
+                 <button id ="error1" class="error-button-2" @click='saveSelectedError("spell_dub")'>Incorrect spelling/duplication</button> <br> 
+                <button id ="error2" class="error-button-2" @click='saveSelectedError("irrelevance")'>Not needed for this paper</button>
               </div>
             </div> 
 
@@ -182,7 +178,9 @@
                     this information <br>
                 </p>
               <button class="submit-button" @click='sendUpvote()'>confirm</button>
-              <button class="report-button" >report an error</button>
+              <!--TODO: What do we want to report in particular? Text, an error id...?
+              Do we even need this error button? Because now we have the "report an error field at the top left corner?-->
+              <button id ="error3" class="report-button" @click='saveSelectedError("general")'>report an error</button>
             </div>
           </div>
         </div>
@@ -226,7 +224,7 @@
                 <input type="text" v-model="userInput" class="grey-add-inputfield"/>
                 <p> {{userInput}} </p>
                 <div class="submit-button2">
-                  <input type="button" value="submit" class="submit-button">
+                  <button type="button" class="submit-button" @click='saveUserAnswer(),sendUserInsight()'>Submit</button>
                 </div>
               </div>
             </div>
@@ -288,15 +286,27 @@ export default {
     },
     saveAnswerSelection(answer) {
       this.$store.dispatch('fetchUserAnswer', answer) 
+      this.$store.dispatch('sendRateAnswer')
+      alert('Thanks for submitting!')
+      this.userInput = ''
     },
+    // TODO: This method saves & sends user Input 
     saveUserInput() {
-      this.$store.dispatch('fetchUserInput', this.userInput)
+      if (this.userInput == ''){
+        alert('Please enter some data before submittin!')
+      }
+      else{
+         this.$store.dispatch('fetchUserInput', this.userInput)
+      }
     },
-
-    // This methods dispatch functions that are sending given user interaction to the backend 
-    sendUserAnswer() {
-      //This method sends the answer (yellow-status, red-status) the user has written into the input field
-      this.$store.dispatch('sendAnswer')
+    sendUserAnswer() {
+        this.$store.dispatch('sendAnswer')
+        alert('Thanks for submitting!')
+        this.userInput = ''
+    },
+    sendUserInsight() {
+      // Activate when category is finally saved to the state 
+     // this.store.dispatch('sendInsight')
       alert('Thanks for submitting!')
       this.userInput = ''
     },
@@ -307,7 +317,14 @@ export default {
     },
     sendDownloadRequest() {
       this.$store.dispatch("loadDownload")
-    }
+    },
+
+   // TODO
+    saveSelectedError(name){
+      this.$store.dispatch('saveError')
+      alert('Thanks for reporting an error')
+
+    },
   },
   // mapstate is a Vuex component (using computed) summarizing the command of this.$store.state.metadata
   // we can easily load all our state objects inside our Home-Component and access it by calling this."propertyname"
@@ -316,7 +333,8 @@ export default {
         'metadata', 
         'currentIn',
         'currentAnswer',
-        'currentUserInput'
+        'currentUserInput',
+        'selectedError'
     ]),
 
   }
