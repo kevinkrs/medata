@@ -248,8 +248,6 @@ export default {
     return {
     // Empty String for possible user input
       userInput: '',
-     // currentInName: '',
-     // selectedAnswer: '',
     }
   },
   methods: {
@@ -318,12 +316,10 @@ export default {
     sendDownloadRequest() {
       this.$store.dispatch("loadDownload")
     },
-
-   // TODO
+    // Saves the selcted error as parameter to the state 
     saveSelectedError(name){
-      this.$store.dispatch('saveError')
+      this.$store.dispatch('fetchError', name)
       alert('Thanks for reporting an error')
-
     },
   },
   // mapstate is a Vuex component (using computed) summarizing the command of this.$store.state.metadata
