@@ -47,9 +47,26 @@ def get_leaf_categories(url):
     soup = get_soup(url)
     leaf_list = get_categories(soup)
     return leaf_list
-#todo:
-#paperid as integer
-#categories as list of strings
+
+def link_checker(url):
+    """Returns if url is a valid url to a paper on amc
+
+    Args:
+        url (string): link to a page on dl.acm.org
+
+    The regex checks if the link contains following:
+        - doi/
+        - at least 1 digit followed by a .
+        - at least 3 digits followed by a /
+
+    Returns:
+        Boolean: True if link to a paper
+    """
+    if re.search("doi\/\d+.\d{3,}\/", url):
+        return True
+    else:
+        return False
+
 def get_soup(url):
     """Return a soup object
 
