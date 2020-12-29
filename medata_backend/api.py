@@ -68,9 +68,9 @@ def get_specific():
     db.session.commit()
 
     #filtered information, ordered by answer_score 
-    filtered_information_answers = Information.query.join(Information.answers).filter(or_(Information.insight_id==int(x.id) for x in matching_insight)).filter(Information.paper_id==paper_id).order_by(Answers.answer_score.desc()).all()
+    filtered_information_answers = Information.query.join(Information.answers).filter(or_(Information.insight_id==int(x.id) for x in matching_insight)).filter(Information.paper_id==paper_id).order_by(Answers.answer_score.desc()).limit(response_object_length).all()
     response_object_length = response_object_length - len(filtered_information_answers)
-    filtered_information_without_answers = Information.query.filter(or_(Information.insight_id==int(x.id) for x in matching_insight)).filter(Information.paper_id==paper_id).order_by(Information.insight_upvotes-Information.insight_downvotes).limit(response_object_length).all()
+    filtered_information_without_answers = Information.query.filter(or_(Information.insight_id==int(x.id) for x in matching_insight)).filter(Information.paper_id==paper_id).filter(Information.insight_upvotes-Information.insight_downvotes > -2).order_by(Information.insight_upvotes-Information.insight_downvotes).limit(response_object_length).all()
     for x in filtered_information_answers:
         response_object.append(x.to_dict())
 
