@@ -3,6 +3,7 @@ from sqlalchemy import or_, exists, and_, not_
 from datetime import datetime
 from models import db, Insights, Information, Answers, Categories
 import pandas as pd
+import acm_scraper as scraper
 
 
 api = Blueprint('api', __name__)
@@ -63,6 +64,18 @@ def get_specific():
     #if (information for paper_id does not exist) create information with paper_id
     for x in matching_insight:
         if (Information.query.filter(Information.insight_id==int(x.id)).filter(Information.paper_id==paper_id).count()==0):
+            #if an Information is first created the authors will be automatically pulled and added:
+
+            #TODO: activate this part with real paper_id 
+            # soup = scraper.get_facts_soup(scraper.get_soup(paper_id))
+            # authors_profile_link = scraper.get_authors(soup)
+            # authors = [scraper.name_from_profile(profile_link) for profile_link in authors_profile_link]
+            # title = scraper.get_title(soup)
+            # conference = scraper.get_conference(paper_id)
+            # authors_profile_link = ",".join(authors_profile_link)
+            # authors = ",".join(authors)
+
+            #TODO: add title, conference, authors and authors_profile_link to the Information
             i = Information(insight_id = x.id, insight_name=x.name, paper_id=paper_id)
             db.session.add(i)
     db.session.commit()
@@ -272,12 +285,17 @@ def rate_relevance_insight():
     return jsonify(response_object)
 
 
-
 @api.route('/download', methods = ["POST"])
 def download():
     url = request.get_json().get('url')
     inf = Information.query.join(Information.answers).filter(Information.paper_id==url).filter(Answers.answer_score > 1).order_by(Answers.answer_score.desc()).all()
     #catch aioor
+
+    #makes a list of authors splitted by a ','
+    authors = inf[0].authors.split(",").strip()
+    #makes a list of links to authors profils
+    authors_profile_link = inf[0].authors_profile_link.split(",").strip()
+    
     data = [f"Title: {inf[0].title}", f"Author(s): {inf[0].authors}", f"Link to Profile: {inf[0].authors_profile_link}"]
     data = [["Title: ", inf[0].title], ["Author(s): ", inf[0].authors], ["Link to Profile: ", inf[0].authors_profile_link]]
 
