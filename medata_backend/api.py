@@ -81,12 +81,13 @@ def get_specific():
     db.session.commit()
 
     #filtered information, ordered by answer_score 
-    #todo
+    print("----------------------------------")
     filtered_information_answers = Information.query.join(Information.answers).filter(or_(Information.insight_id==int(x.id) for x in matching_insight)).filter(Information.paper_id==paper_id).order_by(Answers.answer_score.desc()).all()
     response_object_length = response_object_length - len(filtered_information_answers)
-    print(len(filtered_information_answers))
-    filtered_information_without_answers = Information.query.filter(or_(Information.insight_id==int(x.id) for x in matching_insight)).filter(Information.paper_id==paper_id).order_by(Information.insight_upvotes-Information.insight_downvotes).limit(response_object_length).all()
-    print(len(filtered_information_without_answers))
+    #print(f"Info with answer: {len(filtered_information_answers)}")
+    filtered_information_without_answers = Information.query.filter(or_(Information.insight_id==int(x.id) for x in matching_insight)).filter(Information.paper_id==paper_id).filter(Information.answers == None).order_by(Information.insight_upvotes-Information.insight_downvotes).limit(response_object_length).all()
+    
+    #print(f"Infos w/o answers: {len(filtered_information_without_answers)}")
     for x in filtered_information_answers:
         response_object.append(x.to_dict())
 
@@ -287,14 +288,18 @@ def rate_relevance_insight():
 
 @api.route('/download', methods = ["POST"])
 def download():
+
+    answer_score_threshold = 1
     url = request.get_json().get('url')
-    inf = Information.query.join(Information.answers).filter(Information.paper_id==url).filter(Answers.answer_score > 1).order_by(Answers.answer_score.desc()).all()
+    inf = Information.query.join(Information.answers).filter(Information.paper_id==url).filter(Answers.answer_score > answer_score_threshold).order_by(Answers.answer_score.desc()).all()
     #catch aioor
 
-    #makes a list of authors splitted by a ','
-    authors = inf[0].authors.split(",").strip()
-    #makes a list of links to authors profils
-    authors_profile_link = inf[0].authors_profile_link.split(",").strip()
+
+    #TODO: uncomment this
+    # #makes a list of authors splitted by a ','
+    # authors = inf[0].authors.split(",").strip()
+    # #makes a list of links to authors profils
+    # authors_profile_link = inf[0].authors_profile_link.split(",").strip()
     
     data = [f"Title: {inf[0].title}", f"Author(s): {inf[0].authors}", f"Link to Profile: {inf[0].authors_profile_link}"]
     data = [["Title: ", inf[0].title], ["Author(s): ", inf[0].authors], ["Link to Profile: ", inf[0].authors_profile_link]]
