@@ -31,8 +31,17 @@ def main():
 
     url = "https://dl.acm.org/doi/10.1145/3230543.3230575"
     soup = get_soup(url)
-    get_categories(soup)
-    print(get_conference(url))
+    leaf_cats = get_categories(soup)
+    facts_soup = get_facts_soup(soup)
+    # for leaf in leaf_cats:
+    #     print(leaf)
+    print(get_title(soup))
+    # print(get_conference(url))
+
+    authors = get_authors(facts_soup)
+    print("------------------")
+    for author in authors:
+        print(author)
 
 
 def get_leaf_categories(url):
@@ -62,6 +71,10 @@ def get_soup(url):
     html_string = requests.get(url).text
     soup = BeautifulSoup(html_string, "lxml")
     return soup
+
+
+def get_facts_soup(soup:BeautifulSoup):
+    return soup.find(class_="citation")
 
 
 def get_all_infos(soup):
