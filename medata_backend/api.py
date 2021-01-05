@@ -308,7 +308,6 @@ def download():
     # #makes a list of links to authors profils
     # authors_profile_link = inf[0].authors_profile_link.split(",").strip()
     
-    data = [f"Title: {inf[0].title}", f"Author(s): {inf[0].authors}", f"Link to Profile: {inf[0].authors_profile_link}"]
     data = [["Title: ", inf[0].title], ["Author(s): ", inf[0].authors], ["Link to Profile: ", inf[0].authors_profile_link]]
 
     for i in inf:
