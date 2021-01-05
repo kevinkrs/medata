@@ -288,7 +288,14 @@ def rate_relevance_insight():
 
 @api.route('/download', methods = ["POST"])
 def download():
+    """download the information of a single paper as a csv file
 
+    answer_score_threshold defines the minimum Answer score for the answer to appear in the results. 
+    A score of 1 should be the absolute minimum.
+
+    Returns:
+        csv file: includes title, authors name, link to the profile, all Insights and answers by descending answer score. 
+    """
     answer_score_threshold = 1
     url = request.get_json().get('url')
     inf = Information.query.join(Information.answers).filter(Information.paper_id==url).filter(Answers.answer_score > answer_score_threshold).order_by(Answers.answer_score.desc()).all()
