@@ -166,7 +166,7 @@
                 <p> {{entry.answer[0].answer_upvotes}} users confirmed <br>
                     this information <br>
                 </p>
-              <button class="submit-button" @click='sendUpvote()'>confirm</button>
+              <button class="submit-button" @click='saveAnswerSelection(entry.answer[0].answer)'>confirm</button>
               <!--TODO: What do we want to report in particular? Text, an error id...?
               Do we even need this error button? Because now we have the "report an error field at the top left corner?-->
               <button id ="error3" class="report-button" @click='saveSelectedError("general")'>report an error</button>
@@ -302,7 +302,7 @@ export default {
     saveAnswerSelection(answer) {
       this.$store.dispatch('fetchUserAnswer', answer) 
       this.$store.dispatch('sendRateAnswer')
-      alert('Thanks for submitting!')
+      alert('Thanks for rating!')
       this.userInput = ''
       this.$store.dispatch('loadMetadata')
     },
@@ -328,11 +328,7 @@ export default {
       this.userInput = ''
       this.$store.dispatch('loadMetadata')
     },
-    sendUpvote() {
-      // This method sends the answer (yellow-status, green-status) the user has selected as the right one, or in the green-status case just confirming it as true once more
-      this.$store.dispatch("sendRateAnswer")
-      alert('Thanks vor submitting!')
-    },
+  
     sendDownloadRequest() {
       this.$store.dispatch("loadDownload")
     },
