@@ -304,6 +304,7 @@ export default {
       this.$store.dispatch('sendRateAnswer')
       alert('Thanks for submitting!')
       this.userInput = ''
+      this.$store.dispatch('loadMetadata')
     },
     // TODO: This method saves & sends user Input 
     saveUserInput() {
@@ -318,12 +319,14 @@ export default {
         this.$store.dispatch('sendAnswer')
         alert('Thanks for submitting!')
         this.userInput = ''
+        this.$store.dispatch('loadMetadata')
     },
     sendUserInsight() {
       // Activate when category is finally saved to the state 
      // this.store.dispatch('sendInsight')
       alert('Thanks for submitting!')
       this.userInput = ''
+      this.$store.dispatch('loadMetadata')
     },
     sendUpvote() {
       // This method sends the answer (yellow-status, green-status) the user has selected as the right one, or in the green-status case just confirming it as true once more
