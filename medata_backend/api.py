@@ -246,8 +246,8 @@ def rate_answer():
     else :
         for a in ans:
             if (a.answer==in_answer):
-                a.answer_downvotes = a.answer_downvotes + 1
-                a.answer_score = a.answer_score - 1
+                a.answer_downvotes = a.answer_downvotes + 2
+                a.answer_score = a.answer_score - 2
 
     db.session.commit()
     return jsonify(response_object)
@@ -341,7 +341,14 @@ def insight_not_relevant_for_category():
     return jsonify(response_object)
 
     
-
+@api.route('/typ_error', methods = ['POST'])
+def typ_error():
+    response_object = {'status': 'success'}
+    post_data = request.get_json()
+    in_insight_name = post_data.get('insight')
+    i = Insights.query.filter(Insights.name==in_insight_name).first()
+    i.type_error = i.type_error + 1
+    db.session.commit()
 
 
 

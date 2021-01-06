@@ -133,7 +133,23 @@ export default createStore({
       return postRateRelevanceInsight("50", this.state.currentIn, this.state.insightVoteBool)
         .then((response) => {console.log(response)})
         .catch((error) => {console.error(error)})
+    }, 
+    sendInsightNotRelevantError() {
+      return postInsightNotRelevant(this.state.currentIn, this.state.currentCategory)
+        .then((response) => {console.log(response)})
+        .catch((error) => {console.error(error)})
+    },
+    sendValueError() {
+      return postRateAnswer("50", this.state.currentIn, this.state.currentAnswer, false)
+        .then((response) => {console.log(response)})
+        .catch((error) => {console.error(error)})
+    },
+    sendTypeError() {
+      return postInsightTypeError(this.state.currentIn)
+        .then((response) => {console.log(response)})
+        .catch((error) => {console.error(error)})
     }
+
   },
     getters: {
       getCategory() {
