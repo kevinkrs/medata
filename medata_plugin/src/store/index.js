@@ -15,7 +15,7 @@ export default createStore({
     answerUpvoteBool: true,
     currentUserInput: '',
     selectedError: '', // User can report an error and select on of three possibilites
-    insightVoteBool: true //This boolean is for up- or downvoting insights by the user, default is true, insight is upvoted @click 
+    insightVoteBool: true //This boolean is for up- or downvoting insights by the user, default is true, insight is upvoted @click and only set to false for downvoting via InsightNotRelevantForCategory
   },
   mutations: {
     // Saving the data from backend to the "metadata array"
