@@ -71,6 +71,7 @@ class Categories(db.Model):
     insight_id = db.Column(db.Integer, db.ForeignKey('insights.id'))
     category_id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(30))
+    #downvote_category = db.Column(db.Integer, default = 0)
 
     
     def to_dict(self):

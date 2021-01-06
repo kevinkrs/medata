@@ -328,10 +328,16 @@ def download():
 
 @api.route('/insight_not_relevant_for_category', methods = ["POST"])
 def insight_not_relevant_for_category():
+    response_object = {'status': 'success'}
     post_data = request.get_json()
     in_insight_name = post_data.get('insight')
     in_relevant_category = post_data.get('relevant_category')
     ins = Insight.query.filter(Insights.name==in_insight_name).first()
+    category = Categories.query.filter(Categories.insight_id == ins.id).filter(Categories.name==in_relevant_category).first()
+    category.downvote_category = category.downvote_category + 1
+    db.session.commit()
+    return jsonify(response_object)
+
     
 
 
