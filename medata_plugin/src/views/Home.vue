@@ -57,15 +57,11 @@
       </div>
     </fieldset>
 
-    <div>
-      <button @click="checkURL"> Check URL </button>
-    </div>
-    
     <!--If backend has no information to given category it's responding with an empty list. Here we check if the list is truly empty.
     If it is, we display first the first div class "noData". If not empty we display second div -->
     <div v-if='metadata.length == 0'>
       <div class="noData">
-        <p> No data to this category available yet</p>
+        <p> Sorry there is no data for this category available yet </p>
       </div>
     </div>
       
@@ -94,8 +90,8 @@
             <div :id=entry.id+1000 style="display:none">
               <div class="insight-toggleBox">
                 <button class="error-button" @click="visible2(entry.id+1000)">back</button>
-                <button class="error-button-2">Incorrect spelling/duplication</button> <br> 
-                <button class="error-button-2">Not needed for this paper</button>
+                <button id ="error1" class="error-button-2" @click='saveSelectedError("type_error")'>Type Error</button> <br> 
+                <button id ="error2" class="error-button-2" @click='saveSelectedError("relevance_error")'>Not relevant insight for this paper</button>
               </div>
             </div> 
 
@@ -121,41 +117,30 @@
             <div :id=entry.id+1000 style="display:none">
               <div class="insight-toggleBox">
                 <button class="error-button" @click="visible2(entry.id+1000)">back</button>
-                <button class="error-button-2">Incorrect spelling/duplication</button> <br> 
-                <button class="error-button-2">Not needed for this paper</button>
+                <button id ="error1" class="error-button-2" @click='saveSelectedError("type_error")'>Type Error</button> <br> 
+                <button id ="error2" class="error-button-2" @click='saveSelectedError("relevance_error")'>Not relevant insight for this paper</button>
               </div>
             </div> 
 
           <div :id=entry.id style="display:none">
             <div class="insight-toggleBox">
+              <!--STYLING TODO-->
             <button class="error-button" @click="visible2(entry.id+1000)">report an error</button>
               <div class="insight-answers">
                 <p>Please select <br> the correct Answer</p>
                <div class="row">
                     <div v-for="answer in entry.answer" :key ="answer">
                       <!--How can i connect v-model directly -->
-                      <button type="button"  class="answer-button" @click="saveAnswerSelection(answer.answer), sendUpvote()">
+                      <button type="button"  class="answer-button" @click="saveAnswerSelection(answer.answer)">
                         {{answer.answer}}
                       </button>
                     </div>
                   </div>
               </div>
-              <!-- Code works, in worst case we take this one 
-              <div class="insight-answers">
-                <p>Please select <br> the correct Answer</p>
-                <div class="row1">
-                  <button class="answer-button">{{entry.answer[0].answer}}</button>
-                  <button class="answer-button">{{entry.answer[1].answer}}</button>
-                </div>
-                <div class="row2">
-                  <button class="answer-button">{{entry.answer[2].answer}}</button>
-                  <button class="answer-button">{{entry.answer[3].answer}}</button>
-              </div>
-              -->
               <br>
               <p> Add value </p>
                 <input class="userInput" v-model="userInput"> 
-                <button class="submit-insight" @click=" saveUserInput(), sendUserAnswer()">Submit</button>
+                <button class="submit-insight" @click="saveUserInput(), sendUserAnswer()">Submit</button>
             </div>
           </div>
         </div>
@@ -168,8 +153,8 @@
             <div :id=entry.id+1000 style="display:none">
               <div class="insight-toggleBox">
                 <button class="error-button" @click="visible2(entry.id+1000)">back</button>
-                <button class="error-button-2">Incorrect spelling/duplication</button> <br> 
-                <button class="error-button-2">Not needed for this paper</button>
+                 <button id ="error1" class="error-button-2" @click='saveSelectedError("type_error")'>Type Error</button> <br> 
+                <button id ="error2" class="error-button-2" @click='saveSelectedError("value_error")'>Value Error</button>
               </div>
             </div> 
 
@@ -181,8 +166,10 @@
                 <p> {{entry.answer[0].answer_upvotes}} users confirmed <br>
                     this information <br>
                 </p>
-              <button class="submit-button" @click='sendUpvote()'>confirm</button>
-              <button class="report-button" >report an error</button>
+              <button class="submit-button" @click='saveAnswerSelection(entry.answer[0].answer)'>confirm</button>
+              <!--TODO: What do we want to report in particular? Text, an error id...?
+              Do we even need this error button? Because now we have the "report an error field at the top left corner?-->
+              <button id ="error3" class="report-button" @click='saveSelectedError("general")'>report an error</button>
             </div>
           </div>
         </div>
@@ -223,10 +210,16 @@
             </button>
             <div id=-5 style="display:none">
               <div class="grey-toggleBox">
-                <input type="text" v-model="userInput" class="grey-add-inputfield"/>
-                <p> {{userInput}} </p>
+                <input type="text" autocomplete="off" @input = "filterParameters" v-model="userInput" class="grey-add-inputfield" @focus = "modal = true"/>
+                <div v-if="filtered && modal">
+                  <ul>
+                    <li class = "autocomplete" v-for="param in filtered" :key ="param"  @click = "setParam(param)">
+                      {{param}}
+                    </li>
+                  </ul>
+                </div>
                 <div class="submit-button2">
-                  <input type="button" value="submit" class="submit-button">
+                  <button type="button" class="submit-button" @click='saveUserAnswer(),sendUserInsight()'>Submit</button>
                 </div>
               </div>
             </div>
@@ -250,14 +243,34 @@ export default {
     return {
     // Empty String for possible user input
       userInput: '',
-     // currentInName: '',
-     // selectedAnswer: '',
+      submitted: false,
+      // TODO: Backend has to send an array with common words for certain category 
+      autocomplete: [
+        'Accuracy', 'Area' , 'F1', 'Recall', 'MSE', 'Precision', 'Classification Error'
+      ],
+      filtered: [],
+      modal: false
     }
   },
   methods: {
     // Function only for testing
     toggle () {
       alert('Works!')
+    },
+
+    filterParameters() {
+      if (this.userInput.length == 0){
+        this.filtered = []
+      }
+      else{
+        this.filtered = this.autocomplete.filter(userInput =>{
+          return userInput.toLowerCase().startsWith(this.userInput.toLowerCase())
+        })
+      }
+    },
+    setParam(param) {
+      this.userInput = param
+      this.modal = false
     },
     // TODO commments
     visible: function (divId) {
@@ -288,26 +301,42 @@ export default {
     },
     saveAnswerSelection(answer) {
       this.$store.dispatch('fetchUserAnswer', answer) 
+      this.$store.dispatch('sendRateAnswer')
+      alert('Thanks for rating!')
+      this.userInput = ''
+      this.$store.dispatch('loadMetadata')
     },
+    // TODO: This method saves & sends user Input 
     saveUserInput() {
-      this.$store.dispatch('fetchUserInput', this.userInput)
+      if (this.userInput == ''){
+        alert('Please enter some data before submittin!')
+      }
+      else{
+         this.$store.dispatch('fetchUserInput', this.userInput)
+      }
     },
-
-    // This methods dispatch functions that are sending given user interaction to the backend 
-    sendUserAnswer() {
-      //This method sends the answer (yellow-status, red-status) the user has written into the input field
-      this.$store.dispatch('sendAnswer')
+    sendUserAnswer() {
+        this.$store.dispatch('sendAnswer')
+        alert('Thanks for submitting!')
+        this.userInput = ''
+        this.$store.dispatch('loadMetadata')
+    },
+    sendUserInsight() {
+      // Activate when category is finally saved to the state 
+     // this.store.dispatch('sendInsight')
       alert('Thanks for submitting!')
       this.userInput = ''
+      this.$store.dispatch('loadMetadata')
     },
-    sendUpvote() {
-      // This method sends the answer (yellow-status, green-status) the user has selected as the right one, or in the green-status case just confirming it as true once more
-      this.$store.dispatch("sendRateAnswer")
-      alert('Thanks vor submitting!')
-    },
+  
     sendDownloadRequest() {
       this.$store.dispatch("loadDownload")
-    }
+    },
+    // Saves the selcted error as parameter to the state 
+    saveSelectedError(name){
+      this.$store.dispatch('fetchError', name)
+      alert('Thanks for reporting an error')
+    },
   },
   // mapstate is a Vuex component (using computed) summarizing the command of this.$store.state.metadata
   // we can easily load all our state objects inside our Home-Component and access it by calling this."propertyname"
@@ -316,7 +345,8 @@ export default {
         'metadata', 
         'currentIn',
         'currentAnswer',
-        'currentUserInput'
+        'currentUserInput',
+        'selectedError'
     ]),
 
   }
@@ -596,5 +626,27 @@ export default {
   font-weight: bold;
 }
 
+ul {
+  display: flex;
+  flex-wrap: wrap;
+  list-style-type: none;
+  margin-top: 0px;
+  margin-left: 5px;
+  }
+
+li {
+  border-bottom: 0.5px solid rgb(120, 120, 120);
+  border-left: 0.5px solid rgb(120, 120, 120);
+  border-right: 0.5px solid rgb(120, 120, 120);
+  border-radius: 5px, 0px, 0px, 0px;
+  background-color: lightblue;
+  width: 65%;
+  padding: 10px;
+  font-size: 15px;
+}
+li:hover {
+  border: 1px, solid rgb(120, 120, 120);
+  background-color: rgb(33, 179, 228);
+}
 
 </style>
