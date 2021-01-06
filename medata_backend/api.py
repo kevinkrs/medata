@@ -341,7 +341,7 @@ def insight_not_relevant_for_category():
     return jsonify(response_object)
 
     
-@api.route('/typ_error', methods = ['POST'])
+@api.route('/type_error', methods = ['POST'])
 def typ_error():
     response_object = {'status': 'success'}
     post_data = request.get_json()
@@ -349,6 +349,7 @@ def typ_error():
     i = Insights.query.filter(Insights.name==in_insight_name).first()
     i.type_error = i.type_error + 1
     db.session.commit()
+    return jsonify(response_object)
 
 
 

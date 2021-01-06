@@ -61,7 +61,7 @@ export function postInsightNotRelevant (inInsight, inCategories) {
   })
 }
 
-export function postTypError (inInsight) {
+export function postTypeError (inInsight) {
   return axios.post(`${'type_error'}`, {
     insight: inInsight
   })

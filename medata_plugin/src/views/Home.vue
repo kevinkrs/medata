@@ -351,11 +351,11 @@ export default {
       this.$store.dispatch('fetchError', name)
       alert('Thanks for reporting an error')
     },
+    sendTypeError() {
+      this.$store.dispatch('sendTypeError')
+    },
     sendValueError() {
       this.$store.dispatch('sendValueError')
-    },
-    sendTypeError() {
-      this.$store.dispatch('sendTypError')
     },
     sendInsightNotRelevantError() {
       this.$store.dispatch('sendInsightNotRelevantError')

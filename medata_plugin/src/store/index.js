@@ -1,5 +1,5 @@
 import { createStore } from 'vuex'
-import { fetchMetadata, postInsight, postAnswer, postRateAnswer, postRateRelevanceInsight, fetchDownload } from '@/api'
+import { fetchMetadata, postInsight, postAnswer, postRateAnswer, postRateRelevanceInsight, fetchDownload, postTypeError, postInsightNotRelevant } from '@/api'
 import { createCommentVNode } from 'vue'
 
 export default createStore({
