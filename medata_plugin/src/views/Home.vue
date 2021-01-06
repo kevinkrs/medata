@@ -274,15 +274,26 @@ export default {
     },
     // TODO commments
     visible: function (divId) {
+      /*The for loop closes all divs to ensure that only one div is open at a time*/
+      for (var i = -10000; i <= 10000; i++) {
+        if (document.getElementById(i) != null && i != divId){
+        document.getElementById(i).style.display = 'none';
+        }                
+      }
       if (document.getElementById(divId).style.display === 'none') {
         document.getElementById(divId).style.display = 'inline';
         document.getElementById(divId-1000).style.display = 'none';
         document.getElementById(divId-2000).style.display = 'inline';
-        document.getElementById(divId+1000).style.display = 'none';
       } else {
         document.getElementById(divId).style.display = 'none';
         document.getElementById(divId-1000).style.display = 'inline';
         document.getElementById(divId-2000).style.display = 'none';
+      }
+
+      for (var i = -1010; i <= -10; i++) {
+        if (document.getElementById(i) != null && i != (divId-1000)){
+        document.getElementById(i).style.display = 'inline';
+        }                
       }
     },
 
