@@ -18,6 +18,7 @@ export default {
   data()  {
     return{
         substr: 'https://dl.acm.org/',
+        regex: /dl\.acm\.org\/doi\/\d+\.\d{3,}\//
     }
   },
   computed: mapState({
@@ -33,8 +34,10 @@ export default {
       // Takes current chrome tab window
       chrome.tabs.query({currentWindow: true, active: true}, 
           function (tabs){
-          var querySub = tabs[0].url.substring(0, 19)
-          if (querySub == vm.substr) { 
+            //var regex = /dl\.acm\.org\/doi\/\d+\.\d{3,}\//
+            var url = tabs[0].url
+            var querySub = tabs[0].url.substring(0, 19)
+            if (tabs[0].url.match(vm.regex)) { 
               // alert('Valid URL found')
               // if URL is a dl.acm.org URl we save it to our state 
               vm.$store.dispatch('loadQuery', tabs[0].url)
@@ -42,8 +45,11 @@ export default {
               // With router.push we can route to another url automatically
               vm.$router.push({path : '/home'})
           }
+            else if(vm.substring == this.querySub) {
+              alert("Please open a particular article to continue")
+          }
           else {
-            alert("You're currently not on dl.acm.org")
+              alert("You're currently not on the dl.acm.org website")
           }
       })
     },
