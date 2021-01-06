@@ -43,6 +43,7 @@ def get_specific():
         [json]: [if no insights yet an empty string is returned, otherwise a json object with all relevant Insights is returned]
     """
     response_object_length = 7
+    max_downvote_category = 2
     response_object = []
     #fetch data from request
     url = request.get_json().get('url')
@@ -60,6 +61,7 @@ def get_specific():
     
     #insights filtered by category
     matching_insight = Insights.query.join(Insights.categories).filter(or_(Categories.name==x for x in relevant_categories)).all()
+    #matching_insight = Insights.query.join(Insights.categories).filter(or_(Categories.name==x for x in relevant_categories))filter(Categories.downvote_category <= max_downvote_category).all()
 
     #if (information for paper_id does not exist) create information with paper_id
     for x in matching_insight:
