@@ -36,6 +36,7 @@ class Insights(db.Model):
 
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(30), unique=True)
+    #type_error = db.Column(db.Integer, default = 0)
 
     #one2many with categories
     categories = db.relationship('Categories', backref = 'insights', lazy = True)

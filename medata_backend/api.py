@@ -96,11 +96,13 @@ def get_specific():
             response_object.append(x.to_dict())
 
     if (Information.query.filter(or_(Information.insight_id==int(x.id) for x in matching_insight)).filter(Information.paper_id==paper_id).count()==0):
-        #response_object = []
-        #response_object.append(relevant_categories)
-        return jsonify([])
+        response_object = []
+        #x = {'relevant_categories': relevant_categories}
+        #response_object.append(x)
+        return jsonify(response_object)
     else:
-        #response_object.append(relevant_categories)
+        x = {'relevant_categories': relevant_categories}
+        #response_object.append(x)
         return jsonify(response_object)
 
 
@@ -320,3 +322,22 @@ def download():
     df = pd.DataFrame(data, columns = ["", "data"])
     df.to_csv(r"medata_backend\exports\export_data.csv")
     return send_file("exports/export_data.csv")
+
+
+
+
+@api.route('/insight_not_relevant_for_category', methods = ["POST"])
+def insight_not_relevant_for_category():
+    post_data = request.get_json()
+    in_insight_name = post_data.get('insight')
+    in_relevant_category = post_data.get('relevant_category')
+    ins = Insight.query.filter(Insights.name==in_insight_name).first()
+    
+
+
+
+
+
+
+
+
