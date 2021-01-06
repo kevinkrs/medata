@@ -34,8 +34,6 @@ export default {
       // Takes current chrome tab window
       chrome.tabs.query({currentWindow: true, active: true}, 
           function (tabs){
-            //var regex = /dl\.acm\.org\/doi\/\d+\.\d{3,}\//
-            var url = tabs[0].url
             var querySub = tabs[0].url.substring(0, 19)
             if (tabs[0].url.match(vm.regex)) { 
               // alert('Valid URL found')
@@ -45,10 +43,10 @@ export default {
               // With router.push we can route to another url automatically
               vm.$router.push({path : '/home'})
           }
-            else if(vm.substring == this.querySub) {
+            else if(querySub == vm.substr) {
               alert("Please open a particular article to continue")
           }
-          else {
+            else {
               alert("You're currently not on the dl.acm.org website")
           }
       })
