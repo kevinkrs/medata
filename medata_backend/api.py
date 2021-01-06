@@ -87,7 +87,7 @@ def get_specific():
     filtered_information_answers = Information.query.join(Information.answers).filter(or_(Information.insight_id==int(x.id) for x in matching_insight)).filter(Information.paper_id==paper_id).order_by(Answers.answer_score.desc()).all()
     response_object_length = response_object_length - len(filtered_information_answers)
     #print(f"Info with answer: {len(filtered_information_answers)}")
-    filtered_information_without_answers = Information.query.filter(or_(Information.insight_id==int(x.id) for x in matching_insight)).filter(Information.paper_id==paper_id).filter(Information.answers == None).order_by(Information.insight_upvotes-Information.insight_downvotes).limit(response_object_length).all()
+    filtered_information_without_answers = Information.query.filter(or_(Information.insight_id==int(x.id) for x in matching_insight)).filter(Information.paper_id==paper_id).filter(Information.answers == None).order_by((Information.insight_upvotes-Information.insight_downvotes).desc()).limit(response_object_length).all()
     
     #print(f"Infos w/o answers: {len(filtered_information_without_answers)}")
     for x in filtered_information_answers:

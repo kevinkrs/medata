@@ -82,7 +82,7 @@
         <div v-if='entry.answer.length == 0' class= "insight-button">
           <!--With a click on the colored button the function visable is called and the id of the insight
           is passed. This ensures that the corresponding toggle box becomes visible.-->
-          <button class="insight-button-red" @click="visible(entry.id), saveInName(entry.name)">
+          <button class="insight-button-red" @click="visible(entry.id), saveInName(entry.name), sendRelevanceInsight()">
             <div :id=entry.id-1000 style="display:inline"><img class="img-button" src="../assets/arrow-down.png" ></div>
             <div :id=entry.id-2000 style="display:none"><img class="img-button" src="../assets/arrow-up.png" ></div>      
           </button>
@@ -109,7 +109,7 @@
 
         </div>
         <div div v-else-if="entry.answer[0].answer_score < 3" class="insight-button">
-          <button class="insight-button-yellow" @click="visible(entry.id), saveInName(entry.name)">
+          <button class="insight-button-yellow" @click="visible(entry.id), saveInName(entry.name), sendRelevanceInsight()">
             <div :id=entry.id-1000 style="display:inline"><img class="img-button" src="../assets/arrow-down.png" ></div>
             <div :id=entry.id-2000 style="display:none"><img class="img-button" src="../assets/arrow-up.png" ></div>
           </button>
@@ -145,7 +145,7 @@
           </div>
         </div>
         <div v-else class="insight-button">
-          <button class="insight-button-green" @click="visible(entry.id), saveInName(entry.name)">
+          <button class="insight-button-green" @click="visible(entry.id), saveInName(entry.name), sendRelevanceInsight()">
             <div :id=entry.id-1000 style="display:inline"><img class="img-button" src="../assets/arrow-down.png" ></div>
             <div :id=entry.id-2000 style="display:none"><img class="img-button" src="../assets/arrow-up.png" ></div>
           </button>
@@ -338,6 +338,9 @@ export default {
       alert('Thanks for submitting!')
       this.userInput = ''
       this.$store.dispatch('loadMetadata')
+    },
+    sendRelevanceInsight() {
+      this.$store.dispatch('sendRateRelevanceInsight')
     },
   
     sendDownloadRequest() {
