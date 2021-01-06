@@ -31,8 +31,21 @@ def main():
 
     url = "https://dl.acm.org/doi/10.1145/3230543.3230575"
     soup = get_soup(url)
-    get_categories(soup)
-    print(get_conference(url))
+    leaf_cats = get_categories(soup)
+    facts_soup = get_facts_soup(soup)
+    # for leaf in leaf_cats:
+    #     print(leaf)
+    print(get_title(soup))
+    # print(get_conference(url))
+
+    authors = get_authors(facts_soup)
+    print("------------------")
+    # for author in authors:
+    #     name = name_from_profile(author)
+    #     print(name)
+    authors_string = ",".join(authors)
+    print(",".join(authors))
+    print(authors_string.split(","))
 
 
 def get_leaf_categories(url):
@@ -81,6 +94,10 @@ def get_soup(url):
     return soup
 
 
+def get_facts_soup(soup:BeautifulSoup):
+    return soup.find(class_="citation")
+
+
 def get_all_infos(soup):
     #sub div from soup
     facts = soup.find(class_="citation")
@@ -116,11 +133,13 @@ def get_authors(facts_soup):
     #finds all classes which contain the authors information
     authors_profile_list = []
     for author in authors_info:
-        #print(f"{author}\n\n\n")
-        print(author.find("a").get("title")) #Name of the Author
-        print(author.find(class_="author-info__body").find("p").text) #Institute he/she is working at
+        # #print(f"{author}\n\n\n")
+        # print(author.find("a").get("title")) #Name of the Author
+        # print(author.find(class_="author-info__body").find("p").text) #Institute he/she is working at
 
         authors_profile_link = author.find(class_="author-info").find("a").get("href")#
+        authors_profile_link = "https://dl.acm.org" + authors_profile_link
+        
         authors_profile_list.append(authors_profile_link)
         print(authors_profile_link) #link to their profile
 
@@ -138,11 +157,15 @@ def name_from_profile(link):
     Returns:
         string: name of the Author
     """
-    url = "https://dl.acm.org"+link
+    if "dl.acm.org" in link:
+        url = link
+    else:
+        url = "https://dl.acm.org"+link
+
     html = requests.get(url).text
     profile = BeautifulSoup(html, "lxml")
 
-    name = profile.find(class_="colored-block item-meta profile-meta").find("h2").text.replace("  "," ")
+    name = profile.find(class_="colored-block item-meta profile-meta").find("h2").text.replace("  "," ").strip()
     return name
     
 

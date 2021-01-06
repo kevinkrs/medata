@@ -36,6 +36,7 @@ class Insights(db.Model):
 
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(30), unique=True)
+    type_error = db.Column(db.Integer, default = 0)
 
     #one2many with categories
     categories = db.relationship('Categories', backref = 'insights', lazy = True)
@@ -70,6 +71,7 @@ class Categories(db.Model):
     insight_id = db.Column(db.Integer, db.ForeignKey('insights.id'))
     category_id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(30))
+    downvote_category = db.Column(db.Integer, default = 0)
 
     
     def to_dict(self):
@@ -105,10 +107,10 @@ class Information(db.Model):
     paper_id = db.Column(db.String(50), default = "")
     insight_upvotes = db.Column(db.Integer, default = 0)
     insight_downvotes = db.Column(db.Integer, default = 0)
-    title = db.Column(db.String(30), default = "")
+    title = db.Column(db.String(50), default = "")
     authors = db.Column(db.Text, default = "")
     authors_profile_link = db.Column(db.Text, default = "")
-    conference = db.Column(db.String(30), default = "")
+    conference = db.Column(db.String(50), default = "")
     timestamp = db.Column(db.DateTime, default = datetime.utcnow)
 
     #one2many with answers

@@ -53,3 +53,19 @@ export function fetchDownload (query) {
     responseType: 'blob',
   })
 }
+
+export function postInsightNotRelevant (inInsight, inCategories) {
+  return axios.post(`${'insight_not_relevant_for_category'}`, {
+    insight: inInsight,
+    relevant_category: inCategories
+  })
+}
+
+export function postTypeError (inInsight) {
+  return axios.post(`${'type_error'}`, {
+    insight: inInsight
+  })
+}
+
+
+

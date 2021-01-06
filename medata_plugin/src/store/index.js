@@ -1,5 +1,6 @@
 import { createStore } from 'vuex'
-import { fetchMetadata, postInsight, postAnswer, postRateAnswer, postRateRelevanceInsight, fetchDownload } from '@/api'
+import { fetchMetadata, postInsight, postAnswer, postRateAnswer, postRateRelevanceInsight, fetchDownload, postTypeError, postInsightNotRelevant } from '@/api'
+import { createCommentVNode } from 'vue'
 
 export default createStore({
   state: {
@@ -13,7 +14,8 @@ export default createStore({
     currentCategory: '', 
     answerUpvoteBool: true,
     currentUserInput: '',
-    insightVoteBool: null //This boolean is for up- or downvoting insights by the user
+    selectedError: '', // User can report an error and select on of three possibilites
+    insightVoteBool: true //This boolean is for up- or downvoting insights by the user, default is true, insight is upvoted @click and only set to false for downvoting via InsightNotRelevantForCategory
   },
   mutations: {
     // Saving the data from backend to the "metadata array"
@@ -42,7 +44,10 @@ export default createStore({
     setUserInput(state, payload) {
         state.currentUserInput = payload.currentUserInput
     },
-    serInsightVoteBool (state, payload) {
+    setSelectedError(state,payload) {
+        state.selectedError = payload
+    },
+    setInsightVoteBool (state, payload) {
           // TODO
     }
   },
@@ -58,6 +63,7 @@ export default createStore({
         .then((response) => commit('setMetadata', {metadata: response.data})) 
         .catch((error) => {console.error(error)}) 
     },
+    // Triggers function to get a csv file with the current insights and send it to the FE. User gets possibility to download data
     loadDownload ({commit}) {
       return fetchDownload(this.state.query)
         .then((response) => {
@@ -89,7 +95,12 @@ export default createStore({
     fetchInName ({commit}, payload) {
       commit('setCurrentInName', {currentIn: payload})
     },
-
+    // Saves user selected error type
+    fetchError ({commit}, payload) {
+      commit('setSelectedError', payload)
+    },
+    
+    // TODO
     /*async fetchCurrentCategory ({commit}, payload) {
       await disptach('loadMetadata')
       commit('setCurrentCategory', {currentCategory: payload})
@@ -122,7 +133,23 @@ export default createStore({
       return postRateRelevanceInsight("50", this.state.currentIn, this.state.insightVoteBool)
         .then((response) => {console.log(response)})
         .catch((error) => {console.error(error)})
+    }, 
+    sendInsightNotRelevantError() {
+      return postInsightNotRelevant(this.state.currentIn, this.state.currentCategory)
+        .then((response) => {console.log(response)})
+        .catch((error) => {console.error(error)})
+    },
+    sendValueError() {
+      return postRateAnswer("50", this.state.currentIn, this.state.currentAnswer, false)
+        .then((response) => {console.log(response)})
+        .catch((error) => {console.error(error)})
+    },
+    sendTypeError() {
+      return postTypeError(this.state.currentIn)
+        .then((response) => {console.log(response)})
+        .catch((error) => {console.error(error)})
     }
+
   },
     getters: {
       getCategory() {
