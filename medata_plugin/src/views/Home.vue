@@ -153,8 +153,8 @@
             <div :id=entry.id+1000 style="display:none">
               <div class="insight-toggleBox">
                 <button class="error-button" @click="visible2(entry.id+1000)">back</button>
-                 <button id ="error1" class="error-button-2" @click='saveSelectedError("type_error")'>Type Error</button> <br> 
-                <button id ="error2" class="error-button-2" @click='saveSelectedError("value_error")'>Value Error</button>
+                 <button id ="error1" class="error-button-2" @click='saveSelectedError("type_error"), sendTypeError()'>Type Error</button> <br> 
+                <button id ="error2" class="error-button-2" @click='saveSelectedError("value_error"), sendValueError()'>Value Error</button>
               </div>
             </div> 
 
@@ -351,6 +351,17 @@ export default {
       this.$store.dispatch('fetchError', name)
       alert('Thanks for reporting an error')
     },
+    sendValueError() {
+      this.$store.dispatch('sendValueError')
+    },
+    sendTypeError() {
+      this.$store.dispatch('sendTypError')
+    },
+    sendInsightNotRelevantError() {
+      this.$store.dispatch('sendInsightNotRelevantError')
+      
+    },
+
   },
   // mapstate is a Vuex component (using computed) summarizing the command of this.$store.state.metadata
   // we can easily load all our state objects inside our Home-Component and access it by calling this."propertyname"

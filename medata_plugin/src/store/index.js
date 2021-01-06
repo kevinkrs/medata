@@ -145,7 +145,7 @@ export default createStore({
         .catch((error) => {console.error(error)})
     },
     sendTypeError() {
-      return postInsightTypeError(this.state.currentIn)
+      return postTypeError(this.state.currentIn)
         .then((response) => {console.log(response)})
         .catch((error) => {console.error(error)})
     }
