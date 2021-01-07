@@ -127,7 +127,7 @@ def get_authors(facts_soup):
             authors_profile_link = "https://dl.acm.org" + authors_profile_link
             
             authors_profile_list.append(authors_profile_link)
-            print(authors_profile_link) #link to their profile
+            # print(authors_profile_link) #link to their profile
         except AttributeError as ae:
             print(f"AttributeError: {ae}")
 
@@ -148,7 +148,7 @@ def name_from_profile(link):
         url = link
     else:
         url = "https://dl.acm.org"+link
-    print(url)
+    # print(url)
 
     if r"/author/" in url:
         name = re.sub(r"[\W\w]*\/author\/", "", url)

@@ -75,8 +75,8 @@ def get_specific():
             authors = [scraper.name_from_profile(profile_link) for profile_link in authors_profile_link]
             title = scraper.get_title(soup)
             conference = scraper.get_conference(paper_id)
-            authors_profile_link = ",".join(authors_profile_link)
-            authors = ",".join(authors)
+            authors_profile_link = "--".join(authors_profile_link)
+            authors = "--".join(authors)
 
             #TODO: add title, conference, authors and authors_profile_link to the Information
             i = Information(insight_id = x.id, 
@@ -315,11 +315,11 @@ def download():
     #catch aioor
 
 
-    #TODO: uncomment this
-    # #makes a list of authors splitted by a ','
-    # authors = inf[0].authors.split(",").strip()
-    # #makes a list of links to authors profils
-    # authors_profile_link = inf[0].authors_profile_link.split(",").strip()
+    # TODO: uncomment this
+    #makes a list of authors splitted by a ','
+    authors = inf[0].authors.split("--").strip()
+    #makes a list of links to authors profils
+    authors_profile_link = inf[0].authors_profile_link.split("--").strip()
     
     data = [["Title: ", inf[0].title], ["Author(s): ", inf[0].authors], ["Link to Profile: ", inf[0].authors_profile_link]]
 
@@ -364,11 +364,12 @@ def typ_error():
 
 @api.route('/get_categories', methods = ['POST'])
 def get_categories():
+    #TODO ist das Kunst oder kann das weg?
     url = request.get_json().get('url')
     relevant_categories_scraper = scraper.get_leaf_categories(url)
     print(relevant_categories_scraper)
     #hardcoded for testing 
-    relevant_categories = ['laboratory experiments', 'supervised learning by classification', 'category3']
+    relevant_categories = ['Laboratory experiments', 'supervised learning by classification', 'category3']
 
     return jsonify(relevant_categories)
 

@@ -3,7 +3,7 @@ from flask_cors import CORS
 from flask_sqlalchemy import SQLAlchemy
 from models import db
 from api import api
-from create_mock_data4 import create_mock_data
+from create_real_data import create_mock_data
 
 #configuration
 DEBUG = True
