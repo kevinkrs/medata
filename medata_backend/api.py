@@ -47,9 +47,9 @@ def get_specific():
     response_object = []
     #fetch data from request
     url = request.get_json().get('url')
-    print(url)
+    #print(url)
     relevant_categories_scraper = scraper.get_leaf_categories(url)
-    print(relevant_categories_scraper)
+    #print(relevant_categories_scraper)
 
 
 
@@ -59,16 +59,11 @@ def get_specific():
     #paper_id = "50"
     paper_id = url
 
-    #for testing conditionals
-    #relevant_categories = ['cats']
-    #paper_id = "545654645"
-
-
 
     
     #insights filtered by category
     matching_insight = Insights.query.join(Insights.categories).filter(or_(Categories.name==x for x in relevant_categories)).filter(Categories.downvote_category <= max_downvote_category).all()
-    print(matching_insight)
+    #print(matching_insight)
     #if (information for paper_id does not exist) create information with paper_id
     for x in matching_insight:
         if (Information.query.filter(Information.insight_id==int(x.id)).filter(Information.paper_id==paper_id).count()==0):
@@ -237,6 +232,7 @@ def rate_answer():
     response_object = {'status': 'success'}
     #fetch data from request
     post_data = request.get_json()
+    print(f"Rate Answer json: {post_data}")
     in_insight_name = post_data.get('insight')
     in_paper_id = post_data.get('paper_id')
     in_upvote = post_data.get('upvote')
@@ -284,6 +280,7 @@ def rate_relevance_insight():
     response_object = {'status': 'success'}
     #fetch data from request
     post_data = request.get_json()
+    print(post_data)
     in_insight_name = post_data.get('insight')
     in_paper_id = post_data.get('paper_id')
     in_upvote = post_data.get('upvote')
@@ -358,6 +355,7 @@ def insight_not_relevant_for_category():
 def typ_error():
     response_object = {'status': 'success'}
     post_data = request.get_json()
+    print(f"Type Error json: {post_data}")
     in_insight_name = post_data.get('insight')
     i = Insights.query.filter(Insights.name==in_insight_name).first()
     i.type_error = i.type_error + 1

@@ -4,12 +4,12 @@ import random
 def create_mock_data():
     x = 0
     insight_names = ["Number of participants"]
-    categories_names = ["laboratory experiments", "supervised learning by classification"]
+    categories_names = ["Laboratory experiments", "supervised learning by classification"]
 
 
-    i=Insights(id=2, name=insight_names[x])
-    c=Categories(insight_id=2, name = categories_names[x])
-    inf =Information(information_id = x, insight_id=2, insight_name = insight_names[x], paper_id="https://dl.acm.org/doi/10.1145/3424953.3426638", insight_upvotes=random.randint(1,14))
+    i=Insights(id=x, name=insight_names[x])
+    c=Categories(insight_id=x, name = categories_names[x])
+    inf =Information(information_id = x, insight_id=x, insight_name = insight_names[x], paper_id="https://dl.acm.org/doi/10.1145/3424953.3426638", insight_upvotes=random.randint(1,14))
     ans1 = Answers(information_id=x, answer ="6", answer_upvotes=0, answer_score=0)
 
 
