@@ -48,8 +48,8 @@ def get_specific():
     #fetch data from request
     url = request.get_json().get('url')
     print(url)
-    #relevant_categories_scraper = acm_scraper.get_leaf_categories(url)
-    #print(relevant_categories_scraper)
+    relevant_categories_scraper = scraper.get_leaf_categories(url)
+    print(relevant_categories_scraper)
 
     #hardcoded for now 
     relevant_categories = ['laboratory experiments', 'supervised learning by classification', 'category3']
@@ -60,8 +60,7 @@ def get_specific():
 
     
     #insights filtered by category
-    matching_insight = Insights.query.join(Insights.categories).filter(or_(Categories.name==x for x in relevant_categories)).all()
-    #matching_insight = Insights.query.join(Insights.categories).filter(or_(Categories.name==x for x in relevant_categories))filter(Categories.downvote_category <= max_downvote_category).all()
+    matching_insight = Insights.query.join(Insights.categories).filter(or_(Categories.name==x for x in relevant_categories)).filter(Categories.downvote_category <= max_downvote_category).all()
 
     #if (information for paper_id does not exist) create information with paper_id
     for x in matching_insight:
@@ -350,6 +349,16 @@ def typ_error():
     i.type_error = i.type_error + 1
     db.session.commit()
     return jsonify(response_object)
+
+@api.route('/get_categories', methods = ['POST'])
+def get_categories():
+    url = request.get_json().get('url')
+    relevant_categories_scraper = scraper.get_leaf_categories(url)
+    print(relevant_categories_scraper)
+    relevant_categories = ['laboratory experiments', 'supervised learning by classification', 'category3']
+
+    return jsonify(relevant_categories)
+
 
 
 
