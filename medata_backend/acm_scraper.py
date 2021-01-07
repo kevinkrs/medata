@@ -200,6 +200,7 @@ def get_conference(link):
 
         conference = soup.find(class_="left-bordered-title").text
     else:
+        #TODO return Journals name it was published under
         conference = "Not published with a Conference"
     return conference
 
