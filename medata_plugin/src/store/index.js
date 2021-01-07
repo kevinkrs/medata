@@ -110,19 +110,19 @@ export default createStore({
 
     // TODO: Implement query as paperID when backend is ready
     sendAnswer () {   // DONE
-      return postAnswer('50', this.state.currentIn, this.state.currentUserInput)
+      return postAnswer(this.state.query, this.state.currentIn, this.state.currentUserInput)
         .then((response) => {console.log(response)})
         .catch((error) => {console.error(error)})
     },
     // User can rate answer by clicking on it -> green & yellow
     sendRateAnswer () { // DONE
-      return postRateAnswer("50", this.state.currentIn, this.state.currentAnswer, this.state.answerUpvoteBool)
+      return postRateAnswer(this.state.query, this.state.currentIn, this.state.currentAnswer, this.state.answerUpvoteBool)
         .then((response) => {console.log(response)})
         .catch((error) => {console.error(error)})
     },
   
     sendInsight () { // TODO when currentyCategory from backend is available 
-      return postInsight("50", this.state.userInput, this.state.currentCategory)
+      return postInsight(this.state.query, this.state.userInput, this.state.currentCategory)
         .then((response) => {console.log(response)})
         .catch((error) => {console.error(error)})
     },
@@ -130,7 +130,7 @@ export default createStore({
 
   // TODO LAST: When everything else works, we might implement this feature
     sendRateRelevanceInsight () {
-      return postRateRelevanceInsight("50", this.state.currentIn, this.state.insightVoteBool)
+      return postRateRelevanceInsight(this.state.query, this.state.currentIn, this.state.insightVoteBool)
         .then((response) => {console.log(response)})
         .catch((error) => {console.error(error)})
     }, 
@@ -140,7 +140,7 @@ export default createStore({
         .catch((error) => {console.error(error)})
     },
     sendValueError() {
-      return postRateAnswer("50", this.state.currentIn, this.state.currentAnswer, false)
+      return postRateAnswer(this.state.query, this.state.currentIn, this.state.currentAnswer, false)
         .then((response) => {console.log(response)})
         .catch((error) => {console.error(error)})
     },

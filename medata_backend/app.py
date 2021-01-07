@@ -3,7 +3,7 @@ from flask_cors import CORS
 from flask_sqlalchemy import SQLAlchemy
 from models import db
 from api import api
-from create_mock_data3 import create_mock_data
+from create_real_data import create_mock_data
 
 #configuration
 DEBUG = True
@@ -24,10 +24,11 @@ app.register_blueprint(api)
 #enable CORS
 CORS(app, resources={r'/*': {'origins': '*'}})
 
-#create mock data
-#with app.app_context():
-    #db.create_all()
-    #create_mock_data()
+
+# create mock data
+# with app.app_context():
+#     db.create_all()
+#     create_mock_data()
 
 
 
