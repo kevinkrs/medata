@@ -332,10 +332,11 @@ def insight_not_relevant_for_category():
     response_object = {'status': 'success'}
     post_data = request.get_json()
     in_insight_name = post_data.get('insight')
-    in_relevant_category = post_data.get('relevant_category')
+    in_categories = post_data.get('categories')
     ins = Insight.query.filter(Insights.name==in_insight_name).first()
-    category = Categories.query.filter(Categories.insight_id == ins.id).filter(Categories.name==in_relevant_category).first()
-    category.downvote_category = category.downvote_category + 1
+    categories = Categories.query.filter(Categories.insight_id == ins.id).filter(or_(Categories.name==x for x in in_categories)).all()
+    for category in categories:
+        category.downvote_category = category.downvote_category + 1
     db.session.commit()
     return jsonify(response_object)
 
@@ -355,6 +356,7 @@ def get_categories():
     url = request.get_json().get('url')
     relevant_categories_scraper = scraper.get_leaf_categories(url)
     print(relevant_categories_scraper)
+    #hardcoded for testing 
     relevant_categories = ['laboratory experiments', 'supervised learning by classification', 'category3']
 
     return jsonify(relevant_categories)
