@@ -51,33 +51,46 @@ def get_specific():
     relevant_categories_scraper = scraper.get_leaf_categories(url)
     print(relevant_categories_scraper)
 
+
+
     #hardcoded for now 
-    relevant_categories = ['laboratory experiments', 'supervised learning by classification', 'category3']
-    paper_id = "50"
+    #relevant_categories = ['laboratory experiments', 'supervised learning by classification', 'category3']
+    relevant_categories = relevant_categories_scraper
+    #paper_id = "50"
+    paper_id = url
+
     #for testing conditionals
     #relevant_categories = ['cats']
     #paper_id = "545654645"
 
+
+
     
     #insights filtered by category
     matching_insight = Insights.query.join(Insights.categories).filter(or_(Categories.name==x for x in relevant_categories)).filter(Categories.downvote_category <= max_downvote_category).all()
-
+    print(matching_insight)
     #if (information for paper_id does not exist) create information with paper_id
     for x in matching_insight:
         if (Information.query.filter(Information.insight_id==int(x.id)).filter(Information.paper_id==paper_id).count()==0):
             #if an Information is first created the authors will be automatically pulled and added:
 
             #TODO: activate this part with real paper_id 
-            # soup = scraper.get_facts_soup(scraper.get_soup(paper_id))
-            # authors_profile_link = scraper.get_authors(soup)
-            # authors = [scraper.name_from_profile(profile_link) for profile_link in authors_profile_link]
-            # title = scraper.get_title(soup)
-            # conference = scraper.get_conference(paper_id)
-            # authors_profile_link = ",".join(authors_profile_link)
-            # authors = ",".join(authors)
+            soup = scraper.get_facts_soup(scraper.get_soup(paper_id))
+            authors_profile_link = scraper.get_authors(soup)
+            authors = [scraper.name_from_profile(profile_link) for profile_link in authors_profile_link]
+            title = scraper.get_title(soup)
+            conference = scraper.get_conference(paper_id)
+            authors_profile_link = ",".join(authors_profile_link)
+            authors = ",".join(authors)
 
             #TODO: add title, conference, authors and authors_profile_link to the Information
-            i = Information(insight_id = x.id, insight_name=x.name, paper_id=paper_id)
+            i = Information(insight_id = x.id, 
+                            insight_name=x.name, 
+                            paper_id=paper_id,
+                            title = title,
+                            authors = authors,
+                            authors_profile_link = authors_profile_link,
+                            conference = conference)
             db.session.add(i)
     db.session.commit()
 
