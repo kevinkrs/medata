@@ -1,4 +1,3 @@
-
 <template>
 <div class = "extension">
   <div class="main-column">
@@ -61,7 +60,7 @@
     If it is, we display first the first div class "noData". If not empty we display second div -->
     <div v-if='metadata.length == 0'>
       <div class="noData">
-        <p> Sorry there is no data available for this category </p>
+        <p> Sorry there is no data for this category available yet </p>
       </div>
     </div>
       
@@ -346,9 +345,6 @@ export default {
       alert('Thanks for submitting!')
       this.userInput = ''
       this.$store.dispatch('loadMetadata')}
-    },
-    sendRelevanceInsight() {
-      this.$store.dispatch('sendRateRelevanceInsight')
     },
   
     sendDownloadRequest() {

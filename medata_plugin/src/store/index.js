@@ -6,9 +6,9 @@ export default createStore({
   state: {
     metadata: [],
     query: '', //query = paperID
-    currentIn: '', // Name is not neccessary 
-    currentInID: '', // TODO
-    currentCategories: [], // TODO
+    currentIn: '', 
+    currentInID: '', 
+    currentCategories: [], 
     currentIn: '', 
     currentAnswer: '', 
     answerUpvoteBool: true,
@@ -144,21 +144,6 @@ export default createStore({
     },
     sendValueError() {
       return postRateAnswer(this.state.query, this.state.currentIn, this.state.currentAnswer, false)
-        .then((response) => {console.log(response)})
-        .catch((error) => {console.error(error)})
-    },
-    sendTypeError() {
-      return postTypeError(this.state.currentIn)
-        .then((response) => {console.log(response)})
-        .catch((error) => {console.error(error)})
-    }, 
-    sendInsightNotRelevantError() {
-      return postInsightNotRelevant(this.state.currentIn, this.state.currentCategory)
-        .then((response) => {console.log(response)})
-        .catch((error) => {console.error(error)})
-    },
-    sendValueError() {
-      return postRateAnswer("50", this.state.currentIn, this.state.currentAnswer, false)
         .then((response) => {console.log(response)})
         .catch((error) => {console.error(error)})
     },

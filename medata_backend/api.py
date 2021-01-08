@@ -367,6 +367,7 @@ def typ_error():
 def get_categories():
     #TODO ist das Kunst oder kann das weg?
     url = request.get_json().get('url')
+    print(url)
     relevant_categories_scraper = scraper.get_leaf_categories(url)
     print(relevant_categories_scraper)
     #hardcoded for testing 
