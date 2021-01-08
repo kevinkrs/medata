@@ -3,6 +3,7 @@ from sqlalchemy import or_, exists, and_, not_
 from datetime import datetime
 from models import db, Insights, Information, Answers, Categories
 import pandas as pd
+import acm_scraper as scraper
 
 
 api = Blueprint('api', __name__)
@@ -42,35 +43,60 @@ def get_specific():
         [json]: [if no insights yet an empty string is returned, otherwise a json object with all relevant Insights is returned]
     """
     response_object_length = 7
+    max_downvote_category = 2
     response_object = []
     #fetch data from request
     url = request.get_json().get('url')
-    print(url)
-    #relevant_categories_scraper = acm_scraper.get_leaf_categories(url)
+    #print(url)
+    relevant_categories_scraper = scraper.get_leaf_categories(url)
     #print(relevant_categories_scraper)
 
+
+
     #hardcoded for now 
-    relevant_categories = ['laboratory experiments', 'supervised learning by classification', 'category3']
-    paper_id = "50"
-    #for testing conditionals
-    #relevant_categories = ['cats']
-    #paper_id = "545654645"
+    #relevant_categories = ['laboratory experiments', 'supervised learning by classification', 'category3']
+    relevant_categories = relevant_categories_scraper
+    #paper_id = "50"
+    paper_id = url
+
 
     
     #insights filtered by category
-    matching_insight = Insights.query.join(Insights.categories).filter(or_(Categories.name==x for x in relevant_categories)).all()
-
+    matching_insight = Insights.query.join(Insights.categories).filter(or_(Categories.name==x for x in relevant_categories)).filter(Categories.downvote_category <= max_downvote_category).all()
+    #print(matching_insight)
     #if (information for paper_id does not exist) create information with paper_id
     for x in matching_insight:
         if (Information.query.filter(Information.insight_id==int(x.id)).filter(Information.paper_id==paper_id).count()==0):
-            i = Information(insight_id = x.id, insight_name=x.name, paper_id=paper_id)
+            #if an Information is first created the authors will be automatically pulled and added:
+
+            #TODO: activate this part with real paper_id 
+            soup = scraper.get_facts_soup(scraper.get_soup(paper_id))
+            authors_profile_link = scraper.get_authors(soup)
+            authors = [scraper.name_from_profile(profile_link) for profile_link in authors_profile_link]
+            title = scraper.get_title(soup)
+            conference = scraper.get_conference(paper_id)
+            authors_profile_link = "--".join(authors_profile_link)
+            authors = "--".join(authors)
+
+            #TODO: add title, conference, authors and authors_profile_link to the Information
+            i = Information(insight_id = x.id, 
+                            insight_name=x.name, 
+                            paper_id=paper_id,
+                            title = title,
+                            authors = authors,
+                            authors_profile_link = authors_profile_link,
+                            conference = conference)
             db.session.add(i)
     db.session.commit()
 
     #filtered information, ordered by answer_score 
+    print("----------------------------------")
     filtered_information_answers = Information.query.join(Information.answers).filter(or_(Information.insight_id==int(x.id) for x in matching_insight)).filter(Information.paper_id==paper_id).order_by(Answers.answer_score.desc()).all()
     response_object_length = response_object_length - len(filtered_information_answers)
-    filtered_information_without_answers = Information.query.filter(or_(Information.insight_id==int(x.id) for x in matching_insight)).filter(Information.paper_id==paper_id).order_by(Information.insight_upvotes-Information.insight_downvotes).limit(response_object_length).all()
+    #print(f"Info with answer: {len(filtered_information_answers)}")
+    filtered_information_without_answers = Information.query.filter(or_(Information.insight_id==int(x.id) for x in matching_insight)).filter(Information.paper_id==paper_id).filter(Information.answers == None).order_by((Information.insight_upvotes-Information.insight_downvotes).desc()).limit(response_object_length).all()
+    
+    #print(f"Infos w/o answers: {len(filtered_information_without_answers)}")
     for x in filtered_information_answers:
         response_object.append(x.to_dict())
 
@@ -79,11 +105,13 @@ def get_specific():
             response_object.append(x.to_dict())
 
     if (Information.query.filter(or_(Information.insight_id==int(x.id) for x in matching_insight)).filter(Information.paper_id==paper_id).count()==0):
-        #response_object = []
-        #response_object.append(relevant_categories)
-        return jsonify([])
+        response_object = []
+        #x = {'relevant_categories': relevant_categories}
+        #response_object.append(x)
+        return jsonify(response_object)
     else:
-        #response_object.append(relevant_categories)
+        x = {'relevant_categories': relevant_categories}
+        #response_object.append(x)
         return jsonify(response_object)
 
 
@@ -153,6 +181,7 @@ def add_answer():
     response_object = {'status': 'success'}
     #fetch data from request
     post_data = request.get_json()
+    print(post_data)
     in_paper_id = post_data.get('paper_id')
     in_insight_name = post_data.get('insight')
     in_answer = post_data.get('answer')
@@ -203,6 +232,7 @@ def rate_answer():
     response_object = {'status': 'success'}
     #fetch data from request
     post_data = request.get_json()
+    print(f"Rate Answer json: {post_data}")
     in_insight_name = post_data.get('insight')
     in_paper_id = post_data.get('paper_id')
     in_upvote = post_data.get('upvote')
@@ -224,8 +254,8 @@ def rate_answer():
     else :
         for a in ans:
             if (a.answer==in_answer):
-                a.answer_downvotes = a.answer_downvotes + 1
-                a.answer_score = a.answer_score - 1
+                a.answer_downvotes = a.answer_downvotes + 2
+                a.answer_score = a.answer_score - 2
 
     db.session.commit()
     return jsonify(response_object)
@@ -250,6 +280,7 @@ def rate_relevance_insight():
     response_object = {'status': 'success'}
     #fetch data from request
     post_data = request.get_json()
+    print(post_data)
     in_insight_name = post_data.get('insight')
     in_paper_id = post_data.get('paper_id')
     in_upvote = post_data.get('upvote')
@@ -268,13 +299,28 @@ def rate_relevance_insight():
     return jsonify(response_object)
 
 
-
 @api.route('/download', methods = ["POST"])
 def download():
+    """download the information of a single paper as a csv file
+
+    answer_score_threshold defines the minimum Answer score for the answer to appear in the results. 
+    A score of 1 should be the absolute minimum.
+
+    Returns:
+        csv file: includes title, authors name, link to the profile, all Insights and answers by descending answer score. 
+    """
+    answer_score_threshold = 1
     url = request.get_json().get('url')
-    inf = Information.query.join(Information.answers).filter(Information.paper_id==url).filter(Answers.answer_score > 1).order_by(Answers.answer_score.desc()).all()
+    inf = Information.query.join(Information.answers).filter(Information.paper_id==url).filter(Answers.answer_score > answer_score_threshold).order_by(Answers.answer_score.desc()).all()
     #catch aioor
-    data = [f"Title: {inf[0].title}", f"Author(s): {inf[0].authors}", f"Link to Profile: {inf[0].authors_profile_link}"]
+
+
+    # TODO: uncomment this
+    #makes a list of authors splitted by a ','
+    authors = inf[0].authors.split("--").strip()
+    #makes a list of links to authors profils
+    authors_profile_link = inf[0].authors_profile_link.split("--").strip()
+    
     data = [["Title: ", inf[0].title], ["Author(s): ", inf[0].authors], ["Link to Profile: ", inf[0].authors_profile_link]]
 
     for i in inf:
@@ -287,3 +333,51 @@ def download():
     df = pd.DataFrame(data, columns = ["", "data"])
     df.to_csv(r"medata_backend\exports\export_data.csv")
     return send_file("exports/export_data.csv")
+
+
+
+
+@api.route('/insight_not_relevant_for_category', methods = ["POST"])
+def insight_not_relevant_for_category():
+    response_object = {'status': 'success'}
+    post_data = request.get_json()
+    print(post_data)
+    in_insight_name = post_data.get('insight')
+    in_categories = post_data.get('categories')
+    ins = Insights.query.filter(Insights.name==in_insight_name).first()
+    categories = Categories.query.filter(Categories.insight_id == ins.id).filter(or_(Categories.name==x for x in in_categories)).all()
+    for category in categories:
+        category.downvote_category = category.downvote_category + 1
+    db.session.commit()
+    return jsonify(response_object)
+
+    
+@api.route('/type_error', methods = ['POST'])
+def typ_error():
+    response_object = {'status': 'success'}
+    post_data = request.get_json()
+    print(f"Type Error json: {post_data}")
+    in_insight_name = post_data.get('insight')
+    i = Insights.query.filter(Insights.name==in_insight_name).first()
+    i.type_error = i.type_error + 1
+    db.session.commit()
+    return jsonify(response_object)
+
+@api.route('/get_categories', methods = ['POST'])
+def get_categories():
+    #TODO ist das Kunst oder kann das weg?
+    url = request.get_json().get('url')
+    relevant_categories_scraper = scraper.get_leaf_categories(url)
+    print(relevant_categories_scraper)
+    #hardcoded for testing 
+    #relevant_categories = ['Laboratory experiments', 'supervised learning by classification', 'category3']
+
+    return jsonify(relevant_categories_scraper)
+
+
+
+
+
+
+
+

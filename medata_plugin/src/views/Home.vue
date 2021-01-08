@@ -82,7 +82,7 @@
         <div v-if='entry.answer.length == 0' class= "insight-button">
           <!--With a click on the colored button the function visable is called and the id of the insight
           is passed. This ensures that the corresponding toggle box becomes visible.-->
-          <button class="insight-button-red" @click="visible(entry.id), saveInName(entry.name)">
+          <button class="insight-button-red" @click="visible(entry.id), saveInName(entry.name), sendInsightRelevance()">
             <div :id=entry.id-1000 style="display:inline"><img class="img-button" src="../assets/arrow-down.png" ></div>
             <div :id=entry.id-2000 style="display:none"><img class="img-button" src="../assets/arrow-up.png" ></div>      
           </button>
@@ -90,8 +90,8 @@
             <div :id=entry.id+1000 style="display:none">
               <div class="insight-toggleBox">
                 <button class="error-button" @click="visible2(entry.id+1000)">back</button>
-                <button id ="error1" class="error-button-2" @click='saveSelectedError("type_error")'>Type Error</button> <br> 
-                <button id ="error2" class="error-button-2" @click='saveSelectedError("relevance_error")'>Not relevant insight for this paper</button>
+                <button id ="error1" class="error-button-2" @click='saveSelectedError("type_error"), sendTypeError()'>Type Error</button> <br> 
+                <button id ="error2" class="error-button-2" @click='saveSelectedError("relevance_error"), sendInsightNotRelevantError()'>Insight not relevant for this paper for this paper</button>
               </div>
             </div> 
 
@@ -109,7 +109,7 @@
 
         </div>
         <div div v-else-if="entry.answer[0].answer_score < 3" class="insight-button">
-          <button class="insight-button-yellow" @click="visible(entry.id), saveInName(entry.name)">
+          <button class="insight-button-yellow" @click="visible(entry.id), saveInName(entry.name), sendInsightRelevance()">
             <div :id=entry.id-1000 style="display:inline"><img class="img-button" src="../assets/arrow-down.png" ></div>
             <div :id=entry.id-2000 style="display:none"><img class="img-button" src="../assets/arrow-up.png" ></div>
           </button>
@@ -117,8 +117,8 @@
             <div :id=entry.id+1000 style="display:none">
               <div class="insight-toggleBox">
                 <button class="error-button" @click="visible2(entry.id+1000)">back</button>
-                <button id ="error1" class="error-button-2" @click='saveSelectedError("type_error")'>Type Error</button> <br> 
-                <button id ="error2" class="error-button-2" @click='saveSelectedError("relevance_error")'>Not relevant insight for this paper</button>
+                <button id ="error1" class="error-button-2" @click='saveSelectedError("type_error"),sendTypeError()'>Type Error</button> <br> 
+                <button id ="error2" class="error-button-2" @click='saveSelectedError("relevance_error"), sendInsightNotRelevantError()'>Insight not relevant for this paper</button>
               </div>
             </div> 
 
@@ -131,7 +131,7 @@
                <div class="row">
                     <div v-for="answer in entry.answer" :key ="answer">
                       <!--How can i connect v-model directly -->
-                      <button type="button"  class="answer-button" @click="saveAnswerSelection(answer.answer)">
+                      <button type="button"  class="answer-button" @click="saveAnswerSelection(answer.answer), sendAnsweSelection()">
                         {{answer.answer}}
                       </button>
                     </div>
@@ -145,7 +145,7 @@
           </div>
         </div>
         <div v-else class="insight-button">
-          <button class="insight-button-green" @click="visible(entry.id), saveInName(entry.name)">
+          <button class="insight-button-green" @click="visible(entry.id), saveInName(entry.name), sendInsightRelevance(), saveAnswerSelection(entry.answer[0].answer)">
             <div :id=entry.id-1000 style="display:inline"><img class="img-button" src="../assets/arrow-down.png" ></div>
             <div :id=entry.id-2000 style="display:none"><img class="img-button" src="../assets/arrow-up.png" ></div>
           </button>
@@ -153,8 +153,8 @@
             <div :id=entry.id+1000 style="display:none">
               <div class="insight-toggleBox">
                 <button class="error-button" @click="visible2(entry.id+1000)">back</button>
-                 <button id ="error1" class="error-button-2" @click='saveSelectedError("type_error")'>Type Error</button> <br> 
-                <button id ="error2" class="error-button-2" @click='saveSelectedError("value_error")'>Value Error</button>
+                 <button id ="error1" class="error-button-2" @click='saveSelectedError("type_error"),sendTypeError()'>Type Error</button> <br> 
+                <button id ="error2" class="error-button-2" @click='saveSelectedError("value_error"), sendValueError()'>Value Error</button>
               </div>
             </div> 
 
@@ -166,10 +166,9 @@
                 <p> {{entry.answer[0].answer_upvotes}} users confirmed <br>
                     this information <br>
                 </p>
-              <button class="submit-button" @click='saveAnswerSelection(entry.answer[0].answer)'>confirm</button>
+              <button class="submit-button" @click='sendAnswerSelection()'>confirm</button>
               <!--TODO: What do we want to report in particular? Text, an error id...?
               Do we even need this error button? Because now we have the "report an error field at the top left corner?-->
-              <button id ="error3" class="report-button" @click='saveSelectedError("general")'>report an error</button>
             </div>
           </div>
         </div>
@@ -210,7 +209,7 @@
             </button>
             <div id=-5 style="display:none">
               <div class="grey-toggleBox">
-                <input type="text" autocomplete="off" @input = "filterParameters" v-model="userInput" class="grey-add-inputfield" @focus = "modal = true"/>
+                <input type="text" autocomplete="off" @keyup.enter='saveUserInput(),sendUserInsight()' @input = "filterParameters" v-model="userInput" class="grey-add-inputfield" @focus = "modal = true"/>
                 <div v-if="filtered && modal">
                   <ul>
                     <li class = "autocomplete" v-for="param in filtered" :key ="param"  @click = "setParam(param)">
@@ -219,7 +218,7 @@
                   </ul>
                 </div>
                 <div class="submit-button2">
-                  <button type="button" class="submit-button" @click='saveUserAnswer(),sendUserInsight()'>Submit</button>
+                  <button type="button" class="submit-button" @click='saveUserInput(),sendUserInsight()'>Save</button>
                 </div>
               </div>
             </div>
@@ -312,10 +311,6 @@ export default {
     },
     saveAnswerSelection(answer) {
       this.$store.dispatch('fetchUserAnswer', answer) 
-      this.$store.dispatch('sendRateAnswer')
-      alert('Thanks for rating!')
-      this.userInput = ''
-      this.$store.dispatch('loadMetadata')
     },
     // TODO: This method saves & sends user Input 
     saveUserInput() {
@@ -326,6 +321,13 @@ export default {
          this.$store.dispatch('fetchUserInput', this.userInput)
       }
     },
+    sendAnsweSelection() {
+      this.$store.dispatch('sendRateAnswer')
+      alert('Thanks for rating!')
+      this.userInput = ''
+      this.$store.dispatch('loadMetadata')
+    },
+
     sendUserAnswer() {
         this.$store.dispatch('sendAnswer')
         alert('Thanks for submitting!')
@@ -334,7 +336,7 @@ export default {
     },
     sendUserInsight() {
       // Activate when category is finally saved to the state 
-     // this.store.dispatch('sendInsight')
+      this.$store.dispatch('sendInsight')
       alert('Thanks for submitting!')
       this.userInput = ''
       this.$store.dispatch('loadMetadata')
@@ -343,11 +345,30 @@ export default {
     sendDownloadRequest() {
       this.$store.dispatch("loadDownload")
     },
-    // Saves the selcted error as parameter to the state 
+    // DEPRECATED
     saveSelectedError(name){
       this.$store.dispatch('fetchError', name)
       alert('Thanks for reporting an error')
     },
+    // User sends relevance of insight (upvote) on insight click
+    sendInsightRelevance(){
+      this.$store.dispatch('sendRateRelevanceInsight')
+      this.$store.dispatch('loadMetadata')
+    },
+
+    sendInsightNotRelevantError() {
+      this.$store.dispatch('sendInsightNotRelevantError')
+      this.$store.dispatch('loadMetadata')
+    },
+    sendValueError() {
+      this.$store.dispatch('sendValueError')
+      this.$store.dispatch('loadMetadata')
+    },
+     sendTypeError() {
+       this.$store.dispatch('sendTypeError')
+        this.$store.dispatch('loadMetadata')
+     }
+
   },
   // mapstate is a Vuex component (using computed) summarizing the command of this.$store.state.metadata
   // we can easily load all our state objects inside our Home-Component and access it by calling this."propertyname"
@@ -357,7 +378,8 @@ export default {
         'currentIn',
         'currentAnswer',
         'currentUserInput',
-        'selectedError'
+        'selectedError',
+        'currentCategories'
     ]),
 
   }

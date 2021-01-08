@@ -1,21 +1,20 @@
 import { createStore } from 'vuex'
-import { fetchMetadata, postInsight, postAnswer, postRateAnswer, postRateRelevanceInsight, fetchDownload } from '@/api'
-import { createCommentVNode } from 'vue'
+import { fetchMetadata, fetchCategories, postInsight, postAnswer, postRateAnswer, postRateRelevanceInsight, fetchDownload, postTypeError, postInsightNotRelevant } from '@/api'
+
 
 export default createStore({
   state: {
     metadata: [],
-    query: '', //query = paperID
+    query: 'https://dl.acm.org/doi/10.1145/3409474', //query = paperID
     currentIn: '', // Name is not neccessary 
     currentInID: '', // TODO
-    currentCategory: '', // TODO
+    currentCategories: {}, // TODO
     currentIn: '', 
     currentAnswer: '', 
-    currentCategory: '', 
     answerUpvoteBool: true,
     currentUserInput: '',
     selectedError: '', // User can report an error and select on of three possibilites
-    insightVoteBool: null //This boolean is for up- or downvoting insights by the user
+    insightVoteBool: true //This boolean is for up- or downvoting insights by the user, default is true, insight is upvoted @click and only set to false for downvoting via InsightNotRelevantForCategory
   },
   mutations: {
     // Saving the data from backend to the "metadata array"
@@ -37,9 +36,8 @@ export default createStore({
     setCurrentAnswer (state, payload){
       state.currentAnswer = payload.currentAnswer
     },
-    setCategory(state, payload) {
-      // TODO when category from backend is available 
-      //  state.currentCategory = payload.currentCategory
+    setCategories(state, payload) {
+      state.currentCategories = payload.currentCategories
       },
     setUserInput(state, payload) {
         state.currentUserInput = payload.currentUserInput
@@ -64,7 +62,7 @@ export default createStore({
         .catch((error) => {console.error(error)}) 
     },
     // Triggers function to get a csv file with the current insights and send it to the FE. User gets possibility to download data
-    loadDownload ({commit}) {
+    loadDownload () {
       return fetchDownload(this.state.query)
         .then((response) => {
           var fileURL = window.URL.createObjectURL(new Blob([response.data]))
@@ -76,6 +74,13 @@ export default createStore({
         })
         .catch((error) => {console.error(error)})
     },
+    // Loads categorie array into state 
+    loadCategories({commit}){
+      return fetchCategories(this.state.query)
+        .then((response) => commit('setCategories', {currentCategories: response.data}))
+        .catch((error) => {console.error(error)}) 
+    },
+
     saveUserInput ({commit}, payload) {
   
       commit('setUserInput', {userInput: payload})
@@ -95,7 +100,7 @@ export default createStore({
     fetchInName ({commit}, payload) {
       commit('setCurrentInName', {currentIn: payload})
     },
-    // Saves user selected error type
+    // DEPRICATED -> Error name not relevant, click on error button dispatches the right call to backend
     fetchError ({commit}, payload) {
       commit('setSelectedError', payload)
     },
@@ -110,30 +115,44 @@ export default createStore({
 
     // TODO: Implement query as paperID when backend is ready
     sendAnswer () {   // DONE
-      return postAnswer('50', this.state.currentIn, this.state.currentUserInput)
+      return postAnswer(this.state.query, this.state.currentIn, this.state.currentUserInput)
         .then((response) => {console.log(response)})
         .catch((error) => {console.error(error)})
     },
     // User can rate answer by clicking on it -> green & yellow
     sendRateAnswer () { // DONE
-      return postRateAnswer("50", this.state.currentIn, this.state.currentAnswer, this.state.answerUpvoteBool)
+      return postRateAnswer(this.state.query, this.state.currentIn, this.state.currentAnswer, this.state.answerUpvoteBool)
         .then((response) => {console.log(response)})
         .catch((error) => {console.error(error)})
     },
   
-    sendInsight () { // TODO when currentyCategory from backend is available 
-      return postInsight("50", this.state.userInput, this.state.currentCategory)
+    sendInsight () { // NOT TESTED YET
+      return postInsight(this.state.query, this.state.currentUserInput, this.state.currentCategories)
         .then((response) => {console.log(response)})
         .catch((error) => {console.error(error)})
     },
 
-
-  // TODO LAST: When everything else works, we might implement this feature
     sendRateRelevanceInsight () {
-      return postRateRelevanceInsight("50", this.state.currentIn, this.state.insightVoteBool)
+      return postRateRelevanceInsight(this.state.query, this.state.currentIn, this.state.insightVoteBool)
+        .then((response) => {console.log(response)})
+        .catch((error) => {console.error(error)})
+    }, 
+    sendInsightNotRelevantError() {
+      return postInsightNotRelevant(this.state.currentIn, this.state.currentCategories)
+        .then((response) => {console.log(response)})
+        .catch((error) => {console.error(error)})
+    },
+    sendValueError() {
+      return postRateAnswer(this.state.query, this.state.currentIn, this.state.currentAnswer, false)
+        .then((response) => {console.log(response)})
+        .catch((error) => {console.error(error)})
+    },
+    sendTypeError() {
+      return postTypeError(this.state.currentIn)
         .then((response) => {console.log(response)})
         .catch((error) => {console.error(error)})
     }
+
   },
     getters: {
       getCategory() {
