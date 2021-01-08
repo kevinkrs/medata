@@ -4,7 +4,7 @@
   <div class="about">
       <h1>Welcome to Medata!</h1>
       <div>
-        <button class ="mainButton" @click= 'checkURL()' @keyup.enter='checkURL'>Load Data</button>
+        <input type='button' class ="mainButton" value='Load Data' @click='checkURL()' @keyup.enter='checkURL()'/>
       </div>
     </div>
   </div>
@@ -72,6 +72,7 @@ export default {
 }
 .mainButton{
   border-radius: 5px;
+  text-align: center;
   width: 90px;
   height: 50px;
   color: white;
