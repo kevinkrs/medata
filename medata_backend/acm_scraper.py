@@ -30,6 +30,7 @@ def main():
     """
 
     url = "https://dl.acm.org/doi/10.1145/3230543.3230575"
+    url = "https://dl.acm.org/doi/10.1145/3432935"
     soup = get_soup(url)
     leaf_cats = get_categories(soup)
     facts_soup = get_facts_soup(soup)
@@ -40,6 +41,8 @@ def main():
 
     authors = get_authors(facts_soup)
     print("------------------")
+    for author in authors:
+        name_from_profile(author)
     # for author in authors:
     #     name = name_from_profile(author)
     #     print(name)
@@ -136,13 +139,14 @@ def get_authors(facts_soup):
         # #print(f"{author}\n\n\n")
         # print(author.find("a").get("title")) #Name of the Author
         # print(author.find(class_="author-info__body").find("p").text) #Institute he/she is working at
-
-        authors_profile_link = author.find(class_="author-info").find("a").get("href")#
-        authors_profile_link = "https://dl.acm.org" + authors_profile_link
-        
-        authors_profile_list.append(authors_profile_link)
-        print(authors_profile_link) #link to their profile
-
+        try:
+            authors_profile_link = author.find(class_="author-info").find("a").get("href")
+            authors_profile_link = "https://dl.acm.org" + authors_profile_link
+            
+            authors_profile_list.append(authors_profile_link)
+            # print(authors_profile_link) #link to their profile
+        except AttributeError as ae:
+            print(f"AttributeError: {ae}")
 
         #print(name_from_profile(author.find(class_="author-info").find("a").get("href")))          
     return authors_profile_list
@@ -161,11 +165,22 @@ def name_from_profile(link):
         url = link
     else:
         url = "https://dl.acm.org"+link
+    # print(url)
 
-    html = requests.get(url).text
-    profile = BeautifulSoup(html, "lxml")
+    if r"/author/" in url:
+        name = re.sub(r"[\W\w]*\/author\/", "", url)
+        n = re.split(",",name)
+        n[0], n[1] = n[1],n[0]
+        for i in n:
+            i.strip()
+        name = " ".join(n)
+    else:
+        #at recently published papers it may happen that the profile of the author is not yet linked to the paper
+        html = requests.get(url).text
+        profile = BeautifulSoup(html, "lxml")
+        #print(f"scraper.name_from_profile for this url: {url}")
+        name = profile.find(class_="colored-block item-meta profile-meta").find("h2").text.replace("  "," ").strip()
 
-    name = profile.find(class_="colored-block item-meta profile-meta").find("h2").text.replace("  "," ").strip()
     return name
     
 
@@ -194,13 +209,16 @@ def get_conference(link):
 
 
     #first you have to remove the paperid from the link to get the conference link
+    if re.match(r"[\W\w]*\/\d{4,}.\d{4,}", link):
+        conf_link = re.sub(r'\.\d{5,}', "", link)
+        print(conf_link)
+        html = requests.get(conf_link).text
+        soup = BeautifulSoup(html, "lxml")
 
-    conf_link = re.sub(r'\.\d{5,}', "", link)
-    print(conf_link)
-    html = requests.get(conf_link).text
-    soup = BeautifulSoup(html, "lxml")
-
-    conference = soup.find(class_="left-bordered-title").text
+        conference = soup.find(class_="left-bordered-title").text
+    else:
+        #TODO return Journals name it was published under
+        conference = "Not published with a Conference"
     return conference
 
 

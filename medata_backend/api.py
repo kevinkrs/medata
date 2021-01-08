@@ -47,37 +47,45 @@ def get_specific():
     response_object = []
     #fetch data from request
     url = request.get_json().get('url')
-    print(url)
+    #print(url)
     relevant_categories_scraper = scraper.get_leaf_categories(url)
-    print(relevant_categories_scraper)
+    #print(relevant_categories_scraper)
+
+
 
     #hardcoded for now 
-    relevant_categories = ['laboratory experiments', 'supervised learning by classification', 'category3']
-    paper_id = "50"
-    #for testing conditionals
-    #relevant_categories = ['cats']
-    #paper_id = "545654645"
+    #relevant_categories = ['laboratory experiments', 'supervised learning by classification', 'category3']
+    relevant_categories = relevant_categories_scraper
+    #paper_id = "50"
+    paper_id = url
+
 
     
     #insights filtered by category
     matching_insight = Insights.query.join(Insights.categories).filter(or_(Categories.name==x for x in relevant_categories)).filter(Categories.downvote_category <= max_downvote_category).all()
-
+    #print(matching_insight)
     #if (information for paper_id does not exist) create information with paper_id
     for x in matching_insight:
         if (Information.query.filter(Information.insight_id==int(x.id)).filter(Information.paper_id==paper_id).count()==0):
             #if an Information is first created the authors will be automatically pulled and added:
 
             #TODO: activate this part with real paper_id 
-            # soup = scraper.get_facts_soup(scraper.get_soup(paper_id))
-            # authors_profile_link = scraper.get_authors(soup)
-            # authors = [scraper.name_from_profile(profile_link) for profile_link in authors_profile_link]
-            # title = scraper.get_title(soup)
-            # conference = scraper.get_conference(paper_id)
-            # authors_profile_link = ",".join(authors_profile_link)
-            # authors = ",".join(authors)
+            soup = scraper.get_facts_soup(scraper.get_soup(paper_id))
+            authors_profile_link = scraper.get_authors(soup)
+            authors = [scraper.name_from_profile(profile_link) for profile_link in authors_profile_link]
+            title = scraper.get_title(soup)
+            conference = scraper.get_conference(paper_id)
+            authors_profile_link = "--".join(authors_profile_link)
+            authors = "--".join(authors)
 
             #TODO: add title, conference, authors and authors_profile_link to the Information
-            i = Information(insight_id = x.id, insight_name=x.name, paper_id=paper_id)
+            i = Information(insight_id = x.id, 
+                            insight_name=x.name, 
+                            paper_id=paper_id,
+                            title = title,
+                            authors = authors,
+                            authors_profile_link = authors_profile_link,
+                            conference = conference)
             db.session.add(i)
     db.session.commit()
 
@@ -224,6 +232,7 @@ def rate_answer():
     response_object = {'status': 'success'}
     #fetch data from request
     post_data = request.get_json()
+    print(f"Rate Answer json: {post_data}")
     in_insight_name = post_data.get('insight')
     in_paper_id = post_data.get('paper_id')
     in_upvote = post_data.get('upvote')
@@ -271,6 +280,7 @@ def rate_relevance_insight():
     response_object = {'status': 'success'}
     #fetch data from request
     post_data = request.get_json()
+    print(post_data)
     in_insight_name = post_data.get('insight')
     in_paper_id = post_data.get('paper_id')
     in_upvote = post_data.get('upvote')
@@ -305,11 +315,11 @@ def download():
     #catch aioor
 
 
-    #TODO: uncomment this
-    # #makes a list of authors splitted by a ','
-    # authors = inf[0].authors.split(",").strip()
-    # #makes a list of links to authors profils
-    # authors_profile_link = inf[0].authors_profile_link.split(",").strip()
+    # TODO: uncomment this
+    #makes a list of authors splitted by a ','
+    authors = inf[0].authors.split("--").strip()
+    #makes a list of links to authors profils
+    authors_profile_link = inf[0].authors_profile_link.split("--").strip()
     
     data = [["Title: ", inf[0].title], ["Author(s): ", inf[0].authors], ["Link to Profile: ", inf[0].authors_profile_link]]
 
@@ -331,11 +341,13 @@ def download():
 def insight_not_relevant_for_category():
     response_object = {'status': 'success'}
     post_data = request.get_json()
+    print(post_data)
     in_insight_name = post_data.get('insight')
-    in_relevant_category = post_data.get('relevant_category')
-    ins = Insight.query.filter(Insights.name==in_insight_name).first()
-    category = Categories.query.filter(Categories.insight_id == ins.id).filter(Categories.name==in_relevant_category).first()
-    category.downvote_category = category.downvote_category + 1
+    in_categories = post_data.get('categories')
+    ins = Insights.query.filter(Insights.name==in_insight_name).first()
+    categories = Categories.query.filter(Categories.insight_id == ins.id).filter(or_(Categories.name==x for x in in_categories)).all()
+    for category in categories:
+        category.downvote_category = category.downvote_category + 1
     db.session.commit()
     return jsonify(response_object)
 
@@ -344,6 +356,7 @@ def insight_not_relevant_for_category():
 def typ_error():
     response_object = {'status': 'success'}
     post_data = request.get_json()
+    print(f"Type Error json: {post_data}")
     in_insight_name = post_data.get('insight')
     i = Insights.query.filter(Insights.name==in_insight_name).first()
     i.type_error = i.type_error + 1
@@ -352,12 +365,14 @@ def typ_error():
 
 @api.route('/get_categories', methods = ['POST'])
 def get_categories():
+    #TODO ist das Kunst oder kann das weg?
     url = request.get_json().get('url')
     relevant_categories_scraper = scraper.get_leaf_categories(url)
     print(relevant_categories_scraper)
-    relevant_categories = ['laboratory experiments', 'supervised learning by classification', 'category3']
+    #hardcoded for testing 
+    #relevant_categories = ['Laboratory experiments', 'supervised learning by classification', 'category3']
 
-    return jsonify(relevant_categories)
+    return jsonify(relevant_categories_scraper)
 
 
 

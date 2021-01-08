@@ -13,6 +13,10 @@ export function fetchMetadata (query) {
   return axios.post(`${'get_specific'}`, {url: query})
 }
 
+export function fetchCategories(query) {
+  return axios.post(`${'get_categories'}`, {url: query})
+}
+
 export function postRateRelevanceInsight (inPaperId, inInsight, inUpvote) {
   return axios.post(`${'rate_relevance_insight'}`, {
     paper_id: inPaperId,
@@ -48,7 +52,6 @@ export function postInsight (inPaperId, inInsight, inCategories) {
 }
 
 export function fetchDownload (query) {
-  query = "50"
   return axios.post(`${'download'}`, {url: query}, {
     responseType: 'blob',
   })
@@ -57,7 +60,7 @@ export function fetchDownload (query) {
 export function postInsightNotRelevant (inInsight, inCategories) {
   return axios.post(`${'insight_not_relevant_for_category'}`, {
     insight: inInsight,
-    relevant_category: inCategories
+    categories: inCategories
   })
 }
 

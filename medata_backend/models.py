@@ -127,6 +127,10 @@ class Information(db.Model):
         return dict(id = self.insight_id,
         name = self.insight_name, 
         paper_id = self.paper_id,
+        title = self.title,
+        conference = self.conference,
+        authors = self.authors,
+        authors_profile_link = self.authors_profile_link,
         insight_upvotes = self.insight_upvotes,
         insight_downvotes = self.insight_downvotes,
         answer = self.limit_answers()
