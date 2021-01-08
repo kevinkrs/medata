@@ -8,7 +8,7 @@ export default createStore({
     query: 'https://dl.acm.org/doi/10.1145/3409474', //query = paperID
     currentIn: '', // Name is not neccessary 
     currentInID: '', // TODO
-    currentCategories: {}, // TODO
+    currentCategories: [], // TODO
     currentIn: '', 
     currentAnswer: '', 
     answerUpvoteBool: true,
