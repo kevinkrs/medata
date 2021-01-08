@@ -183,7 +183,7 @@
             download insights
           </div>
           <div class="grey-insight-button">
-            <button class="grey-button" @click="sendDownloadRequest()" @keyup.enter="sendDownloadRequest()">
+            <button class="grey-button" @click="sendDownloadRequest()">
             <div id=-1004 style="display:inline"><img class="img-button" src="../assets/direct-download.png" ></div>
             <div id=-2004 style="display:none"><img class="img-button" src="../assets/arrow-up.png" ></div>      
             </button>
