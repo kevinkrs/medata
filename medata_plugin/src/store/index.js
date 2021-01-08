@@ -5,7 +5,7 @@ import { fetchMetadata, fetchCategories, postInsight, postAnswer, postRateAnswer
 export default createStore({
   state: {
     metadata: [],
-    query: 'https://dl.acm.org/doi/10.1145/3409474', //query = paperID
+    query: '', //query = paperID
     currentIn: '', // Name is not neccessary 
     currentInID: '', // TODO
     currentCategories: [], // TODO
