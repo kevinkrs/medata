@@ -102,7 +102,7 @@
               <button class="error-button" @click="visible2(entry.id+1000)">report an error</button>
               <p>Please enter information:</p>
                 <!--TODO: implement button styles in CSS file-->
-              <input placeholder="your relevant data" v-model='userInput'><br>
+              <input placeholder="your relevant data" v-model='userInput' @keyup.enter='saveUserInput(), sendUserAnswer()'><br>
               <button class="submit-insight" @click="saveUserInput(), sendUserAnswer()">Submit</button>
             </div>
           </div>
@@ -131,7 +131,7 @@
                <div class="row">
                     <div v-for="answer in entry.answer" :key ="answer">
                       <!--How can i connect v-model directly -->
-                      <button type="button"  class="answer-button" @click="saveAnswerSelection(answer.answer), sendAnsweSelection()">
+                      <button type="button"  class="answer-button" @click="saveAnswerSelection(answer.answer), sendAnswerSelection()">
                         {{answer.answer}}
                       </button>
                     </div>
@@ -139,7 +139,7 @@
               </div>
               <br>
               <p> Add value </p>
-                <input class="userInput" v-model="userInput"> 
+                <input class="userInput" v-model="userInput" @keyup.enter='saveUserInput(), sendUserAnswer()'> 
                 <button class="submit-insight" @click="saveUserInput(), sendUserAnswer()">Submit</button>
             </div>
           </div>
@@ -167,8 +167,6 @@
                     this information <br>
                 </p>
               <button class="submit-button" @click='sendAnswerSelection()'>confirm</button>
-              <!--TODO: What do we want to report in particular? Text, an error id...?
-              Do we even need this error button? Because now we have the "report an error field at the top left corner?-->
             </div>
           </div>
         </div>
@@ -186,7 +184,7 @@
             download insights
           </div>
           <div class="grey-insight-button">
-            <button class="grey-button" @click="sendDownloadRequest()">
+            <button class="grey-button" @click="sendDownloadRequest()" @keyup.enter="sendDownloadRequest()">
             <div id=-1004 style="display:inline"><img class="img-button" src="../assets/direct-download.png" ></div>
             <div id=-2004 style="display:none"><img class="img-button" src="../assets/arrow-up.png" ></div>      
             </button>
@@ -209,7 +207,7 @@
             </button>
             <div id=-5 style="display:none">
               <div class="grey-toggleBox">
-                <input type="text" autocomplete="off" @keyup.enter='saveUserInput(),sendUserInsight()' @input = "filterParameters" v-model="userInput" class="grey-add-inputfield" @focus = "modal = true"/>
+                <input type="text" autocomplete="off" @keyup.enter='saveUserInput(), sendUserInsight()' @input = "filterParameters" v-model="userInput" class="grey-add-inputfield" @focus = "modal = true"/>
                 <div v-if="filtered && modal">
                   <ul>
                     <li class = "autocomplete" v-for="param in filtered" :key ="param"  @click = "setParam(param)">
@@ -218,7 +216,7 @@
                   </ul>
                 </div>
                 <div class="submit-button2">
-                  <button type="button" class="submit-button" @click='saveUserInput(),sendUserInsight()'>Save</button>
+                  <button type="button" class="submit-button" @click='saveUserInput(), sendUserInsight()'>Save</button>
                 </div>
               </div>
             </div>
@@ -315,31 +313,39 @@ export default {
     // TODO: This method saves & sends user Input 
     saveUserInput() {
       if (this.userInput == ''){
-        alert('Please enter some data before submittin!')
+        alert('Please enter some data before submitting!')
       }
       else{
          this.$store.dispatch('fetchUserInput', this.userInput)
       }
     },
-    sendAnsweSelection() {
+    // Yellow status for rating answers
+    sendAnswerSelection() {
       this.$store.dispatch('sendRateAnswer')
       alert('Thanks for rating!')
-      this.userInput = ''
       this.$store.dispatch('loadMetadata')
     },
-
+    // For new answers by user
     sendUserAnswer() {
+      if (this.currentUserInput == ''){
+        console.log('empty userInput')
+      }
+      else{
         this.$store.dispatch('sendAnswer')
         alert('Thanks for submitting!')
         this.userInput = ''
-        this.$store.dispatch('loadMetadata')
+        this.$store.dispatch('loadMetadata')}
     },
+    // For new insights by user
     sendUserInsight() {
-      // Activate when category is finally saved to the state 
+      if(this.currentUserInput == ''){
+        console.log('empty userInput')
+      }
+      else{
       this.$store.dispatch('sendInsight')
       alert('Thanks for submitting!')
       this.userInput = ''
-      this.$store.dispatch('loadMetadata')
+      this.$store.dispatch('loadMetadata')}
     },
   
     sendDownloadRequest() {

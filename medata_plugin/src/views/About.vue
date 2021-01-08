@@ -4,7 +4,7 @@
   <div class="about">
       <h1>Welcome to Medata!</h1>
       <div>
-        <button class ="mainButton" @click= 'checkURL()'>Load Data</button>
+        <button class ="mainButton" @click= 'checkURL()' @keyup.enter='checkURL'>Load Data</button>
       </div>
     </div>
   </div>
