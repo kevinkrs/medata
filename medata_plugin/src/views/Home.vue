@@ -128,13 +128,19 @@
               <div class="insight-answers">
                 <p>Please select <br> the correct Answer</p>
                <div class="row">
+                  <div :id=entry.id+10000 style="display:inline">
                     <div v-for="answer in entry.answer" :key ="answer">
                       <!--How can i connect v-model directly -->
-                      <button type="button"  class="answer-button" @click="saveAnswerSelection(answer.answer), sendAnswerSelection()">
-                        {{answer.answer}}
-                      </button>
+                      <button class="answer-button" @click="visible3(entry.id), saveAnswerSelection(answer.answer)"> {{answer.answer}} </button>
                     </div>
                   </div>
+                  <div :id=entry.id+10001 style="display:none">
+                    <div v-for="answer in entry.answer" :key ="answer">
+                      <!--How can i connect v-model directly -->
+                      <button class="submitted-button" @click="areadySubmitted()"> {{answer.answer}} </button>
+                    </div>      
+                  </div>
+                </div>
               </div>
               <br>
               <p> Add value </p>
@@ -254,6 +260,10 @@ export default {
       alert('Works!')
     },
 
+    areadySubmitted () {
+      alert('You already submitted')
+    },    
+
     filterParameters() {
       if (this.userInput.length == 0){
         this.filtered = []
@@ -271,7 +281,7 @@ export default {
     // TODO commments
     visible: function (divId) {
       /*The for loop closes all divs to ensure that only one div is open at a time*/
-      for (var i = -10000; i <= 10000; i++) {
+      for (var i = -10000; i <= 9000; i++) {
         if (document.getElementById(i) != null && i != divId){
         document.getElementById(i).style.display = 'none';
         }                
@@ -302,6 +312,12 @@ export default {
         document.getElementById(divId-1000).style.display = 'inline';
       }
     },
+
+    visible3: function (divId) {
+        document.getElementById(divId+10000).style.display = 'none';
+        document.getElementById(divId+10001).style.display = 'inline';
+    },
+
     // All the following methods are merely for saving data as state objects
     saveInName(name) {
       this.$store.dispatch('fetchInName', name)
@@ -601,8 +617,7 @@ export default {
   }
 
   .answer-button {
-    height: 30px;
-    width: 50px;
+    width: 50%;
     margin: 5px;
     padding: 5px;
     background-color: rgb(225, 225, 92);
@@ -640,6 +655,14 @@ export default {
     background-color: red;
     border-radius: 5px;
     margin-bottom: 10px;
+  }
+
+  .submitted-button {
+    width: 50%;
+    margin: 5px;
+    padding: 5px;
+    background-color: rgb(190, 190, 122);
+    border: 1px solid rgba(48, 48, 48, 0.94)
   }
 
 .noData{
