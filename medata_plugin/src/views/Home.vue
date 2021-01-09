@@ -3,19 +3,30 @@
   <div class="main-column">
 
     <!--Picture of the MEDATA logo-->
-    <img class="logo" src="../assets/medata_black.png" width="200">
-
+    <div class="headline">
+      <button id=-1006 style="display:inline" class="button-legend" @click="visible(-6)">
+        <div><img class="img-button-legend" src="../assets/info.png" ></div>
+      </button>
+      <button id=-2006 style="display:none" class="button-legend2" @click="visible(-6)">
+        <div><img class="img-button-legend" src="../assets/arrow-up.png" ></div>      
+      </button>
+      <img class="logo" src="../assets/medata_black.png" width="200">
+      <a href="https://git.scc.kit.edu/issd/students/teamproject/ws20-il">
+      <button class="insight-button-yellow">
+        <img class="img-button" src="../assets/github.png" >
+      </button></a>
+    </div>
+    
     <!--This fieldset element "grey-box" contains everything reagardin the legend-->
-    <fieldset class="grey-box">
-      <legend>Legend</legend>
+    <fieldset id=-6 style="display:none" class="grey-box-legend">
       <!--The three div elements "grey-insight" represent the the three boxes/insights inside the legend-->
       <div class="grey-insight">
         <div class="grey-insight-name">confirmed insigth</div>
         <!--The div "grey-insight-button" contains the green/yellow or red button and the corresponding fold-out toggle box-->
         <div class="grey-insight-button">
           <button class="insight-button-green" @click="visible(-1)">
-            <div id=-1001 style="display:inline"><img class="img-button" src="../assets/info.png" ></div>
-            <div id=-2001 style="display:none"><img class="img-button" src="../assets/arrow-up.png" ></div>      
+            <div id=-1001 style="display:inline"><img class="img-button" src="../assets/info-green.png" ></div>
+            <div id=-2001 style="display:none"><img class="img-button" src="../assets/arrow-up-green.png" ></div>      
           </button>
           <div id=-1 style="display:none">
             <div class="grey-toggleBox">
@@ -28,8 +39,8 @@
         <div class="grey-insight-name">validation needed</div>
         <div class="grey-insight-button">
           <button class="insight-button-yellow" @click="visible(-2)">
-            <div id=-1002 style="display:inline"><img class="img-button" src="../assets/info.png" ></div>
-            <div id=-2002 style="display:none"><img class="img-button" src="../assets/arrow-up.png" ></div>      
+            <div id=-1002 style="display:inline"><img class="img-button" src="../assets/info-yellow.png" ></div>
+            <div id=-2002 style="display:none"><img class="img-button" src="../assets/arrow-up-yellow.png" ></div>      
           </button>
           <div id=-2 style="display:none">
             <div class="grey-toggleBox">
@@ -44,8 +55,8 @@
         </div>
         <div class="grey-insight-button">
           <button class="insight-button-red" @click="visible(-3)">
-          <div id=-1003 style="display:inline"><img class="img-button" src="../assets/info.png" ></div>
-          <div id=-2003 style="display:none"><img class="img-button" src="../assets/arrow-up.png" ></div>      
+          <div id=-1003 style="display:inline"><img class="img-button" src="../assets/info-red.png" ></div>
+          <div id=-2003 style="display:none"><img class="img-button" src="../assets/arrow-up-red.png" ></div>      
           </button>
           <div id=-3 style="display:none">
             <div class="grey-toggleBox">
@@ -82,8 +93,8 @@
           <!--With a click on the colored button the function visable is called and the id of the insight
           is passed. This ensures that the corresponding toggle box becomes visible.-->
           <button class="insight-button-red" @click="visible(entry.id), saveInName(entry.name), sendInsightRelevance()">
-            <div :id=entry.id-1000 style="display:inline"><img class="img-button" src="../assets/arrow-down.png" ></div>
-            <div :id=entry.id-2000 style="display:none"><img class="img-button" src="../assets/arrow-up.png" ></div>      
+            <div :id=entry.id-1000 style="display:inline"><img class="img-button" src="../assets/arrow-down-red.png" ></div>
+            <div :id=entry.id-2000 style="display:none"><img class="img-button" src="../assets/arrow-up-red.png" ></div>      
           </button>
 
             <div :id=entry.id+1000 style="display:none">
@@ -108,9 +119,9 @@
 
         </div>
         <div div v-else-if="entry.answer[0].answer_score < 3" class="insight-button">
-          <button class="insight-button-yellow" @click="visible(entry.id), saveInName(entry.name), sendInsightRelevance()">
-            <div :id=entry.id-1000 style="display:inline"><img class="img-button" src="../assets/arrow-down.png" ></div>
-            <div :id=entry.id-2000 style="display:none"><img class="img-button" src="../assets/arrow-up.png" ></div>
+          <button class="insight-button-green" @click="visible(entry.id), saveInName(entry.name), sendInsightRelevance()">
+            <div :id=entry.id-1000 style="display:inline"><img class="img-button" src="../assets/arrow-down-yellow.png" ></div>
+            <div :id=entry.id-2000 style="display:none"><img class="img-button" src="../assets/arrow-up-yellow.png" ></div>
           </button>
 
             <div :id=entry.id+1000 style="display:none">
@@ -128,19 +139,13 @@
               <div class="insight-answers">
                 <p>Please select <br> the correct Answer</p>
                <div class="row">
-                  <div :id=entry.id+10000 style="display:inline">
                     <div v-for="answer in entry.answer" :key ="answer">
                       <!--How can i connect v-model directly -->
-                      <button class="answer-button" @click="visible3(entry.id), saveAnswerSelection(answer.answer)"> {{answer.answer}} </button>
+                      <button type="button"  class="answer-button" @click="saveAnswerSelection(answer.answer), sendAnswerSelection()">
+                        {{answer.answer}}
+                      </button>
                     </div>
                   </div>
-                  <div :id=entry.id+10001 style="display:none">
-                    <div v-for="answer in entry.answer" :key ="answer">
-                      <!--How can i connect v-model directly -->
-                      <button class="submitted-button" @click="areadySubmitted()"> {{answer.answer}} </button>
-                    </div>      
-                  </div>
-                </div>
               </div>
               <br>
               <p> Add value </p>
@@ -151,8 +156,8 @@
         </div>
         <div v-else class="insight-button">
           <button class="insight-button-green" @click="visible(entry.id), saveInName(entry.name), sendInsightRelevance(), saveAnswerSelection(entry.answer[0].answer)">
-            <div :id=entry.id-1000 style="display:inline"><img class="img-button" src="../assets/arrow-down.png" ></div>
-            <div :id=entry.id-2000 style="display:none"><img class="img-button" src="../assets/arrow-up.png" ></div>
+            <div :id=entry.id-1000 style="display:inline"><img class="img-button" src="../assets/arrow-down-green.png" ></div>
+            <div :id=entry.id-2000 style="display:none"><img class="img-button" src="../assets/arrow-up-green.png" ></div>
           </button>
 
             <div :id=entry.id+1000 style="display:none">
@@ -177,11 +182,10 @@
         </div>
       </div>
 
-      <div><br><br></div>
+      <div><br></div>
 
       <!--This fieldset element "grey-box" contains everything reagardin the "more-functions"-->
       <fieldset class="grey-box">
-        <legend>more functions</legend>
         <!--The three div elements "box-1-content" represent the the three elements inside the legend.
         Each element consists of a short text and a colored box-->
         <div class="grey-insight">
@@ -260,10 +264,6 @@ export default {
       alert('Works!')
     },
 
-    areadySubmitted () {
-      alert('You already submitted')
-    },    
-
     filterParameters() {
       if (this.userInput.length == 0){
         this.filtered = []
@@ -281,8 +281,8 @@ export default {
     // TODO commments
     visible: function (divId) {
       /*The for loop closes all divs to ensure that only one div is open at a time*/
-      for (var i = -10000; i <= 9000; i++) {
-        if (document.getElementById(i) != null && i != divId){
+      for (var i = -10000; i <= 10000; i++) {
+        if (document.getElementById(i) != null && i != divId && i != -6){
         document.getElementById(i).style.display = 'none';
         }                
       }
@@ -312,12 +312,6 @@ export default {
         document.getElementById(divId-1000).style.display = 'inline';
       }
     },
-
-    visible3: function (divId) {
-        document.getElementById(divId+10000).style.display = 'none';
-        document.getElementById(divId+10001).style.display = 'inline';
-    },
-
     // All the following methods are merely for saving data as state objects
     saveInName(name) {
       this.$store.dispatch('fetchInName', name)
@@ -415,8 +409,8 @@ export default {
   box-sizing: border-box;
   width: 300px;
   padding-bottom: 10px;
-  background-color: rgb(232, 232, 232);
-  font-family: Arial, Helvetica, sans-serif;
+  background-color:#ffffff;
+  font-family: Arial, Helvetica, sans-serif, sans-serif;
   font-size: 15px;
 }
 
@@ -429,8 +423,16 @@ export default {
   font-size: 120%;
 }
 
+.headline {
+  display: flex;
+  justify-content: space-between;
+  padding-left: 10px;
+  padding-right: 10px;
+}
+
 .logo{
   margin-bottom: 15px;
+  width: 50%;
 }
 
 /*grey- | design for "Legend" and "more functions"*/
@@ -438,15 +440,25 @@ export default {
     display: flex;
     flex-direction: column;
     flex-wrap: wrap;
-    border: 1px solid black;
+    border: 0px;
     padding: 10px;
     margin-bottom: 20px;
+    background-color: #f7f7f7;
+    border-radius: 5px 5px 5px 5px;
     box-shadow: 3px 3px 3px silver;
   }
-  
-  legend {
-    margin-left: 5px;
-    font-size: 15px, 
+
+  .grey-box-legend {
+    display: flex;
+    flex-direction: column;
+    flex-wrap: wrap;
+    width: 91.5%;
+    border: 0px;
+    padding: 10px;
+    margin-bottom: 20px;
+    background-color: #f7f7f7;
+    border-radius: 0px 5px 5px 5px;
+    box-shadow: 3px 3px 3px silver;
   }
 
   .grey-insight {
@@ -461,35 +473,26 @@ export default {
     height: 30px;
     padding: 8px;
     text-align: left;
-    background-color:  rgb(232, 232, 232);
-    box-shadow: 3px 3px 3px silver;
+    background-color:  #FFFFFF ;
     border-radius: 5px 0px 0px 5px;
-    border: 1px solid black;
-    border-right-style: none;
   }
 
   .grey-insight-button {
     width: 20%;
     padding: 8px;
-    background-color: rgb(232, 232, 232);
-    box-shadow: 3px 3px 3px silver;
+    background-color: #FFFFFF ;
     border-radius: 0px 5px 5px 0px;
-    border: 1px solid black;
-    border-left-style: none;
   }
 
   .grey-toggleBox {
   text-align: center;
   padding: 8px;
   margin-top: 30px;
-  margin-left: -382%;
-  margin-right: -9px;
+  margin-left: -384%;
+  margin-right: -8px;
   margin-bottom: -8px;
   border-radius: 0px 0px 5px 5px;
-  background-color:rgb(232, 232, 232);
-  box-shadow: 3px 3px 3px silver;
-  border: 1px solid black;
-  border-top-style: none;
+  background-color: #FFFFFF;
   }
 
   .grey-button {
@@ -509,18 +512,17 @@ export default {
   .insight {
     display: flex;
     justify-content: space-between;
-    padding-left: 20px;
-    padding-right: 20px;
     padding-top: 5px;
     padding-bottom: 5px;
+    padding-left: 2px;
+    padding-right: 2px;
   }
 
   .insight-name {
     width: 80%;
-    height: 30px;
     padding: 8px;
     text-align: left;
-    background-color: white;
+    background-color: #f7f7f7;
     box-shadow: 3px 3px 3px silver;
     border-radius: 5px 0px 0px 5px;
   }
@@ -528,33 +530,39 @@ export default {
   .insight-button {
     width: 20%;
     padding: 8px;
-    background-color: white;
+    background-color: #f7f7f7;
     box-shadow: 3px 3px 3px silver;
     border-radius: 0px 5px 5px 0px;
   }
 
  .insight-button-green {
-   border: none;
-   background: green;
+   border: 0px;
+   background-color: transparent;
+   outline: none;
    width: 30px;
    height: 30px;
    float: right;
+   border-radius: 5px;
    }
 
   .insight-button-yellow {
-   border: none;
-   background: yellow;
+   border: 0px;
+   background-color: transparent;
+   outline: none;
    width: 30px;
    height: 30px;
    float: right;
+   border-radius: 5px;
  }
   .insight-button-red {
-   border: none;
-   background: red;
+   border: 0px;
+   background-color: transparent;
+   outline: none;
    width: 30px;
    height: 30px;
    float: right;
    font-weight: bold;
+   border-radius: 5px;
  }
 
   .insight-button:focus{
@@ -617,7 +625,8 @@ export default {
   }
 
   .answer-button {
-    width: 50%;
+    height: 30px;
+    width: 50px;
     margin: 5px;
     padding: 5px;
     background-color: rgb(225, 225, 92);
@@ -626,12 +635,46 @@ export default {
 
   .answer-button:hover {
     background-color: lightgray;
-    border: 1px solid rgba(48, 48, 48, 0.94)
+    border: 1px solid rgba(48, 48, 48, 0.94);
   }
 
+  .button-legend2 {
+   border: 0px;
+   background-color: #f7f7f7;
+   outline: none;
+   width: 50px;
+   margin-left: -8px;
+   margin-right: -12px;
+   margin-top: -10px;
+   height: 50px;
+   float: right;
+   border-radius: 5px 5px 0px 0px;
+   box-shadow: 3px 3px 3px silver;  
+   }
+  
+  .img-button-legend {
+    width: 27px;
+    margin-left: -2.5px;
+    margin-top: 3px;
+  }
+
+  .button-legend {
+   border: 0px;
+   background-color: #ffffff;
+   outline: none;
+   width: 50px;
+   margin-left: -8px;
+   margin-right: -12px;
+   margin-top: -10px;
+   height: 50px;
+   float: right;
+   border-radius: 5px 5px 0px 0px;  
+   }
+
   .img-button {
-    width: 90%;
-    margin-top: 22%;
+    width: 150%;
+    margin-left: -22%;
+    margin-top: 5%;
   }
 
   .error-button {
@@ -655,14 +698,6 @@ export default {
     background-color: red;
     border-radius: 5px;
     margin-bottom: 10px;
-  }
-
-  .submitted-button {
-    width: 50%;
-    margin: 5px;
-    padding: 5px;
-    background-color: rgb(190, 190, 122);
-    border: 1px solid rgba(48, 48, 48, 0.94)
   }
 
 .noData{
