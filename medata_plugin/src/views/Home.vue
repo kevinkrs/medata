@@ -42,6 +42,7 @@
             <div id=-1002 style="display:inline"><img class="img-button" src="../assets/info-yellow.png" ></div>
             <div id=-2002 style="display:none"><img class="img-button" src="../assets/arrow-up-yellow.png" ></div>      
           </button>
+
           <div id=-2 style="display:none">
             <div class="grey-toggleBox">
               <p>Detailed explanation of a yellow insight </p>
@@ -98,33 +99,49 @@
           </button>
 
             <div :id=entry.id+1000 style="display:none">
+
+              <!--The div "insight-name2" is only used so that the div "insight-toggleBox" has the right distance to the top depending on whether the name of the insight goes over one, two, three,... lines. In css the div "insight-name2" is made invisible again.-->
+              <div class="insight-name2">
+                {{entry.name}}
+              </div>
+
               <div class="insight-toggleBox">
                 <button class="error-button" @click="visible2(entry.id+1000)">back</button>
                 <button id ="error1" class="error-button-2" @click='saveSelectedError("type_error"), sendTypeError()'>Type Error</button> <br> 
-                <button id ="error2" class="error-button-2" @click='saveSelectedError("relevance_error"), sendInsightNotRelevantError()'>Insight not relevant for this paper for this paper</button>
+                <button id ="error2" class="error-button-2" @click='saveSelectedError("relevance_error"), sendInsightNotRelevantError()'>Insight not relevant for this paper</button>
               </div>
             </div> 
 
           <div :id=entry.id style="display:none">
-            <!--The div elements toggle-box-red/yellow/green define the frame of the three different
-            toggle boxes-->
+
+            <!--The div "insight-name2" is only used so that the div "insight-toggleBox" has the right distance to the top depending on whether the name of the insight goes over one, two, three,... lines. In css the div "insight-name2" is made invisible again.-->
+            <div class="insight-name2">
+              {{entry.name}}
+            </div>
+
             <div class="insight-toggleBox">
-              <button class="error-button" @click="visible2(entry.id+1000)">report an error</button>
-              <p>Please enter information:</p>
-                <!--TODO: implement button styles in CSS file-->
-              <input placeholder="your relevant data" v-model='userInput' @keyup.enter='saveUserInput(), sendUserAnswer()'><br>
-              <button class="submit-insight" @click="saveUserInput(), sendUserAnswer()">Submit</button>
+              <button class="error-button" @click="visible2(entry.id+1000)">report error</button>
+              <div class="insight-add">
+                <p>Please enter information:</p>
+                <input class="inputfield" v-model='userInput' @keyup.enter='saveUserInput(), sendUserAnswer()'><br>
+                <button class="main-button" @click="saveUserInput(), sendUserAnswer()">Submit</button>
+              </div>
             </div>
           </div>
-
         </div>
         <div div v-else-if="entry.answer[0].answer_score < 3" class="insight-button">
-          <button class="insight-button-green" @click="visible(entry.id), saveInName(entry.name), sendInsightRelevance()">
+          <button class="insight-button-yellow" @click="visible(entry.id), saveInName(entry.name), sendInsightRelevance()">
             <div :id=entry.id-1000 style="display:inline"><img class="img-button" src="../assets/arrow-down-yellow.png" ></div>
             <div :id=entry.id-2000 style="display:none"><img class="img-button" src="../assets/arrow-up-yellow.png" ></div>
           </button>
 
             <div :id=entry.id+1000 style="display:none">
+
+              <!--The div "insight-name2" is only used so that the div "insight-toggleBox" has the right distance to the top depending on whether the name of the insight goes over one, two, three,... lines. In css the div "insight-name2" is made invisible again.-->
+              <div class="insight-name2">
+                {{entry.name}}
+              </div>
+
               <div class="insight-toggleBox">
                 <button class="error-button" @click="visible2(entry.id+1000)">back</button>
                 <button id ="error1" class="error-button-2" @click='saveSelectedError("type_error"),sendTypeError()'>Type Error</button> <br> 
@@ -133,9 +150,15 @@
             </div> 
 
           <div :id=entry.id style="display:none">
+
+            <!--The div "insight-name2" is only used so that the div "insight-toggleBox" has the right distance to the top depending on whether the name of the insight goes over one, two, three,... lines. In css the div "insight-name2" is made invisible again.-->
+            <div class="insight-name2">
+              {{entry.name}}
+            </div>
+
             <div class="insight-toggleBox">
               <!--STYLING TODO-->
-            <button class="error-button" @click="visible2(entry.id+1000)">report an error</button>
+            <button class="error-button" @click="visible2(entry.id+1000)">report error</button>
               <div class="insight-answers">
                 <p>Please select <br> the correct Answer</p>
                <div class="row">
@@ -147,10 +170,11 @@
                     </div>
                   </div>
               </div>
-              <br>
-              <p> Add value </p>
-                <input class="userInput" v-model="userInput" @keyup.enter='saveUserInput(), sendUserAnswer()'> 
-                <button class="submit-insight" @click="saveUserInput(), sendUserAnswer()">Submit</button>
+              <div class="insight-add">
+                <p>Add value:</p>
+                <input class="inputfield" v-model='userInput' @keyup.enter='saveUserInput(), sendUserAnswer()'><br>
+                <button class="main-button" @click="saveUserInput(), sendUserAnswer()">Submit</button>
+              </div>
             </div>
           </div>
         </div>
@@ -161,6 +185,12 @@
           </button>
 
             <div :id=entry.id+1000 style="display:none">
+
+              <!--The div "insight-name2" is only used so that the div "insight-toggleBox" has the right distance to the top depending on whether the name of the insight goes over one, two, three,... lines. In css the div "insight-name2" is made invisible again.-->
+              <div class="insight-name2">
+                {{entry.name}}
+              </div>
+
               <div class="insight-toggleBox">
                 <button class="error-button" @click="visible2(entry.id+1000)">back</button>
                  <button id ="error1" class="error-button-2" @click='saveSelectedError("type_error"),sendTypeError()'>Type Error</button> <br> 
@@ -169,14 +199,26 @@
             </div> 
 
           <div :id=entry.id style="display:none">
+
+            <!--The div "insight-name2" is only used so that the div "insight-toggleBox" has the right distance to the top depending on whether the name of the insight goes over one, two, three,... lines. In css the div "insight-name2" is made invisible again.-->
+            <div class="insight-name2">
+              {{entry.name}}
+            </div>
+
             <div class="insight-toggleBox">
-            <button class="error-button" @click="visible2(entry.id+1000)">report an error</button>
+            <button class="error-button" @click="visible2(entry.id+1000)">report error</button>
               <!--If function, for checking if the answer has highest upvotes-->
-                <p class="displayAnswer">{{entry.answer[0].answer}} <br></p>
-                <p> {{entry.answer[0].answer_upvotes}} users confirmed <br>
-                    this information <br>
-                </p>
-              <button class="submit-button" @click='sendAnswerSelection()'>confirm</button>
+                <p class="insight-green-answer">{{entry.answer[0].answer}} <br></p>
+                <div class="insight-green">
+                  <div class="insight-green-text">
+                    <p> Number of<br> confirmations </p>
+                  </div>
+                  <div class="insight-green-line"></div>
+                  <div class="insight-green-number">
+                    <p>{{entry.answer[0].answer_upvotes}}</p>                   
+                  </div>
+                </div>
+              <button class="green-button" @click='sendAnswerSelection()'>confirm</button>
             </div>
           </div>
         </div>
@@ -193,16 +235,7 @@
             download insights
           </div>
           <div class="grey-insight-button">
-            <button class="grey-button" @click="sendDownloadRequest()">
-            <div id=-1004 style="display:inline"><img class="img-button" src="../assets/direct-download.png" ></div>
-            <div id=-2004 style="display:none"><img class="img-button" src="../assets/arrow-up.png" ></div>      
-            </button>
-            <div id=-4 style="display:none">
-              <div class="grey-toggleBox">
-                <a href="https://dl.acm.org/">all insights<img src="../assets/direct-download.png" class="downloadPNG"></a> <br>
-                <a href="https://dl.acm.org/">only confirmed insights<img src="../assets/direct-download.png" class="downloadPNG"></a>
-              </div>
-            </div>
+            <button class="insight-button-yellow" @click="sendDownloadRequest()"><img class="img-button" src="../assets/direct-download.png" ></button>
           </div>
         </div>
         <div class="grey-insight">
@@ -210,13 +243,13 @@
             add relevant insight
           </div>
           <div class="grey-insight-button">
-            <button class="grey-button" @click="visible(-5)">
+            <button class="insight-button-yellow" @click="visible(-5)">
             <div id=-1005 style="display:inline"><img class="img-button" src="../assets/add.png" ></div>
             <div id=-2005 style="display:none"><img class="img-button" src="../assets/arrow-up.png" ></div>      
             </button>
             <div id=-5 style="display:none">
               <div class="grey-toggleBox">
-                <input type="text" autocomplete="off" @keyup.enter='saveUserInput(), sendUserInsight()' @input = "filterParameters" v-model="userInput" class="grey-add-inputfield" @focus = "modal = true"/>
+                <input class="inputfield2" type="text" autocomplete="off" @keyup.enter='saveUserInput(), sendUserInsight()' @input = "filterParameters" v-model="userInput" @focus = "modal = true"/>
                 <div v-if="filtered && modal">
                   <ul>
                     <li class = "autocomplete" v-for="param in filtered" :key ="param"  @click = "setParam(param)">
@@ -224,8 +257,8 @@
                     </li>
                   </ul>
                 </div>
-                <div class="submit-button2">
-                  <button type="button" class="submit-button" @click='saveUserInput(), sendUserInsight()'>Save</button>
+                <div class="insight-add">
+                  <button class="main-button" @click="saveUserInput(), sendUserAnswer()">Save</button>
                 </div>
               </div>
             </div>
@@ -410,8 +443,9 @@ export default {
   width: 300px;
   padding-bottom: 10px;
   background-color:#ffffff;
-  font-family: Arial, Helvetica, sans-serif, sans-serif;
-  font-size: 15px;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+  font-size: 17px;
+  color: #3A3A3A ;
 }
 
 .main-column{
@@ -419,8 +453,7 @@ export default {
   padding-top: 20px;
   padding-left: 10px;
   padding-right: 10px;
-  font-family: Arial, Helvetica, sans-serif;
-  font-size: 120%;
+
 }
 
 .headline {
@@ -487,25 +520,13 @@ export default {
   .grey-toggleBox {
   text-align: center;
   padding: 8px;
+  font-size: 85%;
   margin-top: 30px;
   margin-left: -384%;
   margin-right: -8px;
   margin-bottom: -8px;
   border-radius: 0px 0px 5px 5px;
   background-color: #FFFFFF;
-  }
-
-  .grey-button {
-    border: none;
-    background: white;
-    width: 30px;
-    height: 30px;
-    float: right;
-  }
-
-  .grey-add-inputfield {
-    width: 60%;
-    padding-top: 8px;
   }
 
 /*insight- | desgin for the list of insights*/
@@ -524,6 +545,17 @@ export default {
     text-align: left;
     background-color: #f7f7f7;
     box-shadow: 3px 3px 3px silver;
+    border-radius: 5px 0px 0px 5px;
+  }
+  .insight-name2 {
+    width: 350%;
+    padding: 8px;
+    color: transparent;
+    margin-top: -8px;
+    margin-left: -384%;
+    margin-right: -8px;
+    text-align: left;
+    background-color: transparent;
     border-radius: 5px 0px 0px 5px;
   }
 
@@ -570,10 +602,11 @@ export default {
   }
 
   .insight-toggleBox {
-    background-color: white;
+    background-color:#f7f7f7;
     text-align: center;
+    font-size: 85%;
     padding: 10px;
-    margin-top: 30px;
+    margin-top: 0px;
     margin-left: -384%;
     margin-right: -8px;
     margin-bottom: -8px;
@@ -581,32 +614,65 @@ export default {
     box-shadow: 3px 3px 3px silver;
   }
 
-  /*
-  .insight-answers{
-    
+  .insight-green-answer {
+  font-size: 25px;
+  font-weight: bold;
+  margin-top: 15px;
+  margin-bottom: 5px;
   }
-  */
+
+  .insight-green {
+    display: flex;
+    justify-content: center;
+    margin-left: -60px;
+  }
+
+  .insight-green-text {
+    text-align: right;
+  }
+
+  .insight-green-line {
+    border-left: 1.5px black solid ;
+    width: 0px;
+    height: 35px;
+    margin-left: 5px;
+    margin-top: 17px;
+  }
+
+  .insight-green-number {
+    text-align: right;
+    font-size: 25px;
+    height: 20px;
+    margin-left: 5px;
+    margin-top: -8px;
+  }
 
 /* -button | design for buttons*/
-  .submit-button {
-    margin: 15px;
-    border: none;
-    color: rgb(235, 235, 235);
-    background: rgb(20, 38, 176);
-    border-radius: 5px;
-    width: 70px;
+  .main-button{
+    border-radius: 6px;
+    outline: none;
+    border-style: none;
+    width: 80px;
     height: 30px;
+    color: white;
+    background-color: #8F8F8F;
+    margin-top: 10px;
   }
 
-  .submit-button:hover { 
-    color: black;
-    background: rgb(184, 184, 184);}
+  .main-button:hover {
+    background-color: #3a3a3a;
+    color: white;
+  }
 
-  .submit-button2 {
-    display:flex;
-    justify-content: center;
-    align-content: center;
-    padding: 15px;
+  .inputfield {
+    border-radius: 6px;
+  }
+
+  .inputfield2 {
+    border-radius: 6px;
+    width: 140px;
+    margin-top: 10px;
+    margin-bottom: 0px;
   }
 
   .report-button {
@@ -625,17 +691,18 @@ export default {
   }
 
   .answer-button {
-    height: 30px;
-    width: 50px;
-    margin: 5px;
-    padding: 5px;
-    background-color: rgb(225, 225, 92);
-    border: 1px solid rgba(48, 48, 48, 0.94)
+    border-radius: 6px;
+    outline: none;
+    border-style: none;
+    width: 70%;
+    padding: 7px;
+    background-color: #FFD700;
+    margin-top: 10px;
   }
 
   .answer-button:hover {
-    background-color: lightgray;
-    border: 1px solid rgba(48, 48, 48, 0.94);
+    background-color: #3a3a3a;
+    color: white;
   }
 
   .button-legend2 {
@@ -679,25 +746,51 @@ export default {
 
   .error-button {
     float: left;
-    font-size: 50%;
-    width: 35%;
-    border: 1px solid rgba(48, 48, 48, 0.94);
-    border-radius: 2px;
+    font-size: 60%;
+    width: 25%;
     margin-bottom: 10px;
     margin-top: -10px;
+    border-radius: 4px;
+    outline: none;
+    border-style: none;
+    color: white;
+    background-color: #8F8F8F;
   }
 
   .error-button:hover { 
-    color: black;
-    background: rgb(184, 184, 184);
+    background-color: #3a3a3a;
+    color: white;
   }
   
   .error-button-2 {
-    width: 90%;
-    border: 1px solid rgba(48, 48, 48, 0.94);
-    background-color: red;
-    border-radius: 5px;
+    width: 80%;
+    outline: none;
+    padding: 4px;
+    border-style: none;
+    color: white;
+    background-color: #CD0000;
+    border-radius: 6px;
     margin-bottom: 10px;
+  }
+
+  .error-button-2:hover {
+    background-color: #3a3a3a;
+    color: white;
+  }
+
+  .green-button {
+    border-radius: 6px;
+    outline: none;
+    border-style: none;
+    width: 80px;
+    height: 30px;
+    color: white;
+    background-color: #008D09;
+  }
+
+  .green-button:hover {
+    background-color: #3a3a3a;
+    color: white;
   }
 
 .noData{
@@ -716,10 +809,6 @@ export default {
 .downloadPNG {
   width: 10%;
   margin-bottom: -5px;
-}
-
-.displayAnswer {
-  font-weight: bold;
 }
 
 ul {
