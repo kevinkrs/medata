@@ -56,6 +56,7 @@ export default {
           }
       })
     },
+    // TODO: Time is fix, should be variable with server response. Still searching for an answer
     async created() {
      await this.checkURL();
       setTimeout(
