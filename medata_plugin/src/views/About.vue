@@ -2,7 +2,6 @@
 <div class="container">
   <img src="../assets/medata_black.png" width="200">
   <div class="about">
-      <h1>Welcome to Medata!</h1>
        <div v-if = 'button'>
         <button class ="mainButton" @click='created()'>Load Data</button>
       </div>
