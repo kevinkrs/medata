@@ -4,10 +4,10 @@
 
     <!--Picture of the MEDATA logo-->
     <div class="headline">
-      <button id=-1006 style="display:inline" class="button-legend" @click="visible(-6)">
+      <button v-show="!legendVisible" style="display:inline" class="button-legend" @click="legendVisible = !legendVisible">
         <div><img class="img-button-legend" src="../assets/info.png" ></div>
       </button>
-      <button id=-2006 style="display:none" class="button-legend2" @click="visible(-6)">
+      <button v-show="legendVisible" style="display:none" class="button-legend2" @click="legendVisible = !legendVisible">
         <div><img class="img-button-legend" src="../assets/arrow-up.png" ></div>      
       </button>
       <img class="logo" src="../assets/medata_black.png" width="200">
@@ -18,7 +18,7 @@
     </div>
     
     <!--This fieldset element "grey-box" contains everything reagardin the legend-->
-    <fieldset id=-6 style="display:none" class="grey-box-legend">
+    <fieldset v-show="legendVisible" style="display:none" class="grey-box-legend">
       <!--The three div elements "grey-insight" represent the the three boxes/insights inside the legend-->
       <div class="grey-insight">
         <div class="grey-insight-name">confirmed insigth</div>
@@ -249,7 +249,7 @@ export default {
     return {
     // Empty String for possible user input
       userInput: '',
-      submitted: false,
+      legendVisible: false,
       // TODO: Backend has to send an array with common words for certain category 
       autocomplete: [
         'Accuracy', 'Area' , 'F1', 'Recall', 'MSE', 'Precision', 'Classification Error'
@@ -649,7 +649,7 @@ export default {
    height: 50px;
    float: right;
    border-radius: 5px 5px 0px 0px;
-   box-shadow: 3px 3px 3px silver;  
+   box-shadow: 3px 0px 0px silver;  
    }
   
   .img-button-legend {
