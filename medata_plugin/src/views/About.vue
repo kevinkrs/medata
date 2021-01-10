@@ -4,7 +4,7 @@
   <div class="about">
       <h1>Welcome to Medata!</h1>
       <div>
-        <button class ="mainButton" @click= 'checkURL()'>Load Data</button>
+        <input type='button' class ="mainButton" value='Load Data' @click='checkURL()' @keyup.enter='checkURL()'/>
       </div>
     </div>
   </div>
@@ -18,6 +18,7 @@ export default {
   data()  {
     return{
         substr: 'https://dl.acm.org/',
+        regex: /dl\.acm\.org\/doi\/\d+\.\d{3,}\//
     }
   },
   computed: mapState({
@@ -33,17 +34,21 @@ export default {
       // Takes current chrome tab window
       chrome.tabs.query({currentWindow: true, active: true}, 
           function (tabs){
-          var querySub = tabs[0].url.substring(0, 19)
-          if (querySub == vm.substr) { 
+            var querySub = tabs[0].url.substring(0, 19)
+            if (tabs[0].url.match(vm.regex)) { 
               // alert('Valid URL found')
               // if URL is a dl.acm.org URl we save it to our state 
               vm.$store.dispatch('loadQuery', tabs[0].url)
               .then(vm.$store.dispatch('loadMetadata'))
+              .then(vm.$store.dispatch('loadCategories'))
               // With router.push we can route to another url automatically
               vm.$router.push({path : '/home'})
           }
-          else {
-            alert("You're currently not on dl.acm.org")
+            else if(querySub == vm.substr) {
+              alert("Please open a particular article to continue")
+          }
+            else {
+              alert("You're currently not on the dl.acm.org website")
           }
       })
     },
@@ -67,6 +72,7 @@ export default {
 }
 .mainButton{
   border-radius: 5px;
+  text-align: center;
   width: 90px;
   height: 50px;
   color: white;
