@@ -20,7 +20,7 @@ export default createStore({
     // Saving the data from backend to the "metadata array"
     setMetadata (state, payload) {
         state.metadata = payload.metadata
-        state.currentCategory = payload.categories
+        state.currentCategories = payload.categories
       },
       // This method saves url on acm that user is visiting while using the plugin. The url is submitted to the backend in order to provide the right data
     setQuery (state, payload) {
@@ -37,9 +37,6 @@ export default createStore({
     setCurrentAnswer (state, payload){
       state.currentAnswer = payload.currentAnswer
     },
-    setCategories(state, payload) {
-      state.currentCategories = payload.currentCategories
-      },
     setUserInput(state, payload) {
         state.currentUserInput = payload.currentUserInput
     },
@@ -74,12 +71,6 @@ export default createStore({
           fileLink.click()
         })
         .catch((error) => {console.error(error)})
-    },
-    // Loads categorie array into state 
-    loadCategories({commit}){
-      return fetchCategories(this.state.query)
-        .then((response) => commit('setCategories', {currentCategories: response.data}))
-        .catch((error) => {console.error(error)}) 
     },
 
     saveUserInput ({commit}, payload) {
@@ -156,9 +147,6 @@ export default createStore({
 
   },
     getters: {
-      getCategory() {
-       // return this.state.metadata.category
-      }
     },
   
     modules: {

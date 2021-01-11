@@ -12,10 +12,6 @@ export function fetchMetadata (query) {
   return axios.post(`${'get_specific'}`, {url: query})
 }
 
-export function fetchCategories(query) {
-  return axios.post(`${'get_categories'}`, {url: query})
-}
-
 export function postRateRelevanceInsight (inPaperId, inInsight, inUpvote) {
   return axios.post(`${'rate_relevance_insight'}`, {
     paper_id: inPaperId,

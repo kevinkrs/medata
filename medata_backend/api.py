@@ -360,16 +360,6 @@ def typ_error():
     db.session.commit()
     return jsonify(response_object)
 
-@api.route('/get_categories', methods = ['POST'])
-def get_categories():
-    #TODO ist das Kunst oder kann das weg?
-    url = request.get_json().get('url')
-    relevant_categories_scraper = scraper.get_leaf_categories(url)
-    print(relevant_categories_scraper)
-    #hardcoded for testing 
-    #relevant_categories = ['Laboratory experiments', 'supervised learning by classification', 'category3']
-
-    return jsonify(relevant_categories_scraper)
 
 
 

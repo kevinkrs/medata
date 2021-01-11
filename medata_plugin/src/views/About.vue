@@ -44,7 +44,6 @@ export default {
               // if URL is a dl.acm.org URl we save it to our state 
               vm.$store.dispatch('loadQuery', tabs[0].url)
               .then(vm.$store.dispatch('loadMetadata'))
-              .then(vm.$store.dispatch('loadCategories'))
               // With router.push we can route to another url automatically 
           }
             else if(querySub == vm.substr) {
