@@ -2,9 +2,11 @@
 <div class="container">
   <img src="../assets/medata_black.png" width="200">
   <div class="about">
-      <h1>Welcome to Medata!</h1>
-      <div>
-        <button class ="mainButton" @click= 'checkURL()'>Load Data</button>
+       <div v-if = 'button'>
+        <button class ="mainButton" @click='created()'>Load Data</button>
+      </div>
+      <div v-else>
+       <div class="lds-roller"><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div></div>
       </div>
     </div>
   </div>
@@ -18,6 +20,8 @@ export default {
   data()  {
     return{
         substr: 'https://dl.acm.org/',
+        regex: /dl\.acm\.org\/doi\/\d+\.\d{3,}\//,
+        button: true
     }
   },
   computed: mapState({
@@ -30,55 +34,156 @@ export default {
     checkURL() {
       // because of a function inside the function, we can't access data directly with "this". Hence we need this help-variable var vm = this
       var vm = this
+      this.button = false
       // Takes current chrome tab window
       chrome.tabs.query({currentWindow: true, active: true}, 
           function (tabs){
-          var querySub = tabs[0].url.substring(0, 19)
-          if (querySub == vm.substr) { 
+            var querySub = tabs[0].url.substring(0, 19)
+            if (tabs[0].url.match(vm.regex)) { 
               // alert('Valid URL found')
               // if URL is a dl.acm.org URl we save it to our state 
               vm.$store.dispatch('loadQuery', tabs[0].url)
               .then(vm.$store.dispatch('loadMetadata'))
-              // With router.push we can route to another url automatically
-              vm.$router.push({path : '/home'})
+              .then(vm.$store.dispatch('loadCategories'))
+              // With router.push we can route to another url automatically 
           }
-          else {
-            alert("You're currently not on dl.acm.org")
+            else if(querySub == vm.substr) {
+              alert("Please open a particular article to continue")
+          }
+            else {
+              alert("You're currently not on the dl.acm.org website")
           }
       })
+    },
+    // TODO: Time is fix, should be variable with server response. Still searching for an answer
+    async created() {
+     await this.checkURL();
+      setTimeout(
+        function() {
+          this.$router.push('/home')
+        }.bind(this), 3000
+      )
     },
   }
 }
 </script>
 
+
 <style scoped>
 .container {
   padding-top: 50px;
   box-sizing: border-box;
-  background-color: lightgray;
+  background-color: #ffffff;
   width: 300px;
 }
 .about {
   margin-top: 50px;
   padding-bottom: 50px;
   box-sizing: border-box;
-  background-color: lightgray;
   
 }
 .mainButton{
   border-radius: 5px;
+  outline: none;
+  border-style: none;
   width: 90px;
-  height: 50px;
+  height: 40px;
   color: white;
-  background-color: rgb(41, 17, 160);
-}
+  background-color: #8F8F8F;
+  }
 
 .mainButton:hover {
-  background-color: rgb(182, 182, 182);
-  border: 1px solid black;
+  background-color: #3a3a3a;
+  color: white;
 }
 
 h1 {
   font-size: 20px;
 }
+
+.lds-roller {
+  display: inline-block;
+  position: relative;
+  width: 80px;
+  height: 80px;
+}
+.lds-roller div {
+  animation: lds-roller 1.2s cubic-bezier(0.5, 0, 0.5, 1) infinite;
+  transform-origin: 40px 40px;
+}
+.lds-roller div:after {
+  content: " ";
+  display: block;
+  position: absolute;
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: #3a3a3a;
+  margin: -4px 0 0 -4px;
+}
+.lds-roller div:nth-child(1) {
+  animation-delay: -0.036s;
+}
+.lds-roller div:nth-child(1):after {
+  top: 63px;
+  left: 63px;
+}
+.lds-roller div:nth-child(2) {
+  animation-delay: -0.072s;
+}
+.lds-roller div:nth-child(2):after {
+  top: 68px;
+  left: 56px;
+}
+.lds-roller div:nth-child(3) {
+  animation-delay: -0.108s;
+}
+.lds-roller div:nth-child(3):after {
+  top: 71px;
+  left: 48px;
+}
+.lds-roller div:nth-child(4) {
+  animation-delay: -0.144s;
+}
+.lds-roller div:nth-child(4):after {
+  top: 72px;
+  left: 40px;
+}
+.lds-roller div:nth-child(5) {
+  animation-delay: -0.18s;
+}
+.lds-roller div:nth-child(5):after {
+  top: 71px;
+  left: 32px;
+}
+.lds-roller div:nth-child(6) {
+  animation-delay: -0.216s;
+}
+.lds-roller div:nth-child(6):after {
+  top: 68px;
+  left: 24px;
+}
+.lds-roller div:nth-child(7) {
+  animation-delay: -0.252s;
+}
+.lds-roller div:nth-child(7):after {
+  top: 63px;
+  left: 17px;
+}
+.lds-roller div:nth-child(8) {
+  animation-delay: -0.288s;
+}
+.lds-roller div:nth-child(8):after {
+  top: 56px;
+  left: 12px;
+}
+@keyframes lds-roller {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
 </style>
