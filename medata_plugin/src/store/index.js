@@ -21,6 +21,7 @@ export default createStore({
     // Saving the data from backend to the "metadata array"
     setMetadata (state, payload) {
         state.metadata = payload.metadata
+        state.currentCategory = payload.categories
       },
       // This method saves url on acm that user is visiting while using the plugin. The url is submitted to the backend in order to provide the right data
     setQuery (state, payload) {
@@ -60,7 +61,7 @@ export default createStore({
     // Loads methadata and submits acm URL from site user is visiting at the moment to check if data is available
     loadMetadata ({commit}) {
       return fetchMetadata(this.state.query)
-        .then((response) => commit('setMetadata', {metadata: response.data})) 
+        .then((response) => commit('setMetadata', {metadata: response.data.metadata, categories: response.data.categories})) 
         .catch((error) => {console.error(error)}) 
     },
     // Triggers function to get a csv file with the current insights and send it to the FE. User gets possibility to download data

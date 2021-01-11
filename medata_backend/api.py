@@ -106,13 +106,10 @@ def get_specific():
 
     if (Information.query.filter(or_(Information.insight_id==int(x.id) for x in matching_insight)).filter(Information.paper_id==paper_id).count()==0):
         response_object = []
-        #x = {'relevant_categories': relevant_categories}
-        #response_object.append(x)
         return jsonify(response_object)
     else:
-        x = {'relevant_categories': relevant_categories}
-        #response_object.append(x)
-        return jsonify(response_object)
+        response_object_with_categories = {"metadata":response_object, "categories": relevant_categories }
+        return jsonify(response_object_with_categories)
 
 
 @api.route('/add_insight', methods =["POST"])
