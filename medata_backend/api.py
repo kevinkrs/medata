@@ -131,6 +131,7 @@ def add_insight():
     response_object = {'status': 'success'}
     #fetch data from request
     post_data = request.get_json()
+    print(f"added Insight json: {post_data}")
     in_insight_name = post_data.get('insight')
     in_categories = post_data.get('categories')
     in_paper_id = post_data.get('paper_id')
@@ -178,7 +179,7 @@ def add_answer():
     response_object = {'status': 'success'}
     #fetch data from request
     post_data = request.get_json()
-    print(post_data)
+    print(f"Added Answer{post_data}")
     in_paper_id = post_data.get('paper_id')
     in_insight_name = post_data.get('insight')
     in_answer = post_data.get('answer')
