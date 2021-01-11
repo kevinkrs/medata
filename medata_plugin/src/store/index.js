@@ -97,12 +97,6 @@ export default createStore({
       commit('setSelectedError', payload)
     },
     
-    // TODO
-    /*async fetchCurrentCategory ({commit}, payload) {
-      await disptach('loadMetadata')
-      commit('setCurrentCategory', {currentCategory: payload})
-    },
-  */
 
 
     // TODO: Implement query as paperID when backend is ready

@@ -258,7 +258,7 @@
                   </ul>
                 </div>
                 <div class="insight-add">
-                  <button class="main-button" @click="saveUserInput(), sendUserAnswer()">Save</button>
+                  <button class="main-button" @click="saveUserInput(), sendUserInsight()">Save</button>
                 </div>
               </div>
             </div>
