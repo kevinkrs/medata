@@ -62,7 +62,7 @@ export default {
           this.$router.push('/home')
         }.bind(this), 3000
       )
-    },
+    }
   }
 }
 </script>

@@ -1,5 +1,5 @@
 import { createStore } from 'vuex'
-import { fetchMetadata, fetchCategories, postInsight, postAnswer, postRateAnswer, postRateRelevanceInsight, fetchDownload, postTypeError, postInsightNotRelevant } from '@/api'
+import { fetchMetadata, fetchCategories, postInsight, postAnswer, postRateAnswer, postRateRelevanceInsight, fetchDownload, postTypeError, postInsightNotRelevant, fetchFurtherInformation } from '@/api'
 
 
 export default createStore({
@@ -59,6 +59,14 @@ export default createStore({
         .then((response) => commit('setMetadata', {metadata: response.data.metadata, categories: response.data.categories})) 
         .catch((error) => {console.error(error)}) 
     },
+    loadFurtherInformation ({commit}) {
+      return fetchFurtherInformation(this.state.query)
+        .then((response) => {console.log(response)})
+        .catch((error) => {console.error(error)}) 
+    },
+
+
+
     // Triggers function to get a csv file with the current insights and send it to the FE. User gets possibility to download data
     loadDownload () {
       return fetchDownload(this.state.query)
