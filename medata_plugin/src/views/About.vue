@@ -3,7 +3,7 @@
   <img src="../assets/medata_black.png" width="200">
   <div class="about">
        <div v-if = 'button'>
-        <button class ="mainButton" @click='created()'>Load Data</button>
+        <button class ="mainButton" @click='checkURL()'>Load Data</button>
       </div>
       <div v-else>
        <div class="lds-roller"><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div></div>
@@ -34,16 +34,16 @@ export default {
     checkURL() {
       // because of a function inside the function, we can't access data directly with "this". Hence we need this help-variable var vm = this
       var vm = this
-      this.button = false
       // Takes current chrome tab window
       chrome.tabs.query({currentWindow: true, active: true}, 
           function (tabs){
             var querySub = tabs[0].url.substring(0, 19)
             if (tabs[0].url.match(vm.regex)) { 
+              vm.button = false
               // alert('Valid URL found')
               // if URL is a dl.acm.org URl we save it to our state 
               vm.$store.dispatch('loadQuery', tabs[0].url)
-              .then(vm.$store.dispatch('loadMetadata'))
+              .then(vm.loadData())
               // With router.push we can route to another url automatically 
           }
             else if(querySub == vm.substr) {
@@ -54,14 +54,11 @@ export default {
           }
       })
     },
-    // TODO: Time is fix, should be variable with server response. Still searching for an answer
-    async created() {
-     await this.checkURL();
-      setTimeout(
-        function() {
-          this.$router.push('/home')
-        }.bind(this), 3000
-      )
+    // This function is called by checkURL(). After dispatching for "loadMetadata" and resolving it, the route is getting pushed to our main page 
+    // with all the data already loaded
+    async loadData(){
+      await this.$store.dispatch('loadMetadata')
+      await this.$router.push('/home')
     },
   }
 }
