@@ -37,6 +37,7 @@ class Insights(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(30), unique=True)
     type_error = db.Column(db.Integer, default = 0)
+    timestamp = db.Column(db.DateTime, default = datetime.utcnow)
 
     #one2many with categories
     categories = db.relationship('Categories', backref = 'insights', lazy = True)
@@ -72,6 +73,7 @@ class Categories(db.Model):
     category_id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(30))
     downvote_category = db.Column(db.Integer, default = 0)
+    timestamp = db.Column(db.DateTime, default = datetime.utcnow)
 
     
     def to_dict(self):
@@ -168,6 +170,7 @@ class Answers(db.Model):
     answer_upvotes = db.Column(db.Integer, default = 0)
     answer_downvotes = db.Column(db.Integer, default = 0)
     answer_score = db.Column(db.Integer, default = 0)
+    timestamp = db.Column(db.DateTime, default = datetime.utcnow)
 
     def to_dict(self):
         """Answer as a dict

@@ -59,8 +59,6 @@ def get_specific():
     #paper_id = "50"
     paper_id = url
 
-
-    
     #insights filtered by category
     matching_insight = Insights.query.join(Insights.categories).filter(or_(Categories.name==x for x in relevant_categories)).filter(Categories.downvote_category <= max_downvote_category).all()
     #print(matching_insight)
@@ -68,24 +66,10 @@ def get_specific():
     for x in matching_insight:
         if (Information.query.filter(Information.insight_id==int(x.id)).filter(Information.paper_id==paper_id).count()==0):
             #if an Information is first created the authors will be automatically pulled and added:
-
-            #TODO: activate this part with real paper_id 
-            soup = scraper.get_facts_soup(scraper.get_soup(paper_id))
-            authors_profile_link = scraper.get_authors(soup)
-            authors = [scraper.name_from_profile(profile_link) for profile_link in authors_profile_link]
-            title = scraper.get_title(soup)
-            conference = scraper.get_conference(paper_id)
-            authors_profile_link = "--".join(authors_profile_link)
-            authors = "--".join(authors)
-
             #TODO: add title, conference, authors and authors_profile_link to the Information
             i = Information(insight_id = x.id, 
                             insight_name=x.name, 
-                            paper_id=paper_id,
-                            title = title,
-                            authors = authors,
-                            authors_profile_link = authors_profile_link,
-                            conference = conference)
+                            paper_id=paper_id)
             db.session.add(i)
     db.session.commit()
 
@@ -110,6 +94,57 @@ def get_specific():
     else:
         response_object_with_categories = {"metadata":response_object, "categories": relevant_categories }
         return jsonify(response_object_with_categories)
+
+
+@api.route('/get_further_information', methods=['POST'])
+def get_further_information():
+    url = request.get_json().get('url')
+    paper_id = url
+    max_downvote_category = 2
+    relevant_categories = scraper.get_leaf_categories(url)
+    matching_insight = Insights.query.join(Insights.categories).filter(or_(Categories.name==x for x in relevant_categories)).filter(Categories.downvote_category <= max_downvote_category).all()
+    print(matching_insight)
+
+    test = ""
+
+    soup = scraper.get_facts_soup(scraper.get_soup(paper_id))
+    authors_profile_link = scraper.get_authors(soup)
+    authors = [scraper.name_from_profile(profile_link) for profile_link in authors_profile_link]
+    title = scraper.get_title(soup)
+    conference = scraper.get_conference(paper_id)
+    authors_profile_link = "--".join(authors_profile_link)
+    authors = "--".join(authors)
+    print(authors_profile_link)
+    print(authors)
+    print(title)
+    print(conference)
+    print(authors_profile_link)
+
+    for x in matching_insight:
+        print('in for')
+        current_information = Information.query.filter(Information.insight_id==int(x.id)).filter(Information.paper_id==paper_id).filter(Information.title == "").first()
+        print(current_information)
+        if (Information.query.filter(Information.insight_id==int(x.id)).filter(Information.paper_id==paper_id).count()==1):
+            print('in if')
+            #if an Information is first created the authors will be automatically pulled and added:
+
+            
+
+            #TODO: add title, conference, authors and authors_profile_link to the Information
+            current_information.title = title,
+            current_information.authors = authors,
+            current_information.authors_profile_link = authors_profile_link,
+            current_information.conference = conference
+            # with db.session.no_autoflush:
+            db.session.commit()
+            test = "richtig gut"
+    
+    return jsonify(f"läuft {test}")
+
+
+
+
+
 
 
 @api.route('/add_insight', methods =["POST"])
