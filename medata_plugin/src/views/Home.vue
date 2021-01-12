@@ -10,11 +10,10 @@
       <button v-show="legendVisible" style="display:none" class="button-legend2" @click="legendVisible = !legendVisible">
         <div><img class="img-button-legend" src="../assets/arrow-up.png" ></div>      
       </button>
-      <img class="logo" src="../assets/medata_darkgrey.png" width="200">
-      <a href="https://git.scc.kit.edu/issd/students/teamproject/ws20-il">
+      <img class="logo" src="../assets/medata_black.png" width="200"> 
       <button class="insight-button-yellow">
-        <img class="img-button" src="../assets/github.png" >
-      </button></a>
+        <img class="img-button" src="../assets/github.png" @click = "openGit">
+      </button>
     </div>
     
     <!--This fieldset element "grey-box" contains everything reagardin the legend-->
@@ -252,7 +251,7 @@
                 <input class="inputfield2" type="text" autocomplete="off" @keyup.enter='saveUserInput(), sendUserInsight()' @input = "filterParameters" v-model="userInput" @focus = "modal = true"/>
                 <div v-if="filtered && modal">
                   <ul>
-                    <li class = "autocomplete" v-for="param in filtered" :key ="param"  @click = "setParam(param)">
+                    <li class = "autocomplete" v-for="param in filtered" :key = "param"  @click = "setParam(param)">
                       {{param}}
                     </li>
                   </ul>
@@ -293,8 +292,8 @@ export default {
   },
   methods: {
     // Function only for testing
-    toggle () {
-      alert('Works!')
+    openGit () {
+      chrome.tabs.create({url: "https://github.com"});
     },
 
     filterParameters() {
