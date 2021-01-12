@@ -3,7 +3,7 @@ import axios from 'axios'
 
 
 // Query by user is send to backend
-axios.defaults.baseURL = 'http://127.0.0.1:5000/'
+axios.defaults.baseURL = 'http://13.81.84.115:5000/'
 
 axios.defaults.headers.common ['Content-Type']= 'application/json'
 
