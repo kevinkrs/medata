@@ -69,5 +69,9 @@ export function postTypeError (inInsight) {
   })
 }
 
+export function fetchAutocomplete (inCategories) {
+  return axios.post(`${'autocomplete'}`, {categories: inCategories})
+}
+
 
 

@@ -4,6 +4,7 @@ from datetime import datetime
 from models import db, Insights, Information, Answers, Categories
 import pandas as pd
 import acm_scraper as scraper
+from nltk.corpus import wordnet as wn
 
 
 api = Blueprint('api', __name__)
@@ -393,7 +394,36 @@ def typ_error():
 
 
 
+@api.route('/autocomplete', methods = ['POST'])
+def autocomplete():
+    post_data = request.get_json()
+    categories = post_data.get('categories')
+    categories = ['Supervised learning by classification', 'Laboratory experiments']
+    response_object = []
+    base = []
+    insights = Insights.query.all()
 
+    for i in insights:
+        response_object.append(i.name)
+        split = i.name.split()
+        for s in split:
+            base.append(s)
+
+    for c in categories:
+        split = c.split()
+        for s in split:
+            base.append(s)
+
+    for word in base:
+        #each synset represents a diff concept
+        for ss in wn.synsets(word):
+            for x in ss.lemma_names():
+                #words have the form: "research_laboratory"
+                response_object.append(x.capitalize().replace('_', ' '))
+
+    #remove double            
+    response_object = list(set(response_object))
+    return jsonify(response_object)
 
 
 

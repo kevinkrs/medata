@@ -146,7 +146,7 @@ class Information(db.Model):
             list: of answer.to_dict() ranked by descending answer score
         """
         answer_limit = 4
-        limited_answers = Answers.query.filter(Answers.information_id==self.information_id).order_by(Answers.answer_score.desc()).limit(answer_limit).all()
+        limited_answers = Answers.query.filter(Answers.information_id==self.information_id).order_by(Answers.answer_score.desc(), Answers.timestamp.desc()).limit(answer_limit).all()
         return [answer.to_dict() for answer in limited_answers]
 
     def __repr__(self):
