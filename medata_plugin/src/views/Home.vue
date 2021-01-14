@@ -400,7 +400,7 @@ export default {
     // User sends relevance of insight (upvote) on insight click
     sendInsightRelevance(){
       this.$store.dispatch('sendRateRelevanceInsight')
-      this.$store.dispatch('loadMetadata')
+      //this.$store.dispatch('loadMetadata')
     },
 
     sendInsightNotRelevantError() {
@@ -413,7 +413,6 @@ export default {
     },
      sendTypeError() {
        this.$store.dispatch('sendTypeError')
-        this.$store.dispatch('loadMetadata')
      }
 
   },
