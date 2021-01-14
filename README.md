@@ -22,4 +22,5 @@
 ## set up a server at Microsoft Azure
 1. create a Linux vm with Ubuntu
 2. establish a connection to the server - ssh is the easiest
-3. follow this instruction: https://docs.microsoft.com/en-us/azure-stack/user/azure-stack-dev-start-howto-vm-python?view=azs-2008
+3. "sudo apt update" und "sudo apt upgrade" machen
+4. follow this instruction: https://docs.microsoft.com/en-us/azure-stack/user/azure-stack-dev-start-howto-vm-python?view=azs-2008
