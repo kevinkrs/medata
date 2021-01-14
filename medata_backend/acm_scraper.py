@@ -31,6 +31,8 @@ def main():
 
     url = "https://dl.acm.org/doi/10.1145/3230543.3230575"
     url = "https://dl.acm.org/doi/10.1145/3432935"
+    binder_url = "https://dl.acm.org/action/showBinder?binderCode=READINGLIST-a74de539-6fb8-4617-8b68-66e52f59c64a"
+    
     soup = get_soup(url)
     leaf_cats = get_categories(soup)
     facts_soup = get_facts_soup(soup)
@@ -49,6 +51,11 @@ def main():
     authors_string = ",".join(authors)
     print(",".join(authors))
     print(authors_string.split(","))
+
+
+def get_urls_from_binder(url):
+    soup = get_soup(url)
+    print(soup)
 
 
 def get_leaf_categories(url):

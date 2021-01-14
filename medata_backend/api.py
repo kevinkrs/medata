@@ -1,10 +1,10 @@
-from flask import Blueprint, jsonify, request, send_file
+from flask import Blueprint, jsonify, request, send_file, safe_join
 from sqlalchemy import or_, exists, and_, not_
 from datetime import datetime
 from models import db, Insights, Information, Answers, Categories
 import pandas as pd
 import acm_scraper as scraper
-
+import pathlib
 
 api = Blueprint('api', __name__)
 
@@ -47,6 +47,8 @@ def get_specific():
     response_object = []
     #fetch data from request
     url = request.get_json().get('url')
+    if "pdf/" in url:
+        url = url.replace("pdf/","")
     #print(url)
     relevant_categories_scraper = scraper.get_leaf_categories(url)
     #print(relevant_categories_scraper)
@@ -304,34 +306,63 @@ def download():
     answer_score_threshold defines the minimum Answer score for the answer to appear in the results. 
     A score of 1 should be the absolute minimum.
 
+
+
     Returns:
         csv file: includes title, authors name, link to the profile, all Insights and answers by descending answer score. 
     """
-    answer_score_threshold = 1
+    answer_score_threshold = 4
     url = request.get_json().get('url')
-    inf = Information.query.join(Information.answers).filter(Information.paper_id==url).filter(Answers.answer_score > answer_score_threshold).order_by(Answers.answer_score.desc()).all()
-    #catch aioor
+    urls_from_binder = request.get_json().get("urls_from_binder")
 
+    def df_from_url(url):
+        url = url
+        inf = Information.query.join(Information.answers).filter(Information.paper_id==url).filter(Answers.answer_score > answer_score_threshold).order_by(Answers.answer_score.desc()).all()
+        #catch aioor  
+        #makes a list of authors splitted by a ','
+        authors = inf[0].authors.replace("--", ",").strip()
 
-    # TODO: uncomment this
-    #makes a list of authors splitted by a ','
-    authors = inf[0].authors.split("--").strip()
-    #makes a list of links to authors profils
-    authors_profile_link = inf[0].authors_profile_link.split("--").strip()
+        data = {
+            "Title": inf[0].title,
+            "Authors": [authors],
+            "Link to paper": inf[0].paper_id
+        }
+
+        for i in inf:
+            data[i.insight_name] = i.answers[0].answer
+
+        df = pd.DataFrame(data=data)
+        return df
+
+    if urls_from_binder is not None:
+        urls_from_binder_list = urls_from_binder.split(",")
+        urls = list(set([u.strip() for u in urls_from_binder_list]))
+        #removes duplicates
+        df = pd.DataFrame()
+
+        for u in urls:
+            one_line_df = pd.DataFrame()
+            try:
+                one_line_df = df_from_url(u)
+            except IndexError as ie:
+                no_data = {
+                    "Title": "Unknown",
+                    "Authors": ["Unknown"],
+                    "Link to paper": u
+                }
+                one_line_df = pd.DataFrame(data = no_data)
+                
+            if df.empty:
+                df = one_line_df
+            else:
+                df = pd.concat([df,one_line_df], axis=0, ignore_index=True)
+    else:
+        df = df_from_url(url)
+
+    path_to_csv = pathlib.Path.cwd() / "exports" / "export_data.csv"
+    df.to_csv(pathlib.Path(path_to_csv))
+    return send_file(safe_join(pathlib.Path(path_to_csv)), as_attachment=True )
     
-    data = [["Title: ", inf[0].title], ["Author(s): ", inf[0].authors], ["Link to Profile: ", inf[0].authors_profile_link]]
-
-    for i in inf:
-        data.append(["", ""])
-        data.append(["Insight: ", i.insight_name])
-        for a in i.answers:
-            data.append(["Answer: ", a.answer])
-            data.append(["Score: ", a.answer_upvotes])
-
-    df = pd.DataFrame(data, columns = ["", "data"])
-    df.to_csv(r"medata_backend\exports\export_data.csv")
-    return send_file("exports/export_data.csv")
-
 
 
 
