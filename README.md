@@ -18,3 +18,8 @@
 4. Backend Server starten
 5. "dist" Datei in Chrome oben links als "load unpacked" hochladen
 6. Plug in oben Rechts in der Pluginzeile aussuchen
+
+## set up a server at Microsoft Azure
+1. create a Linux vm with Ubuntu
+2. establish a connection to the server - ssh is the easiest
+3. follow this instruction: https://docs.microsoft.com/en-us/azure-stack/user/azure-stack-dev-start-howto-vm-python?view=azs-2008
