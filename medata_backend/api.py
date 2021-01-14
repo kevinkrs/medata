@@ -332,23 +332,19 @@ def download():
             data[i.insight_name] = i.answers[0].answer
 
         df = pd.DataFrame(data=data)
-        print(df)
         return df
 
     if urls_from_binder is not None:
         urls_from_binder_list = urls_from_binder.split(",")
         urls = list(set([u.strip() for u in urls_from_binder_list]))
-        print(f"Urls List: {urls}")
         #removes duplicates
         df = pd.DataFrame()
 
         for u in urls:
-            # one_line_df = df_from_url(u)
             one_line_df = pd.DataFrame()
             try:
                 one_line_df = df_from_url(u)
             except IndexError as ie:
-                print(f"IndexError{ie}")
                 no_data = {
                     "Title": "Unknown",
                     "Authors": ["Unknown"],
@@ -358,11 +354,8 @@ def download():
                 
             if df.empty:
                 df = one_line_df
-                print("df is empty -----------")
             else:
-                print(df.shape + one_line_df.shape)
                 df = pd.concat([df,one_line_df], axis=0, ignore_index=True)
-            print(f"df --------------------- {df.shape}")
     else:
         df = df_from_url(url)
 
