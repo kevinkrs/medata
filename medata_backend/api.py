@@ -306,10 +306,11 @@ def download():
     answer_score_threshold defines the minimum Answer score for the answer to appear in the results. 
     A score of 1 should be the absolute minimum.
 
+    FE can either send one url in the json response or a list of urls 
 
 
     Returns:
-        csv file: includes title, authors name, link to the profile, all Insights and answers by descending answer score. 
+        csv file: includes title, authors names, all Insights and answers. 
     """
     answer_score_threshold = 4
     url = request.get_json().get('url')
@@ -357,7 +358,16 @@ def download():
             else:
                 df = pd.concat([df,one_line_df], axis=0, ignore_index=True)
     else:
-        df = df_from_url(url)
+        try:
+            df = df_from_url(url)
+        except IndexError as ie:
+            no_data = {
+                "Title": "Unknown",
+                "Authors": ["Unknown"],
+                "Link to paper": url
+            }
+            df = pd.DataFrame(data = no_data)
+             
 
     path_to_csv = pathlib.Path.cwd() / "exports" / "export_data.csv"
     df.to_csv(pathlib.Path(path_to_csv))

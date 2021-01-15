@@ -201,7 +201,7 @@ def get_conference(link):
     #first you have to remove the paperid from the link to get the conference link
     if re.match(r"[\W\w]*\/\d{4,}.\d{4,}", link):
         conf_link = re.sub(r'\.\d{5,}', "", link)
-        print(conf_link)
+        #print(conf_link)
         html = requests.get(conf_link).text
         soup = BeautifulSoup(html, "lxml")
 
