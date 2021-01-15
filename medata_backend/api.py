@@ -6,7 +6,6 @@ import pandas as pd
 import acm_scraper as scraper
 from nltk.corpus import wordnet as wn
 
-
 api = Blueprint('api', __name__)
 
 
@@ -412,15 +411,21 @@ def autocomplete():
     for c in categories:
         split = c.split()
         for s in split:
-            base.append(s)
+            base.append(s)        
 
     for word in base:
         #each synset represents a diff concept
-        for ss in wn.synsets(word):
-            for x in ss.lemma_names():
-                #words have the form: "research_laboratory"
-                response_object.append(x.capitalize().replace('_', ' '))
-
+        try: 
+            for ss in wn.synsets(word):
+                for x in ss.lemma_names():
+                    #words have the form: "research_laboratory"
+                    response_object.append(x.capitalize().replace('_', ' '))
+        except LookupError:
+            """Wordnet only has to be installed once
+            """
+            import nltk
+            nltk.download("wordnet")
+            
     #remove double            
     response_object = list(set(response_object))
     return jsonify(response_object)
