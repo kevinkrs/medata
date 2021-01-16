@@ -20,7 +20,7 @@
     <fieldset v-show="legendVisible" style="display:none" class="grey-box-legend">
       <!--The three div elements "grey-insight" represent the the three boxes/insights inside the legend-->
       <div class="grey-insight">
-        <div class="grey-insight-name">confirmed insigth</div>
+        <div class="grey-insight-name" @click="visible(-1)">confirmed insigth</div>
         <!--The div "grey-insight-button" contains the green/yellow or red button and the corresponding fold-out toggle box-->
         <div class="grey-insight-button">
           <button class="insight-button-green" @click="visible(-1)">
@@ -29,13 +29,14 @@
           </button>
           <div id=-1 style="display:none">
             <div class="grey-toggleBox">
-              <p>Detailed explanation of a green insight</p>
+              <p>The insights with a <b> green arrow </b> on the right are confirmed by <br> at <b> least 5 other </b> users. </p>
+              <p> The confirmed value can be upvoted further to strengthen it's correctness as well as downvoted via an error reporting </p>
             </div>
           </div>
         </div>
       </div>
       <div class="grey-insight">
-        <div class="grey-insight-name">validation needed</div>
+        <div class="grey-insight-name" @click="visible(-2)">validation needed</div>
         <div class="grey-insight-button">
           <button class="insight-button-yellow" @click="visible(-2)">
             <div id=-1002 style="display:inline"><img class="img-button" src="../assets/info-yellow.png" ></div>
@@ -44,13 +45,15 @@
 
           <div id=-2 style="display:none">
             <div class="grey-toggleBox">
-              <p>Detailed explanation of a yellow insight </p>
+              <p>The insights with a <b> yellow arrow </b> on the right contain values submitted by users that have to be confirmed by others. </p>
+              <p>User can upvote an existing answers (by clicking on it) or submit their own in the input field below.</p>
+              <p> After at least 5 upvotes by other users, the upvoted value is getting marked as confirmed and the insight changes from yellow status to green status.</p>
             </div>
           </div>
         </div>
       </div>
       <div class="grey-insight">
-        <div class="grey-insight-name">
+        <div class="grey-insight-name" @click="visible(-3)">
           enter information
         </div>
         <div class="grey-insight-button">
@@ -60,7 +63,9 @@
           </button>
           <div id=-3 style="display:none">
             <div class="grey-toggleBox">
-              <p>Detailed explanation of a red insight </p>
+              <p> The insights with a <b> red arrow </b> on the right contain no values yet. </p>
+              <p> User can add values with the input field. After adding a value the insight is switching instantly from red status to yellow status. <br> 
+              Now users can vote for an answer or add new answers. </p>
             </div>
           </div>
         </div>
@@ -247,7 +252,7 @@
             <div id=-2005 style="display:none"><img class="img-button" src="../assets/arrow-up.png" ></div>      
             </button>
             <div id=-5 style="display:none">
-              <div class="grey-toggleBox">
+              <div class="new-insight-toggleBox">
                 <input class="inputfield2" type="text" autocomplete="off" @keyup.enter='saveUserInput(), sendUserInsight()' @input = "filterParameters" v-model="userInput" @focus = "modal = true"/>
                 <div v-if="filtered && modal">
                   <ul>
@@ -516,6 +521,18 @@ export default {
   }
 
   .grey-toggleBox {
+  text-align: left;
+  padding: 8px;
+  font-size: 85%;
+  margin-top: 30px;
+  margin-left: -384%;
+  margin-right: -8px;
+  margin-bottom: -8px;
+  border-radius: 0px 0px 5px 5px;
+  background-color: #FFFFFF;
+  }
+
+  .new-insight-toggleBox {
   text-align: center;
   padding: 8px;
   font-size: 85%;
