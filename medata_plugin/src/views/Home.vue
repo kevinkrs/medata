@@ -179,7 +179,7 @@
                 <div class="row" :id=entry.id+200000 style="display:none" >
                     <div v-for="answer in entry.answer" :key ="answer">
                       <!--How can i connect v-model directly -->
-                      <button type="button"  class="main-button">
+                      <button type="button"  class="main-button-clicked">
                         {{answer.answer}}
                       </button>
                     </div>
@@ -700,6 +700,17 @@ export default {
   .main-button:hover {
     background-color: #3a3a3a;
     color: white;
+  }
+
+  .main-button-clicked{
+    border-radius: 6px;
+    outline: none;
+    border-style: none;
+    width: 80px;
+    height: 30px;
+    color: white;
+    background-color: #8F8F8F;
+    margin-top: 10px;
   }
 
   .inputfield {
