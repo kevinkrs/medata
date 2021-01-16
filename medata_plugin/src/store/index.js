@@ -1,5 +1,5 @@
 import { createStore } from 'vuex'
-import { fetchMetadata, fetchCategories, postInsight, postAnswer, postRateAnswer, postRateRelevanceInsight, fetchDownload, postTypeError, postInsightNotRelevant } from '@/api'
+import { fetchMetadata, postInsight, postAnswer, postRateAnswer, postRateRelevanceInsight, fetchDownload, postTypeError, postInsightNotRelevant, fetchFurtherInformation, fetchAutocomplete } from '@/api'
 
 
 export default createStore({
@@ -14,7 +14,8 @@ export default createStore({
     answerUpvoteBool: true,
     currentUserInput: '',
     selectedError: '', // User can report an error and select on of three possibilites
-    insightVoteBool: true //This boolean is for up- or downvoting insights by the user, default is true, insight is upvoted @click and only set to false for downvoting via InsightNotRelevantForCategory
+    insightVoteBool: true, //This boolean is for up- or downvoting insights by the user, default is true, insight is upvoted @click and only set to false for downvoting via InsightNotRelevantForCategory
+    autocomplete: [],
   },
   mutations: {
     // Saving the data from backend to the "metadata array"
@@ -43,9 +44,12 @@ export default createStore({
     setSelectedError(state,payload) {
         state.selectedError = payload
     },
-    setInsightVoteBool (state, payload) {
+    etInsightVoteBool (state, payload) {
           // TODO
-    }
+    },
+    setAutocomplete(state,payload) {
+        state.autocomplete = payload.autocomplete
+    },
   },
   actions: {
     loadQuery({commit}, payload){
@@ -59,6 +63,19 @@ export default createStore({
         .then((response) => commit('setMetadata', {metadata: response.data.metadata, categories: response.data.categories})) 
         .catch((error) => {console.error(error)}) 
     },
+    loadFurtherInformation ({commit}) {
+      return fetchFurtherInformation(this.state.query)
+        .then((response) => {console.log(response)})
+        .catch((error) => {console.error(error)}) 
+    },
+    loadAutocomplete({commit}) {
+      return fetchAutocomplete(this.state.currentCategories)
+        .then((response) => commit('setAutocomplete', {autocomplete: response.data})) 
+        .catch((error) => {console.error(error)})
+    },
+
+
+
     // Triggers function to get a csv file with the current insights and send it to the FE. User gets possibility to download data
     loadDownload () {
       return fetchDownload(this.state.query)

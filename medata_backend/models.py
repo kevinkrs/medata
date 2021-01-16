@@ -37,6 +37,7 @@ class Insights(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(30), unique=True)
     type_error = db.Column(db.Integer, default = 0)
+    timestamp = db.Column(db.DateTime, default = datetime.utcnow)
 
     #one2many with categories
     categories = db.relationship('Categories', backref = 'insights', lazy = True)
@@ -72,6 +73,7 @@ class Categories(db.Model):
     category_id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(30))
     downvote_category = db.Column(db.Integer, default = 0)
+    timestamp = db.Column(db.DateTime, default = datetime.utcnow)
 
     
     def to_dict(self):
@@ -80,10 +82,11 @@ class Categories(db.Model):
         Returns:
             dict: name of the category as a string
         """
-        return dict(category_name = self.name)
+        return dict(category_name = self.name,
+        category_id= self.category_id)
 
     def __repr__(self):
-         return f'CategoryId: {self.category_id}, name: {self.name}'
+         return f'category_id: {self.category_id}, insight_id: {self.insight_id}, name: {self.name}, downvote_category: {self.downvote_category}, timestamp: {self.timestamp} '
 
 #information representations for insights 
 class Information(db.Model):
@@ -107,10 +110,10 @@ class Information(db.Model):
     paper_id = db.Column(db.String(50), default = "")
     insight_upvotes = db.Column(db.Integer, default = 0)
     insight_downvotes = db.Column(db.Integer, default = 0)
-    title = db.Column(db.String(50), default = "")
-    authors = db.Column(db.Text, default = "")
+    title = db.Column(db.String(200), default = "")
+    authors = db.Column(db.String(200), default = "")
     authors_profile_link = db.Column(db.Text, default = "")
-    conference = db.Column(db.String(50), default = "")
+    conference = db.Column(db.String(200), default = "")
     timestamp = db.Column(db.DateTime, default = datetime.utcnow)
 
     #one2many with answers
@@ -143,11 +146,11 @@ class Information(db.Model):
             list: of answer.to_dict() ranked by descending answer score
         """
         answer_limit = 4
-        limited_answers = Answers.query.filter(Answers.information_id==self.information_id).order_by(Answers.answer_score.desc()).limit(answer_limit).all()
+        limited_answers = Answers.query.filter(Answers.information_id==self.information_id).order_by(Answers.answer_score.desc(), Answers.timestamp.desc()).limit(answer_limit).all()
         return [answer.to_dict() for answer in limited_answers]
 
     def __repr__(self):
-        return f'insight_id: {self.insight_id}, paper_id: {self.paper_id}'
+        return f'insight_id: {self.insight_id}, information_id: {self.information_id}, paper_id: {self.paper_id}, authors: {self.authors}'
 
 #answer representations for information
 class Answers(db.Model):
@@ -168,6 +171,7 @@ class Answers(db.Model):
     answer_upvotes = db.Column(db.Integer, default = 0)
     answer_downvotes = db.Column(db.Integer, default = 0)
     answer_score = db.Column(db.Integer, default = 0)
+    timestamp = db.Column(db.DateTime, default = datetime.utcnow)
 
     def to_dict(self):
         """Answer as a dict

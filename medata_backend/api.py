@@ -4,11 +4,18 @@ from datetime import datetime
 from models import db, Insights, Information, Answers, Categories
 import pandas as pd
 import acm_scraper as scraper
+from nltk.corpus import wordnet as wn
 import pathlib
 
 api = Blueprint('api', __name__)
 
-
+def url_checker(url):
+  if "epdf/" in url:
+    return url.replace("epdf/","")
+  elif "pdf/" in url:
+    return url.replace("pdf/","")
+  else:
+    return url
 
 
 @api.route('/ping', methods=['GET'])
@@ -29,7 +36,7 @@ def get_all():
     """
     response_object = {'status':     'success'}
     print(Insights.query.count())
-    for x in range(0,Insights.query.count()):
+    for x in range(1,Insights.query.count()):
         response_object[f'insight {x}'] = Insights.query.get(x).to_dict()
     
     return jsonify(response_object)
@@ -47,8 +54,7 @@ def get_specific():
     response_object = []
     #fetch data from request
     url = request.get_json().get('url')
-    if "pdf/" in url:
-        url = url.replace("pdf/","")
+    url = url_checker(url)
     #print(url)
     relevant_categories_scraper = scraper.get_leaf_categories(url)
     #print(relevant_categories_scraper)
@@ -61,8 +67,6 @@ def get_specific():
     #paper_id = "50"
     paper_id = url
 
-
-    
     #insights filtered by category
     matching_insight = Insights.query.join(Insights.categories).filter(or_(Categories.name==x for x in relevant_categories)).filter(Categories.downvote_category <= max_downvote_category).all()
     #print(matching_insight)
@@ -70,24 +74,10 @@ def get_specific():
     for x in matching_insight:
         if (Information.query.filter(Information.insight_id==int(x.id)).filter(Information.paper_id==paper_id).count()==0):
             #if an Information is first created the authors will be automatically pulled and added:
-
-            #TODO: activate this part with real paper_id 
-            soup = scraper.get_facts_soup(scraper.get_soup(paper_id))
-            authors_profile_link = scraper.get_authors(soup)
-            authors = [scraper.name_from_profile(profile_link) for profile_link in authors_profile_link]
-            title = scraper.get_title(soup)
-            conference = scraper.get_conference(paper_id)
-            authors_profile_link = "--".join(authors_profile_link)
-            authors = "--".join(authors)
-
             #TODO: add title, conference, authors and authors_profile_link to the Information
             i = Information(insight_id = x.id, 
                             insight_name=x.name, 
-                            paper_id=paper_id,
-                            title = title,
-                            authors = authors,
-                            authors_profile_link = authors_profile_link,
-                            conference = conference)
+                            paper_id=paper_id)
             db.session.add(i)
     db.session.commit()
 
@@ -114,6 +104,52 @@ def get_specific():
         return jsonify(response_object_with_categories)
 
 
+@api.route('/get_further_information', methods=['POST'])
+def get_further_information():
+    response_object = {'status': 'success'}
+    url = request.get_json().get('url')
+    paper_id = url_checker(url)
+    max_downvote_category = 2
+    relevant_categories = scraper.get_leaf_categories(url)
+    matching_insight = Insights.query.join(Insights.categories).filter(or_(Categories.name==x for x in relevant_categories)).filter(Categories.downvote_category <= max_downvote_category).all()
+    run_scraper = False
+
+    for x in matching_insight:
+        if (Information.query.filter(Information.insight_id==int(x.id)).filter(Information.paper_id==paper_id).filter(Information.title == "").count()==1):
+            run_scraper = True
+            break
+
+    if (run_scraper):        
+        soup = scraper.get_facts_soup(scraper.get_soup(paper_id))
+        authors_profile_link = scraper.get_authors(soup)
+        authors = [scraper.name_from_profile(profile_link) for profile_link in authors_profile_link]
+        title = scraper.get_title(soup)
+        conference = scraper.get_conference(paper_id)
+        authors_profile_link = "--".join(authors_profile_link)
+        authors = "--".join(authors)
+
+
+        for x in matching_insight:
+            current_information = Information.query.filter(Information.insight_id==int(x.id)).filter(Information.paper_id==paper_id).filter(Information.title == "").first()
+            if (Information.query.filter(Information.insight_id==int(x.id)).filter(Information.paper_id==paper_id).filter(Information.title == "").count()==1):
+
+                #TODO: add title, conference, authors and authors_profile_link to the Information
+                current_information.title = title
+                current_information.authors = authors
+                current_information.authors_profile_link = authors_profile_link
+                current_information.conference = conference
+                db.session.commit()
+                print(f"added information: {current_information}")
+
+    
+    return jsonify(response_object)
+
+
+
+
+
+
+
 @api.route('/add_insight', methods =["POST"])
 def add_insight():
     """Add an insight to a specific category
@@ -137,6 +173,7 @@ def add_insight():
     in_insight_name = post_data.get('insight')
     in_categories = post_data.get('categories')
     in_paper_id = post_data.get('paper_id')
+    in_paper_id = url_checker(in_paper_id)
 
     #if insight does not yet exist, add insight, add categories
     if (Insights.query.filter(Insights.name==in_insight_name).count()==0):
@@ -182,9 +219,11 @@ def add_answer():
     #fetch data from request
     post_data = request.get_json()
     print(f"Added Answer{post_data}")
-    in_paper_id = post_data.get('paper_id')
+    
     in_insight_name = post_data.get('insight')
     in_answer = post_data.get('answer')
+    in_paper_id = post_data.get('paper_id')
+    in_paper_id = url_checker(in_paper_id)
 
     try:
         in_answer.strip()
@@ -235,6 +274,7 @@ def rate_answer():
     print(f"Rate Answer json: {post_data}")
     in_insight_name = post_data.get('insight')
     in_paper_id = post_data.get('paper_id')
+    in_paper_id = url_checker(in_paper_id)
     in_upvote = post_data.get('upvote')
     in_answer = post_data.get('answer')
 
@@ -283,6 +323,7 @@ def rate_relevance_insight():
     print(post_data)
     in_insight_name = post_data.get('insight')
     in_paper_id = post_data.get('paper_id')
+    in_paper_id = url_checker(in_paper_id)
     in_upvote = post_data.get('upvote')
 
     #get information 
@@ -314,6 +355,7 @@ def download():
     """
     answer_score_threshold = 4
     url = request.get_json().get('url')
+    url = url_checker(url)
     urls_from_binder = request.get_json().get("urls_from_binder")
 
     def df_from_url(url):
@@ -404,7 +446,42 @@ def typ_error():
 
 
 
+@api.route('/autocomplete', methods = ['POST'])
+def autocomplete():
+    post_data = request.get_json()
+    categories = post_data.get('categories')
+    categories = ['Supervised learning by classification', 'Laboratory experiments']
+    response_object = []
+    base = []
+    insights = Insights.query.all()
 
+    for i in insights:
+        response_object.append(i.name)
+        split = i.name.split()
+        for s in split:
+            base.append(s)
+
+    for c in categories:
+        split = c.split()
+        for s in split:
+            base.append(s)        
+
+    for word in base:
+        #each synset represents a diff concept
+        try: 
+            for ss in wn.synsets(word):
+                for x in ss.lemma_names():
+                    #words have the form: "research_laboratory"
+                    response_object.append(x.capitalize().replace('_', ' '))
+        except LookupError:
+            """Wordnet only has to be installed once
+            """
+            import nltk
+            nltk.download("wordnet")
+
+    #remove double            
+    response_object = list(set(response_object))
+    return jsonify(response_object)
 
 
 

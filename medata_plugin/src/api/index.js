@@ -14,6 +14,10 @@ export function fetchMetadata (query) {
   return axios.post(`${'get_specific'}`, {url: query})
 }
 
+export function fetchFurtherInformation (query) {
+  return axios.post(`${'get_further_information'}`, {url: query})
+}
+
 export function postRateRelevanceInsight (inPaperId, inInsight, inUpvote) {
   return axios.post(`${'rate_relevance_insight'}`, {
     paper_id: inPaperId,
@@ -65,6 +69,10 @@ export function postTypeError (inInsight) {
   return axios.post(`${'type_error'}`, {
     insight: inInsight
   })
+}
+
+export function fetchAutocomplete (inCategories) {
+  return axios.post(`${'autocomplete'}`, {categories: inCategories})
 }
 
 

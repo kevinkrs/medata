@@ -7,7 +7,7 @@
       <button v-show="!legendVisible" style="display:inline" class="button-legend" @click="legendVisible = !legendVisible">
         <div><img class="img-button-legend" src="../assets/info.png" ></div>
       </button>
-      <button v-show="legendVisible" style="display:none" class="button-legend2" @click="legendVisible = !legendVisible">
+      <button v-show="legendVisible" style="display:none" class="button-legend2" @click="legendVisible = !legendVisible, sendScraper()">
         <div><img class="img-button-legend" src="../assets/arrow-up.png" ></div>      
       </button>
       <img class="logo" src="../assets/medata_black.png" width="200"> 
@@ -403,7 +403,8 @@ export default {
         this.$store.dispatch('sendAnswer')
         alert('Thanks for submitting!')
         this.userInput = ''
-        this.$store.dispatch('loadMetadata')}
+        this.$store.dispatch('loadMetadata')
+        }
     },
     // For new insights by user
     sendUserInsight() {
@@ -414,7 +415,8 @@ export default {
       this.$store.dispatch('sendInsight')
       alert('Thanks for submitting!')
       this.userInput = ''
-      this.$store.dispatch('loadMetadata')}
+      this.$store.dispatch('loadMetadata')
+      this.$store.dispatch('loadFurtherInformation')}
     },
   
     sendDownloadRequest() {
@@ -441,6 +443,10 @@ export default {
     },
      sendTypeError() {
        this.$store.dispatch('sendTypeError')
+        this.$store.dispatch('loadMetadata')
+     },
+     sendScraper() {
+       this.$store.dispatch('loadFurtherInformation')
      }
 
   },
