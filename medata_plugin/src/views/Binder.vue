@@ -4,6 +4,11 @@
 
     <!--Picture of the MEDATA logo-->
     <div class="headline">
+      <button   class="button-legend" >
+      </button>
+      <button v-show="legendVisible" style="display:none" class="button-legend2" @click="legendVisible = !legendVisible, sendScraper()">
+        <div><img class="img-button-legend" src="../assets/arrow-up.png" ></div>      
+      </button>
       <img class="logo" src="../assets/medata_black.png" width="200"> 
       <button class="insight-button-yellow">
         <img class="img-button" src="../assets/github.png" @click = "openGit">
