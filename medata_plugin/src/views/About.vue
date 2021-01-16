@@ -20,7 +20,7 @@ export default {
   data()  {
     return{
         substr: 'https://dl.acm.org/',
-        regex: /dl\.acm\.org\/doi\/((epdf\/)|(pdf\/)){0,1}\d+\.\d{3,}\//,
+        regex: /dl\.acm\.org\/doi\/((fullHtml\/)|(epdf\/)|(pdf\/)){0,1}\d+\.\d{3,}\//,
         button: true
     }
   },
@@ -43,7 +43,6 @@ export default {
               // alert('Valid URL found')
               // if URL is a dl.acm.org URl we save it to our state 
               vm.$store.dispatch('loadQuery', tabs[0].url)
-              vm.$store.dispatch('loadAutocomplete')
               .then(vm.loadData())
               // With router.push we can route to another url automatically 
           }
@@ -59,6 +58,7 @@ export default {
     // with all the data already loaded
     async loadData(){
       await this.$store.dispatch('loadMetadata')
+      this.$store.dispatch('loadAutocomplete')
       await this.$router.push('/home')
     },
   }
