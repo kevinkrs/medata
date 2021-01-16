@@ -20,7 +20,7 @@ export default {
   data()  {
     return{
         substr: 'https://dl.acm.org/',
-        regex: /dl\.acm\.org\/doi\/\d+\.\d{3,}\//,
+        regex: /dl\.acm\.org\/doi\/((epdf\/)|(pdf\/)){0,1}\d+\.\d{3,}\//,
         button: true
     }
   },
