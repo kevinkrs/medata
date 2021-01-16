@@ -92,8 +92,7 @@
         depending on whether the passed numerical value "confirmed" inside the "metadaata" array
         (recieved inside script from the store file)is 0,1 or something else.-->
         
-        <!--TODO insigth_upvores is not the right variable for comparision
-        entry.answer.length == 0 -->
+      
         <div v-if='entry.answer.length == 0' class= "insight-button">
           <!--With a click on the colored button the function visable is called and the id of the insight
           is passed. This ensures that the corresponding toggle box becomes visible.-->
@@ -161,14 +160,14 @@
             </div>
 
             <div class="insight-toggleBox">
-              <!--STYLING TODO-->
+          
             <button class="error-button" @click="visible2(entry.id+1000)">report error</button>
               <div class="insight-answers">
                 <p>Please select <br> the correct Answer</p>
 
                <div class="row">
                     <div v-for="answer in entry.answer" :key ="answer">
-                      <!--How can i connect v-model directly -->
+                     
                       <button type="button"  class="answer-button" @click="saveAnswerSelection(answer.answer), sendAnswerSelection()">
                         {{answer.answer}}
                       </button>
@@ -213,7 +212,7 @@
 
             <div class="insight-toggleBox">
             <button class="error-button" @click="visible2(entry.id+1000)">report error</button>
-              <!--If function, for checking if the answer has highest upvotes-->
+            
                 <p class="insight-green-answer">{{entry.answer[0].answer}} <br></p>
                 <div class="insight-green">
                   <div class="insight-green-text">

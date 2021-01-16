@@ -16,7 +16,7 @@
 import { mapState } from 'vuex'
 
 export default {
-  // TODO URL to backend
+  
   data()  {
     return{
         substr: 'https://dl.acm.org/',
