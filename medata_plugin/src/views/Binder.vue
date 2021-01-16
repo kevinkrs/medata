@@ -16,7 +16,7 @@
     </div>
 
     <div class= "download-binder">
-        <button class="main-button" @click = 'startScraper()'>Download Binder Insights</button>
+        <button class="main-button" @click = 'startBinderScraper()'>Download Binder Insights</button>
     </div>
   </div>
 </div>
@@ -28,9 +28,17 @@
 export default {
     methods: {
         startBinderScraper() {
+            alert(this.query)
             const cheerio = require('cheerio')
             const request = require('request')
-            request(this.query)
+            request(this.query, (error,response,html) => {
+                if(!error && response.statusCode == 200) {
+                    const $ = cheerio.load(html)
+                    const link = $ ('.issue-item__title')
+                    //alert(link.html())
+                    alert(html)
+                }
+            })
         }
     },
     computed: {

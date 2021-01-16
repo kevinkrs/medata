@@ -48,6 +48,7 @@ export default {
               // With router.push we can route to another url automatically 
           }
             else if(tabs[0].url.match(vm.regexBinder)){
+              vm.$store.dispatch('loadQuery', tabs[0].url)
               vm.$router.push('/binder')
           }
             else if(querySub == vm.substr) {
