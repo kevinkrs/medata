@@ -1,14 +1,21 @@
-from flask import Blueprint, jsonify, request, send_file
+from flask import Blueprint, jsonify, request, send_file, safe_join
 from sqlalchemy import or_, exists, and_, not_
 from datetime import datetime
 from models import db, Insights, Information, Answers, Categories
 import pandas as pd
 import acm_scraper as scraper
 from nltk.corpus import wordnet as wn
+import pathlib
 
 api = Blueprint('api', __name__)
 
-
+def url_checker(url):
+  if "epdf/" in url:
+    return url.replace("epdf/","")
+  elif "pdf/" in url:
+    return url.replace("pdf/","")
+  else:
+    return url
 
 
 @api.route('/ping', methods=['GET'])
@@ -47,6 +54,7 @@ def get_specific():
     response_object = []
     #fetch data from request
     url = request.get_json().get('url')
+    url = url_checker(url)
     #print(url)
     relevant_categories_scraper = scraper.get_leaf_categories(url)
     #print(relevant_categories_scraper)
@@ -100,7 +108,7 @@ def get_specific():
 def get_further_information():
     response_object = {'status': 'success'}
     url = request.get_json().get('url')
-    paper_id = url
+    paper_id = url_checker(url)
     max_downvote_category = 2
     relevant_categories = scraper.get_leaf_categories(url)
     matching_insight = Insights.query.join(Insights.categories).filter(or_(Categories.name==x for x in relevant_categories)).filter(Categories.downvote_category <= max_downvote_category).all()
@@ -165,6 +173,7 @@ def add_insight():
     in_insight_name = post_data.get('insight')
     in_categories = post_data.get('categories')
     in_paper_id = post_data.get('paper_id')
+    in_paper_id = url_checker(in_paper_id)
 
     #if insight does not yet exist, add insight, add categories
     if (Insights.query.filter(Insights.name==in_insight_name).count()==0):
@@ -210,9 +219,11 @@ def add_answer():
     #fetch data from request
     post_data = request.get_json()
     print(f"Added Answer{post_data}")
-    in_paper_id = post_data.get('paper_id')
+    
     in_insight_name = post_data.get('insight')
     in_answer = post_data.get('answer')
+    in_paper_id = post_data.get('paper_id')
+    in_paper_id = url_checker(in_paper_id)
 
     try:
         in_answer.strip()
@@ -263,6 +274,7 @@ def rate_answer():
     print(f"Rate Answer json: {post_data}")
     in_insight_name = post_data.get('insight')
     in_paper_id = post_data.get('paper_id')
+    in_paper_id = url_checker(in_paper_id)
     in_upvote = post_data.get('upvote')
     in_answer = post_data.get('answer')
 
@@ -311,6 +323,7 @@ def rate_relevance_insight():
     print(post_data)
     in_insight_name = post_data.get('insight')
     in_paper_id = post_data.get('paper_id')
+    in_paper_id = url_checker(in_paper_id)
     in_upvote = post_data.get('upvote')
 
     #get information 
@@ -334,34 +347,74 @@ def download():
     answer_score_threshold defines the minimum Answer score for the answer to appear in the results. 
     A score of 1 should be the absolute minimum.
 
+    FE can either send one url in the json response or a list of urls 
+
+
     Returns:
-        csv file: includes title, authors name, link to the profile, all Insights and answers by descending answer score. 
+        csv file: includes title, authors names, all Insights and answers. 
     """
-    answer_score_threshold = 1
+    answer_score_threshold = 4
     url = request.get_json().get('url')
-    inf = Information.query.join(Information.answers).filter(Information.paper_id==url).filter(Answers.answer_score > answer_score_threshold).order_by(Answers.answer_score.desc()).all()
-    #catch aioor
+    url = url_checker(url)
+    urls_from_binder = request.get_json().get("urls_from_binder")
 
+    def df_from_url(url):
+        url = url
+        inf = Information.query.join(Information.answers).filter(Information.paper_id==url).filter(Answers.answer_score > answer_score_threshold).order_by(Answers.answer_score.desc()).all()
+        #catch aioor  
+        #makes a list of authors splitted by a ','
+        authors = inf[0].authors.replace("--", ",").strip()
 
-    # TODO: uncomment this
-    #makes a list of authors splitted by a ','
-    authors = inf[0].authors.split("--").strip()
-    #makes a list of links to authors profils
-    authors_profile_link = inf[0].authors_profile_link.split("--").strip()
+        data = {
+            "Title": inf[0].title,
+            "Authors": [authors],
+            "Link to paper": inf[0].paper_id
+        }
+
+        for i in inf:
+            data[i.insight_name] = i.answers[0].answer
+
+        df = pd.DataFrame(data=data)
+        return df
+
+    if urls_from_binder is not None:
+        urls_from_binder_list = urls_from_binder.split(",")
+        urls = list(set([u.strip() for u in urls_from_binder_list]))
+        #removes duplicates
+        df = pd.DataFrame()
+
+        for u in urls:
+            one_line_df = pd.DataFrame()
+            try:
+                one_line_df = df_from_url(u)
+            except IndexError as ie:
+                no_data = {
+                    "Title": "Unknown",
+                    "Authors": ["Unknown"],
+                    "Link to paper": u
+                }
+                one_line_df = pd.DataFrame(data = no_data)
+                
+            if df.empty:
+                df = one_line_df
+            else:
+                df = pd.concat([df,one_line_df], axis=0, ignore_index=True)
+    else:
+        try:
+            df = df_from_url(url)
+        except IndexError as ie:
+            no_data = {
+                "Title": "Unknown",
+                "Authors": ["Unknown"],
+                "Link to paper": url
+            }
+            df = pd.DataFrame(data = no_data)
+             
+
+    path_to_csv = pathlib.Path.cwd() / "exports" / "export_data.csv"
+    df.to_csv(pathlib.Path(path_to_csv))
+    return send_file(safe_join(pathlib.Path(path_to_csv)), as_attachment=True )
     
-    data = [["Title: ", inf[0].title], ["Author(s): ", inf[0].authors], ["Link to Profile: ", inf[0].authors_profile_link]]
-
-    for i in inf:
-        data.append(["", ""])
-        data.append(["Insight: ", i.insight_name])
-        for a in i.answers:
-            data.append(["Answer: ", a.answer])
-            data.append(["Score: ", a.answer_upvotes])
-
-    df = pd.DataFrame(data, columns = ["", "data"])
-    df.to_csv(r"medata_backend\exports\export_data.csv")
-    return send_file("exports/export_data.csv")
-
 
 
 
@@ -425,7 +478,7 @@ def autocomplete():
             """
             import nltk
             nltk.download("wordnet")
-            
+
     #remove double            
     response_object = list(set(response_object))
     return jsonify(response_object)
