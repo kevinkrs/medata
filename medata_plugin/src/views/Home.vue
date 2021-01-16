@@ -166,24 +166,14 @@
               <div class="insight-answers">
                 <p>Please select <br> the correct Answer</p>
 
-
-               <div class="row" :id=entry.id+100000 style="display:inline">
+               <div class="row">
                     <div v-for="answer in entry.answer" :key ="answer">
                       <!--How can i connect v-model directly -->
-                      <button type="button"  class="answer-button" @click="visible3(entry.id), saveAnswerSelection(answer.answer), sendAnswerSelection()">
+                      <button type="button"  class="answer-button" @click="saveAnswerSelection(answer.answer), sendAnswerSelection()">
                         {{answer.answer}}
                       </button>
                     </div>
                 </div>
-
-                <div class="row" :id=entry.id+200000 style="display:none" >
-                    <div v-for="answer in entry.answer" :key ="answer">
-                      <!--How can i connect v-model directly -->
-                      <button type="button"  class="main-button-clicked">
-                        {{answer.answer}}
-                      </button>
-                    </div>
-                </div>  
 
               </div>
               <div class="insight-add">
@@ -234,13 +224,7 @@
                     <p>{{entry.answer[0].answer_upvotes}}</p>                   
                   </div>
                 </div>
-                <div class= "row" :id=entry.id+100000  style = "display:inline">
-                  <button class="green-button" @click='sendAnswerSelection(), visible3(entry.id)'>Confirm</button>
-                </div>
-                <div clas= "row" :id=entry.id+200000 style = "display:none">
-                  <button class="green-button-clicked" >Confirm</button>
-                </div>
-                
+                <button class="green-button" @click='sendAnswerSelection()'>Confirm</button>
             </div>
           </div>
         </div>
