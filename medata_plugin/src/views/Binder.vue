@@ -16,7 +16,7 @@
     </div>
 
     <div class= "download-binder">
-        <button class="main-button" @click = 'startBinderScraper()'>Download Binder Insights</button>
+        <button class="main-button" @click ='getDom'>Download Binder Insights</button>
     </div>
   </div>
 </div>
@@ -26,7 +26,17 @@
     import {mapState} from 'vuex'
 
 export default {
+    data () {
+
+      return{
+          domContent: ''
+      }
+    },
     methods: {
+      content() {
+      alert(this.domContent)
+      },
+
         startBinderScraper() {
             alert(this.query)
             const cheerio = require('cheerio')
@@ -39,8 +49,21 @@ export default {
                     alert(html)
                 }
             })
-        }
-    },
+        },
+        getDom() {
+              function doStuffWithDom(domContent) {
+                alert.log('I received the following DOM content:\n' + domContent);
+              }
+
+            chrome.tabs.query({currentWindow: true, active: true}, 
+            function (tabs){
+              var dom= document.getElementByTagName('html')[0].innerHTML
+              doStuffWithDom(document.getElementByTagName('html')[0].innerHTML)
+            })
+       
+      }
+  },
+    
     computed: {
         ...mapState([
             'query',
