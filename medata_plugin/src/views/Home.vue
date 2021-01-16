@@ -165,14 +165,26 @@
             <button class="error-button" @click="visible2(entry.id+1000)">report error</button>
               <div class="insight-answers">
                 <p>Please select <br> the correct Answer</p>
-               <div class="row">
+
+
+               <div class="row" :id=entry.id+100000 style="display:inline">
                     <div v-for="answer in entry.answer" :key ="answer">
                       <!--How can i connect v-model directly -->
-                      <button type="button"  class="answer-button" @click="saveAnswerSelection(answer.answer), sendAnswerSelection()">
+                      <button type="button"  class="answer-button" @click="visible3(entry.id), saveAnswerSelection(answer.answer), sendAnswerSelection()">
                         {{answer.answer}}
                       </button>
                     </div>
-                  </div>
+                </div>
+
+                <div class="row" :id=entry.id+200000 style="display:none" >
+                    <div v-for="answer in entry.answer" :key ="answer">
+                      <!--How can i connect v-model directly -->
+                      <button type="button"  class="main-button">
+                        {{answer.answer}}
+                      </button>
+                    </div>
+                </div>  
+
               </div>
               <div class="insight-add">
                 <p>Add value:</p>
@@ -222,7 +234,13 @@
                     <p>{{entry.answer[0].answer_upvotes}}</p>                   
                   </div>
                 </div>
-              <button class="green-button" @click='sendAnswerSelection()'>confirm</button>
+                <div class= "row" :id=entry.id+100000  style = "display:inline">
+                  <button class="green-button" @click='sendAnswerSelection(), visible3(entry.id)'>Confirm</button>
+                </div>
+                <div clas= "row" :id=entry.id+200000 style = "display:none">
+                  <button class="green-button-clicked" >Confirm</button>
+                </div>
+                
             </div>
           </div>
         </div>
@@ -348,6 +366,11 @@ export default {
         document.getElementById(divId).style.display = 'none';
         document.getElementById(divId-1000).style.display = 'inline';
       }
+    },
+
+    visible3: function (divId) {
+        document.getElementById(divId+100000).style.display = 'none';
+        document.getElementById(divId+200000).style.display = 'inline';    
     },
     // All the following methods are merely for saving data as state objects
     saveInName(name) {
@@ -806,6 +829,16 @@ export default {
   .green-button:hover {
     background-color: #3a3a3a;
     color: white;
+  }
+
+  .green-button-clicked {
+    border-radius: 6px;
+    outline: none;
+    border-style: none;
+    width: 80px;
+    height: 30px;
+    color: white;
+    background-color: #8F8F8F;
   }
 
 .noData{
