@@ -74,7 +74,7 @@
 
     <!--If backend has no information to given category it's responding with an empty list. Here we check if the list is truly empty.
     If it is, we display first the first div class "noData". If not empty we display second div -->
-    <div v-if='metadata.length == 0'>
+    <div v-if='metadata == null'>
       <div class="noData">
         <p> Sorry there is no data for this category available yet </p>
       </div>

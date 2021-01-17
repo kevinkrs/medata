@@ -10,6 +10,9 @@
       </div>
       <div v-else>
        <div class="lds-roller"><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div></div>
+      <div>
+        <p> Loading data... </p>
+      </div>
       </div>
     </div>
   </div>
