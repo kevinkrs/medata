@@ -220,7 +220,7 @@
                   </div>
                   <div class="insight-green-line"></div>
                   <div class="insight-green-number">
-                    <p>{{entry.answer[0].answer_upvotes}}</p>                   
+                    <p>{{entry.answer[0].score}}</p>                   
                   </div>
                 </div>
                 <button class="green-button" @click='sendAnswerSelection()'>Confirm</button>
@@ -289,9 +289,6 @@ export default {
       userInput: '',
       legendVisible: false,
       // TODO: Backend has to send an array with common words for certain category 
-      autocomplete: [
-        'Accuracy', 'Area' , 'F1', 'Recall', 'MSE', 'Precision', 'Classification Error'
-      ],
       filtered: [],
       modal: false
     }
@@ -441,13 +438,13 @@ export default {
         'currentAnswer',
         'currentUserInput',
         'selectedError',
-        'currentCategories'
+        'currentCategories',
+        'autocomplete'
     ]),
 
   }
 
 }
-
 </script>
 
 <style scoped>
