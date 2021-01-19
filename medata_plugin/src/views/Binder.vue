@@ -4,10 +4,12 @@
 
     <!--Picture of the MEDATA logo-->
     <div class="headline">
-      <button   class="button-legend" >
+      <button v-show="!legendVisible" style="display:inline" class="button-legend" @click="legendVisible = !legendVisible">
+        <div><img class="img-button-legend" src="../assets/info.png" ></div>
       </button>
       <button v-show="legendVisible" style="display:none" class="button-legend2" @click="legendVisible = !legendVisible">
-        <div><img class="img-button-legend" src="../assets/arrow-up.png" ></div>      
+        <div><img class="img-button-legend" src="../assets/info.png" ></div>   
+        <div class="button-legend2"> <p> Here you can download all the insides to the papers of your binder</p></div>   
       </button>
       <img class="logo" src="../assets/medata_black.png" width="200"> 
       <button class="insight-button-yellow">
@@ -16,10 +18,11 @@
     </div>
 
     <div class= "download-binder">
-        <button class="main-button" @click ='getDom'>Download Binder Insights</button>
+        <button class="main-button" @click ='getDom()'>Download Binder Insights</button>
     </div>
   </div>
 </div>
+  
 </template>
 
 <script>
@@ -29,15 +32,17 @@ export default {
     data () {
 
       return{
-          domContent: ''
+          domContent: '',
+          legendVisible: false,
       }
     },
     methods: {
-      content() {
-      alert(this.domContent)
-      },
+      openGit () {
+      chrome.tabs.create({url: "https://github.com"});
+    },
 
-        startBinderScraper() {
+
+      startBinderScraper() {
             alert(this.query)
             const cheerio = require('cheerio')
             const request = require('request')
@@ -50,23 +55,19 @@ export default {
                 }
             })
         },
+
         getDom() {
-          function display_h1 (results){
-          h1=results;
-          alert(document.querySelector("#id1").innerHTML = "<p>tab title: " + tab_title + "</p><p>dom h1: " + h1 + "</p>");
-          
-          }
-          chrome.tabs.query({active: true}, function(tabs) {
-          var tab = tabs[0];
-          tab_title = tab.title;
-          chrome.tabs.executeScript(tab.id, {
-          code: 'document.querySelector("h1").textContent'
-          }, display_h1);
-      });
-       
-      }
-  },
-    
+          var result = ''
+          chrome.tabs.query({currentWindow: true, active: true}, 
+          function (tabs){
+            var titles = document.getElementsByClassName("issue-item_title")
+            for (var i = 0; i < titles.length; i++) {
+              result += titles[i].textContent
+            }
+          })
+          alert(result)
+        },
+  
     computed: {
         ...mapState([
             'query',
@@ -78,6 +79,7 @@ export default {
             'currentCategories'
     ]),
     }
+  }
 }
 </script>
 
