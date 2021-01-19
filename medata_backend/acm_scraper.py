@@ -36,18 +36,15 @@ def main():
     soup = get_soup(url)
     leaf_cats = get_categories(soup)
     facts_soup = get_facts_soup(soup)
-    # for leaf in leaf_cats:
-    #     print(leaf)
+
     print(get_title(soup))
-    # print(get_conference(url))
+
 
     authors = get_authors(facts_soup)
     print("------------------")
     for author in authors:
         name_from_profile(author)
-    # for author in authors:
-    #     name = name_from_profile(author)
-    #     print(name)
+
     authors_string = ",".join(authors)
     print(",".join(authors))
     print(authors_string.split(","))
@@ -70,9 +67,8 @@ def get_leaf_categories(url):
     soup = get_soup(url)
     leaf_list = get_categories(soup)
     return leaf_list
-#todo:
-#paperid as integer
-#categories as list of strings
+
+
 def get_soup(url):
     """Return a soup object
 
@@ -224,7 +220,6 @@ def get_categories(soup):
     Returns:
         list (String): List of the names of the leaf categories
     """
-    #todo: just return the leaf categories as a list
     organizational_chart = soup.find("ol", class_="rlist organizational-chart")     
     categories_container = organizational_chart.find_all("a")
     #print(len(categories_container))
@@ -240,13 +235,6 @@ def get_categories(soup):
             cat = Category(numbers,name)
             categories_list.append(cat)
 
-            # print(cat.name)
-            # print(cat.numbers)
-            # print(name)
-            # print(len(numbers))
-            # print("\n")
-            
-
         except Exception as e:
              print(e)   
 
@@ -257,9 +245,6 @@ def get_categories(soup):
         #rest_cats is a list of the remaining categories
         rest_numbers = [nr for sublist in rest_cats for nr in sublist]
         # list comprehension puts all numbers in one list
-        #print(rest_numbers)
-        
-        #print(rest_cats)
         last_number = categorie.numbers[-1]
 
         if last_number not in rest_numbers:
@@ -267,9 +252,6 @@ def get_categories(soup):
         
     # appends leaf categories to a list
     for categorie in categories_list:
-        #print(categorie.name)
-        # print(categorie.numbers)
-        # print(categorie.has_children)
         if categorie.has_children == False:
             leaf_categories_list.append(categorie.name)
 
