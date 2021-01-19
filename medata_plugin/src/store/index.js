@@ -63,7 +63,7 @@ export default createStore({
         .then((response) => commit('setMetadata', {metadata: response.data.metadata, categories: response.data.categories})) 
         .catch((error) => {console.error(error)}) 
     },
-    loadFurtherInformation ({commit}) {
+    loadFurtherInformation () {
       return fetchFurtherInformation(this.state.query)
         .then((response) => {console.log(response)})
         .catch((error) => {console.error(error)}) 

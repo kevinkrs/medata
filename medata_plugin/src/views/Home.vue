@@ -7,7 +7,7 @@
       <button v-show="!legendVisible" style="display:inline" class="button-legend" @click="legendVisible = !legendVisible">
         <div><img class="img-button-legend" src="../assets/info.png" ></div>
       </button>
-      <button v-show="legendVisible" style="display:none" class="button-legend2" @click="legendVisible = !legendVisible, sendScraper()">
+      <button v-show="legendVisible" style="display:none" class="button-legend2" @click="legendVisible = !legendVisible">
         <div><img class="img-button-legend" src="../assets/arrow-up.png" ></div>      
       </button>
       <img class="logo" src="../assets/medata_black.png" width="200"> 
@@ -74,7 +74,7 @@
 
     <!--If backend has no information to given category it's responding with an empty list. Here we check if the list is truly empty.
     If it is, we display first the first div class "noData". If not empty we display second div -->
-    <div v-if='metadata.length == 0'>
+    <div v-if='metadata == null'>
       <div class="noData">
         <p> Sorry there is no data for this category available yet </p>
       </div>
@@ -110,8 +110,8 @@
 
               <div class="insight-toggleBox">
                 <button class="error-button" @click="visible2(entry.id+1000)">back</button>
-                <button id ="error1" class="error-button-2" @click='saveSelectedError("type_error"), sendTypeError()'>Type Error</button> <br> 
-                <button id ="error2" class="error-button-2" @click='saveSelectedError("relevance_error"), sendInsightNotRelevantError()'>Insight not relevant for this paper</button>
+                <button id ="error1" class="error-button-2" @click='saveSelectedError("type_error"), sendTypoError()'>Report typo </button> <br> 
+                <button id ="error2" class="error-button-2" @click='saveSelectedError("relevance_error"), sendInsightNotRelevantError()'>Report insignificance of this insight </button>
               </div>
             </div> 
 
@@ -147,8 +147,8 @@
 
               <div class="insight-toggleBox">
                 <button class="error-button" @click="visible2(entry.id+1000)">back</button>
-                <button id ="error1" class="error-button-2" @click='saveSelectedError("type_error"),sendTypeError()'>Type Error</button> <br> 
-                <button id ="error2" class="error-button-2" @click='saveSelectedError("relevance_error"), sendInsightNotRelevantError()'>Insight not relevant for this paper</button>
+                <button id ="error1" class="error-button-2" @click='saveSelectedError("type_error"),sendTypoError()'>Report typo </button> <br> 
+                <button id ="error2" class="error-button-2" @click='saveSelectedError("relevance_error"), sendInsightNotRelevantError()'>Report insignificance of this insight </button>
               </div>
             </div> 
 
@@ -198,8 +198,8 @@
 
               <div class="insight-toggleBox">
                 <button class="error-button" @click="visible2(entry.id+1000)">back</button>
-                 <button id ="error1" class="error-button-2" @click='saveSelectedError("type_error"),sendTypeError()'>Type Error</button> <br> 
-                <button id ="error2" class="error-button-2" @click='saveSelectedError("value_error"), sendValueError()'>Value Error</button>
+                 <button id ="error1" class="error-button-2" @click='saveSelectedError("type_error"),sendTypoError()'>Report typo </button> <br> 
+                <button id ="error2" class="error-button-2" @click='saveSelectedError("value_error"), sendValueError()'>Report incorrect value </button>
               </div>
             </div> 
 
@@ -220,7 +220,7 @@
                   </div>
                   <div class="insight-green-line"></div>
                   <div class="insight-green-number">
-                    <p>{{entry.answer[0].answer_upvotes}}</p>                   
+                    <p>{{entry.answer[0].answer_score}}</p>                   
                   </div>
                 </div>
                 <button class="green-button" @click='sendAnswerSelection()'>Confirm</button>
@@ -289,9 +289,6 @@ export default {
       userInput: '',
       legendVisible: false,
       // TODO: Backend has to send an array with common words for certain category 
-      autocomplete: [
-        'Accuracy', 'Area' , 'F1', 'Recall', 'MSE', 'Precision', 'Classification Error'
-      ],
       filtered: [],
       modal: false
     }
@@ -399,17 +396,13 @@ export default {
       alert('Thanks for submitting!')
       this.userInput = ''
       this.$store.dispatch('loadMetadata')
-      this.$store.dispatch('loadFurtherInformation')}
+      }
     },
   
     sendDownloadRequest() {
       this.$store.dispatch("loadDownload")
     },
-    // DEPRECATED
-    saveSelectedError(name){
-      this.$store.dispatch('fetchError', name)
-      alert('Thanks for reporting an error')
-    },
+  
     // User sends relevance of insight (upvote) on insight click
     sendInsightRelevance(){
       this.$store.dispatch('sendRateRelevanceInsight')
@@ -419,14 +412,17 @@ export default {
     sendInsightNotRelevantError() {
       this.$store.dispatch('sendInsightNotRelevantError')
       this.$store.dispatch('loadMetadata')
+      alert('Thank you for reporting! If more user report this insight as insignificant it will be deleted.')
     },
     sendValueError() {
       this.$store.dispatch('sendValueError')
       this.$store.dispatch('loadMetadata')
+      alert("Thank you for reporting! The value is going to be checked.")
     },
-     sendTypeError() {
-       this.$store.dispatch('sendTypeError')
+     sendTypoError() {
+        this.$store.dispatch('sendTypoError')
         this.$store.dispatch('loadMetadata')
+        alert('Thank you for reporting typo. Our team is going to check your reported typo.')
      },
      sendScraper() {
        this.$store.dispatch('loadFurtherInformation')
@@ -442,13 +438,18 @@ export default {
         'currentAnswer',
         'currentUserInput',
         'selectedError',
-        'currentCategories'
+        'currentCategories',
+        'autocomplete'
     ]),
 
+  },
+  created: 
+      function () {
+          this.sendScraper()
+        
   }
 
 }
-
 </script>
 
 <style scoped>

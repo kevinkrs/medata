@@ -2,11 +2,17 @@
 <div class="container">
   <img src="../assets/medata_black.png" width="200">
   <div class="about">
-       <div v-if = 'button'>
-        <button class ="mainButton" @click='checkURL()'>Load Data</button>
+       <div v-if = "status == 2">
+        <p class ="info"> You're currently not visiting <br> <a href= "https://dl.acm.org/"> <i>dl.acm.org</i></a></p>
+      </div>
+      <div v-else-if = "status == 1">
+         <p class ="info"> Please open an <a href= "https://dl.acm.org/"> <i>dl.acm.org</i></a><br> articel or paper to continue </p>
       </div>
       <div v-else>
        <div class="lds-roller"><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div></div>
+      <div>
+        <p> Loading data... </p>
+      </div>
       </div>
     </div>
   </div>
@@ -21,8 +27,7 @@ export default {
     return{
         substr: 'https://dl.acm.org/',
         regex: /dl\.acm\.org\/doi\/((fullHtml\/)|(epdf\/)|(pdf\/)){0,1}\d+\.\d{3,}\//,
-        regexBinder: /dl\.acm\.org\/action\/showBinder\?/,
-        button: true
+        status: 0
     }
   },
   computed: mapState({
@@ -40,7 +45,7 @@ export default {
           function (tabs){
             var querySub = tabs[0].url.substring(0, 19)
             if (tabs[0].url.match(vm.regex)) { 
-              vm.button = false
+              vm.status = 0
               // alert('Valid URL found')
               // if URL is a dl.acm.org URl we save it to our state 
               vm.$store.dispatch('loadQuery', tabs[0].url)
@@ -52,10 +57,12 @@ export default {
               vm.$router.push('/binder')
           }
             else if(querySub == vm.substr) {
-              alert("Please open a particular article to continue")
+              vm.status = 1
+              //alert("Please open a particular article to continue")
           }
             else {
-              alert("You're currently not on the dl.acm.org website")
+              vm.status = 2
+              //alert("You're currently not on the dl.acm.org website")
           }
       })
     },
@@ -66,7 +73,12 @@ export default {
       this.$store.dispatch('loadAutocomplete')
       await this.$router.push('/home')
     },
-  }
+  },
+
+    created: 
+      function() {
+        this.checkURL()
+      },
 }
 </script>
 
@@ -84,15 +96,11 @@ export default {
   box-sizing: border-box;
   
 }
-.mainButton{
-  border-radius: 5px;
-  outline: none;
-  border-style: none;
-  width: 90px;
-  height: 40px;
-  color: white;
-  background-color: #8F8F8F;
-  }
+.info {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+  font-size: 17px;
+  color: #3A3A3A ;
+}
 
 .mainButton:hover {
   background-color: #3a3a3a;
