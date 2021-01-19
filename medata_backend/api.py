@@ -126,7 +126,8 @@ def get_further_information():
     url = request.get_json().get('url')
     paper_id = url_checker(url)
     max_downvote_category = 2
-    relevant_categories = scraper.get_leaf_categories(url)
+    soup = scraper.get_soup(url)
+    relevant_categories = scraper.get_categories(soup)
     #query matching insights
     matching_insight = Insights.query.join(Insights.categories).filter(or_(Categories.name==x for x in relevant_categories)).filter(Categories.downvote_category <= max_downvote_category).all()
     #boolean to indicate whether further information needs to be scraped
@@ -140,10 +141,10 @@ def get_further_information():
     
     #scrape further information
     if (run_scraper):        
-        soup = scraper.get_facts_soup(scraper.get_soup(paper_id))
-        authors_profile_link = scraper.get_authors(soup)
+        facts_soup = scraper.get_facts_soup(soup)
+        authors_profile_link = scraper.get_authors(facts_soup)
         authors = [scraper.name_from_profile(profile_link) for profile_link in authors_profile_link]
-        title = scraper.get_title(soup)
+        title = scraper.get_title(facts_soup)
         conference = scraper.get_conference(paper_id)
         authors_profile_link = "--".join(authors_profile_link)
         authors = "--".join(authors)
