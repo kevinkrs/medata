@@ -110,8 +110,8 @@
 
               <div class="insight-toggleBox">
                 <button class="error-button" @click="visible2(entry.id+1000)">back</button>
-                <button id ="error1" class="error-button-2" @click='saveSelectedError("type_error"), sendTypeError()'>Type Error</button> <br> 
-                <button id ="error2" class="error-button-2" @click='saveSelectedError("relevance_error"), sendInsightNotRelevantError()'>Insight not relevant for this paper</button>
+                <button id ="error1" class="error-button-2" @click='saveSelectedError("type_error"), sendTypoError()'>Report typo </button> <br> 
+                <button id ="error2" class="error-button-2" @click='saveSelectedError("relevance_error"), sendInsightNotRelevantError()'>Report insignificance of this insight </button>
               </div>
             </div> 
 
@@ -147,8 +147,8 @@
 
               <div class="insight-toggleBox">
                 <button class="error-button" @click="visible2(entry.id+1000)">back</button>
-                <button id ="error1" class="error-button-2" @click='saveSelectedError("type_error"),sendTypeError()'>Type Error</button> <br> 
-                <button id ="error2" class="error-button-2" @click='saveSelectedError("relevance_error"), sendInsightNotRelevantError()'>Insight not relevant for this paper</button>
+                <button id ="error1" class="error-button-2" @click='saveSelectedError("type_error"),sendTypoError()'>Report typo </button> <br> 
+                <button id ="error2" class="error-button-2" @click='saveSelectedError("relevance_error"), sendInsightNotRelevantError()'>Report insignificance of this insight </button>
               </div>
             </div> 
 
@@ -198,8 +198,8 @@
 
               <div class="insight-toggleBox">
                 <button class="error-button" @click="visible2(entry.id+1000)">back</button>
-                 <button id ="error1" class="error-button-2" @click='saveSelectedError("type_error"),sendTypeError()'>Type Error</button> <br> 
-                <button id ="error2" class="error-button-2" @click='saveSelectedError("value_error"), sendValueError()'>Value Error</button>
+                 <button id ="error1" class="error-button-2" @click='saveSelectedError("type_error"),sendTypoError()'>Report typo </button> <br> 
+                <button id ="error2" class="error-button-2" @click='saveSelectedError("value_error"), sendValueError()'>Report incorrect value </button>
               </div>
             </div> 
 
@@ -405,11 +405,7 @@ export default {
     sendDownloadRequest() {
       this.$store.dispatch("loadDownload")
     },
-    // DEPRECATED
-    saveSelectedError(name){
-      this.$store.dispatch('fetchError', name)
-      alert('Thanks for reporting an error')
-    },
+  
     // User sends relevance of insight (upvote) on insight click
     sendInsightRelevance(){
       this.$store.dispatch('sendRateRelevanceInsight')
@@ -419,14 +415,17 @@ export default {
     sendInsightNotRelevantError() {
       this.$store.dispatch('sendInsightNotRelevantError')
       this.$store.dispatch('loadMetadata')
+      alert('Thank you for reporting! If more user report this insight as insignificant it will be deleted.')
     },
     sendValueError() {
       this.$store.dispatch('sendValueError')
       this.$store.dispatch('loadMetadata')
+      alert("Thank you for reporting! The value is going to be checked.")
     },
-     sendTypeError() {
-       this.$store.dispatch('sendTypeError')
+     sendTypoError() {
+        this.$store.dispatch('sendTypoError')
         this.$store.dispatch('loadMetadata')
+        alert('Thank you for reporting typo. Our team is going to check your reported typo.')
      },
      sendScraper() {
        this.$store.dispatch('loadFurtherInformation')
