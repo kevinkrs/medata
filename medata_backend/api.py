@@ -10,12 +10,14 @@ import pathlib
 api = Blueprint('api', __name__)
 
 def url_checker(url):
-  if "epdf/" in url:
-    return url.replace("epdf/","")
-  elif "pdf/" in url:
-    return url.replace("pdf/","")
-  else:
-    return url
+    if "epdf/" in url:
+        return url.replace("epdf/","")
+    elif "pdf/" in url:
+        return url.replace("pdf/","")
+    elif "fullHtml/" in url:
+        return url.replace("fullHtml/","")
+    else:
+        return url
 
 
 @api.route('/ping', methods=['GET'])
@@ -476,8 +478,12 @@ def autocomplete():
         except LookupError:
             """Wordnet only has to be installed once
             """
-            import nltk
-            nltk.download("wordnet")
+            try:
+                import nltk
+                nltk.download("wordnet")
+            except:
+                pass
+            #TODO Unbeding fixen und try/ except rauslöschen
 
     #remove double            
     response_object = list(set(response_object))

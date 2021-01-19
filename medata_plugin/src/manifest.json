@@ -2,7 +2,9 @@
   "manifest_version": 2,
   "name": "Medata",
   "homepage_url": "http://localhost:8080/",
-  "description": "Medata Plugin",
+  "description": "Medata Plugin for dl.acm.org",
+  "version": "1.0",
+  "author": "Jan Effenberge, Jan Bode, Max Heydenmann, Kevin Kraus",
   "default_locale": "en",
   "permissions": [
     "<all_urls>",

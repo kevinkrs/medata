@@ -7,21 +7,20 @@
       <button v-show="!legendVisible" style="display:inline" class="button-legend" @click="legendVisible = !legendVisible">
         <div><img class="img-button-legend" src="../assets/info.png" ></div>
       </button>
-      <button v-show="legendVisible" style="display:none" class="button-legend2" @click="legendVisible = !legendVisible, sendScraper()">
+      <button v-show="legendVisible" style="display:none" class="button-legend2" @click="legendVisible = !legendVisible">
         <div><img class="img-button-legend" src="../assets/arrow-up.png" ></div>      
       </button>
-      <img class="logo" src="../assets/medata_darkgrey.png" width="200">
-      <a href="https://git.scc.kit.edu/issd/students/teamproject/ws20-il">
+      <img class="logo" src="../assets/medata_black.png" width="200"> 
       <button class="insight-button-yellow">
-        <img class="img-button" src="../assets/github.png" >
-      </button></a>
+        <img class="img-button" src="../assets/github.png" @click = "openGit">
+      </button>
     </div>
     
     <!--This fieldset element "grey-box" contains everything reagardin the legend-->
     <fieldset v-show="legendVisible" style="display:none" class="grey-box-legend">
       <!--The three div elements "grey-insight" represent the the three boxes/insights inside the legend-->
       <div class="grey-insight">
-        <div class="grey-insight-name">confirmed insigth</div>
+        <div class="grey-insight-name" @click="visible(-1)">confirmed insigth</div>
         <!--The div "grey-insight-button" contains the green/yellow or red button and the corresponding fold-out toggle box-->
         <div class="grey-insight-button">
           <button class="insight-button-green" @click="visible(-1)">
@@ -30,13 +29,14 @@
           </button>
           <div id=-1 style="display:none">
             <div class="grey-toggleBox">
-              <p>Detailed explanation of a green insight</p>
+              <p>The insights with a <b> green arrow </b> on the right are confirmed by <br> at <b> least 5 other </b> users. </p>
+              <p> The confirmed value can be upvoted further to strengthen it's correctness as well as downvoted via an error reporting </p>
             </div>
           </div>
         </div>
       </div>
       <div class="grey-insight">
-        <div class="grey-insight-name">validation needed</div>
+        <div class="grey-insight-name" @click="visible(-2)">validation needed</div>
         <div class="grey-insight-button">
           <button class="insight-button-yellow" @click="visible(-2)">
             <div id=-1002 style="display:inline"><img class="img-button" src="../assets/info-yellow.png" ></div>
@@ -45,13 +45,15 @@
 
           <div id=-2 style="display:none">
             <div class="grey-toggleBox">
-              <p>Detailed explanation of a yellow insight </p>
+              <p>The insights with a <b> yellow arrow </b> on the right contain values submitted by users that have to be confirmed by others. </p>
+              <p>User can upvote an existing answers (by clicking on it) or submit their own in the input field below.</p>
+              <p> After at least 5 upvotes by other users, the upvoted value is getting marked as confirmed and the insight changes from yellow status to green status.</p>
             </div>
           </div>
         </div>
       </div>
       <div class="grey-insight">
-        <div class="grey-insight-name">
+        <div class="grey-insight-name" @click="visible(-3)">
           enter information
         </div>
         <div class="grey-insight-button">
@@ -61,7 +63,9 @@
           </button>
           <div id=-3 style="display:none">
             <div class="grey-toggleBox">
-              <p>Detailed explanation of a red insight </p>
+              <p> The insights with a <b> red arrow </b> on the right contain no values yet. </p>
+              <p> User can add values with the input field. After adding a value the insight is switching instantly from red status to yellow status. <br> 
+              Now users can vote for an answer or add new answers. </p>
             </div>
           </div>
         </div>
@@ -70,7 +74,7 @@
 
     <!--If backend has no information to given category it's responding with an empty list. Here we check if the list is truly empty.
     If it is, we display first the first div class "noData". If not empty we display second div -->
-    <div v-if='metadata.length == 0'>
+    <div v-if='metadata == null'>
       <div class="noData">
         <p> Sorry there is no data for this category available yet </p>
       </div>
@@ -88,8 +92,7 @@
         depending on whether the passed numerical value "confirmed" inside the "metadaata" array
         (recieved inside script from the store file)is 0,1 or something else.-->
         
-        <!--TODO insigth_upvores is not the right variable for comparision
-        entry.answer.length == 0 -->
+      
         <div v-if='entry.answer.length == 0' class= "insight-button">
           <!--With a click on the colored button the function visable is called and the id of the insight
           is passed. This ensures that the corresponding toggle box becomes visible.-->
@@ -107,8 +110,8 @@
 
               <div class="insight-toggleBox">
                 <button class="error-button" @click="visible2(entry.id+1000)">back</button>
-                <button id ="error1" class="error-button-2" @click='saveSelectedError("type_error"), sendTypeError()'>Type Error</button> <br> 
-                <button id ="error2" class="error-button-2" @click='saveSelectedError("relevance_error"), sendInsightNotRelevantError()'>Insight not relevant for this paper</button>
+                <button id ="error1" class="error-button-2" @click='saveSelectedError("type_error"), sendTypoError()'>Report typo </button> <br> 
+                <button id ="error2" class="error-button-2" @click='saveSelectedError("relevance_error"), sendInsightNotRelevantError()'>Report insignificance of this insight </button>
               </div>
             </div> 
 
@@ -144,8 +147,8 @@
 
               <div class="insight-toggleBox">
                 <button class="error-button" @click="visible2(entry.id+1000)">back</button>
-                <button id ="error1" class="error-button-2" @click='saveSelectedError("type_error"),sendTypeError()'>Type Error</button> <br> 
-                <button id ="error2" class="error-button-2" @click='saveSelectedError("relevance_error"), sendInsightNotRelevantError()'>Insight not relevant for this paper</button>
+                <button id ="error1" class="error-button-2" @click='saveSelectedError("type_error"),sendTypoError()'>Report typo </button> <br> 
+                <button id ="error2" class="error-button-2" @click='saveSelectedError("relevance_error"), sendInsightNotRelevantError()'>Report insignificance of this insight </button>
               </div>
             </div> 
 
@@ -157,18 +160,20 @@
             </div>
 
             <div class="insight-toggleBox">
-              <!--STYLING TODO-->
+          
             <button class="error-button" @click="visible2(entry.id+1000)">report error</button>
               <div class="insight-answers">
                 <p>Please select <br> the correct Answer</p>
+
                <div class="row">
                     <div v-for="answer in entry.answer" :key ="answer">
-                      <!--How can i connect v-model directly -->
+                     
                       <button type="button"  class="answer-button" @click="saveAnswerSelection(answer.answer), sendAnswerSelection()">
                         {{answer.answer}}
                       </button>
                     </div>
-                  </div>
+                </div>
+
               </div>
               <div class="insight-add">
                 <p>Add value:</p>
@@ -193,8 +198,8 @@
 
               <div class="insight-toggleBox">
                 <button class="error-button" @click="visible2(entry.id+1000)">back</button>
-                 <button id ="error1" class="error-button-2" @click='saveSelectedError("type_error"),sendTypeError()'>Type Error</button> <br> 
-                <button id ="error2" class="error-button-2" @click='saveSelectedError("value_error"), sendValueError()'>Value Error</button>
+                 <button id ="error1" class="error-button-2" @click='saveSelectedError("type_error"),sendTypoError()'>Report typo </button> <br> 
+                <button id ="error2" class="error-button-2" @click='saveSelectedError("value_error"), sendValueError()'>Report incorrect value </button>
               </div>
             </div> 
 
@@ -207,7 +212,7 @@
 
             <div class="insight-toggleBox">
             <button class="error-button" @click="visible2(entry.id+1000)">report error</button>
-              <!--If function, for checking if the answer has highest upvotes-->
+            
                 <p class="insight-green-answer">{{entry.answer[0].answer}} <br></p>
                 <div class="insight-green">
                   <div class="insight-green-text">
@@ -215,10 +220,10 @@
                   </div>
                   <div class="insight-green-line"></div>
                   <div class="insight-green-number">
-                    <p>{{entry.answer[0].answer_upvotes}}</p>                   
+                    <p>{{entry.answer[0].score}}</p>                   
                   </div>
                 </div>
-              <button class="green-button" @click='sendAnswerSelection()'>confirm</button>
+                <button class="green-button" @click='sendAnswerSelection()'>Confirm</button>
             </div>
           </div>
         </div>
@@ -248,11 +253,11 @@
             <div id=-2005 style="display:none"><img class="img-button" src="../assets/arrow-up.png" ></div>      
             </button>
             <div id=-5 style="display:none">
-              <div class="grey-toggleBox">
+              <div class="new-insight-toggleBox">
                 <input class="inputfield2" type="text" autocomplete="off" @keyup.enter='saveUserInput(), sendUserInsight()' @input = "filterParameters" v-model="userInput" @focus = "modal = true"/>
                 <div v-if="filtered && modal">
                   <ul>
-                    <li class = "autocomplete" v-for="param in filtered" :key ="param"  @click = "setParam(param)">
+                    <li class = "autocomplete" v-for="param in filtered" :key = "param"  @click = "setParam(param)">
                       {{param}}
                     </li>
                   </ul>
@@ -284,17 +289,14 @@ export default {
       userInput: '',
       legendVisible: false,
       // TODO: Backend has to send an array with common words for certain category 
-      autocomplete: [
-        'Accuracy', 'Area' , 'F1', 'Recall', 'MSE', 'Precision', 'Classification Error'
-      ],
       filtered: [],
       modal: false
     }
   },
   methods: {
     // Function only for testing
-    toggle () {
-      alert('Works!')
+    openGit () {
+      chrome.tabs.create({url: "https://github.com"});
     },
 
     filterParameters() {
@@ -345,6 +347,11 @@ export default {
         document.getElementById(divId-1000).style.display = 'inline';
       }
     },
+
+    visible3: function (divId) {
+        document.getElementById(divId+100000).style.display = 'none';
+        document.getElementById(divId+200000).style.display = 'inline';    
+    },
     // All the following methods are merely for saving data as state objects
     saveInName(name) {
       this.$store.dispatch('fetchInName', name)
@@ -389,34 +396,33 @@ export default {
       alert('Thanks for submitting!')
       this.userInput = ''
       this.$store.dispatch('loadMetadata')
-      this.$store.dispatch('loadFurtherInformation')}
+      }
     },
   
     sendDownloadRequest() {
       this.$store.dispatch("loadDownload")
     },
-    // DEPRECATED
-    saveSelectedError(name){
-      this.$store.dispatch('fetchError', name)
-      alert('Thanks for reporting an error')
-    },
+  
     // User sends relevance of insight (upvote) on insight click
     sendInsightRelevance(){
       this.$store.dispatch('sendRateRelevanceInsight')
-      this.$store.dispatch('loadMetadata')
+      //this.$store.dispatch('loadMetadata')
     },
 
     sendInsightNotRelevantError() {
       this.$store.dispatch('sendInsightNotRelevantError')
       this.$store.dispatch('loadMetadata')
+      alert('Thank you for reporting! If more user report this insight as insignificant it will be deleted.')
     },
     sendValueError() {
       this.$store.dispatch('sendValueError')
       this.$store.dispatch('loadMetadata')
+      alert("Thank you for reporting! The value is going to be checked.")
     },
-     sendTypeError() {
-       this.$store.dispatch('sendTypeError')
+     sendTypoError() {
+        this.$store.dispatch('sendTypoError')
         this.$store.dispatch('loadMetadata')
+        alert('Thank you for reporting typo. Our team is going to check your reported typo.')
      },
      sendScraper() {
        this.$store.dispatch('loadFurtherInformation')
@@ -432,13 +438,18 @@ export default {
         'currentAnswer',
         'currentUserInput',
         'selectedError',
-        'currentCategories'
+        'currentCategories',
+        'autocomplete'
     ]),
 
+  },
+  created: 
+      function () {
+          this.sendScraper()
+        
   }
 
 }
-
 </script>
 
 <style scoped>
@@ -523,6 +534,18 @@ export default {
   }
 
   .grey-toggleBox {
+  text-align: left;
+  padding: 8px;
+  font-size: 85%;
+  margin-top: 30px;
+  margin-left: -384%;
+  margin-right: -8px;
+  margin-bottom: -8px;
+  border-radius: 0px 0px 5px 5px;
+  background-color: #FFFFFF;
+  }
+
+  .new-insight-toggleBox {
   text-align: center;
   padding: 8px;
   font-size: 85%;
@@ -669,6 +692,17 @@ export default {
     color: white;
   }
 
+  .main-button-clicked{
+    border-radius: 6px;
+    outline: none;
+    border-style: none;
+    width: 80px;
+    height: 30px;
+    color: white;
+    background-color: #8F8F8F;
+    margin-top: 10px;
+  }
+
   .inputfield {
     border-radius: 6px;
   }
@@ -796,6 +830,16 @@ export default {
   .green-button:hover {
     background-color: #3a3a3a;
     color: white;
+  }
+
+  .green-button-clicked {
+    border-radius: 6px;
+    outline: none;
+    border-style: none;
+    width: 80px;
+    height: 30px;
+    color: white;
+    background-color: #8F8F8F;
   }
 
 .noData{
