@@ -17,9 +17,7 @@ app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
 db.init_app(app)
 
-
 app.register_blueprint(api)
-
 
 #enable CORS
 CORS(app, resources={r'/*': {'origins': '*'}})
