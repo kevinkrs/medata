@@ -58,14 +58,11 @@ export default {
 
         getDom() {
           var result = ''
-          chrome.tabs.query({currentWindow: true, active: true}, 
-          function (tabs){
-            var titles = document.getElementsByClassName("issue-item_title")
-            for (var i = 0; i < titles.length; i++) {
-              result += titles[i].textContent
-            }
-          })
-          alert(result)
+              // Send a request to the content script.
+              chrome.tabs.sendRequest(tab.id, {action: "getDOM"}, function(response) {
+                console.log(response.dom);
+              });
+          alert(titles)
         },
   
     computed: {

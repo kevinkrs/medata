@@ -27,7 +27,7 @@ export default {
     return{
         substr: 'https://dl.acm.org/',
         regex: /dl\.acm\.org\/doi\/((fullHtml\/)|(epdf\/)|(pdf\/)){0,1}\d+\.\d{3,}\//,
-        binderRegex: /dl\.acm\.org\/action\/showBinder\/?\//,
+        regexBinder: /dl\.acm\.org\/action\/showBinder\?/,
         status: 0
     }
   },

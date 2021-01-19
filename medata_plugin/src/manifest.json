@@ -9,7 +9,7 @@
   "permissions": [
     "<all_urls>",
     "*://*/*",
-    "pageCapture"],
+    ""],
   "content_scripts": [
     {
     "matches" :["<all_urls>"],
