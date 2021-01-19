@@ -96,21 +96,35 @@ def get_specific():
         return jsonify(response_object_with_categories)
 
 
+#TODO eigentlich müssen wir den scraper gar nicht losschicken, wenn die informationen (author, title etc.) schon in anderen 'information' gespeichert sind
 @api.route('/get_further_information', methods=['POST'])
 def get_further_information():
+    """get scraper to look up more specific information about the url which is posted via POST method
+    this includes the title, authors, link to authors profile and the conference. The scraped information is then added
+    to the correct 'information'
+
+
+    Returns:
+        [{'status': 'success'}]: [returns 'success' if the call went successful]
+    """
     response_object = {'status': 'success'}
+    #url is send from the FE
     url = request.get_json().get('url')
     paper_id = url
     max_downvote_category = 2
     relevant_categories = scraper.get_leaf_categories(url)
+    #query matching insights
     matching_insight = Insights.query.join(Insights.categories).filter(or_(Categories.name==x for x in relevant_categories)).filter(Categories.downvote_category <= max_downvote_category).all()
+    #boolean to indicate whether further information needs to be scraped
     run_scraper = False
 
+    #check if one of the 'information' linked to a matching insights has no title, if TRUE -> further information needs to be scraped 
     for x in matching_insight:
         if (Information.query.filter(Information.insight_id==int(x.id)).filter(Information.paper_id==paper_id).filter(Information.title == "").count()==1):
             run_scraper = True
             break
-
+    
+    #scrape further information
     if (run_scraper):        
         soup = scraper.get_facts_soup(scraper.get_soup(paper_id))
         authors_profile_link = scraper.get_authors(soup)
@@ -120,7 +134,7 @@ def get_further_information():
         authors_profile_link = "--".join(authors_profile_link)
         authors = "--".join(authors)
 
-
+        #add scraped information to 'information'
         for x in matching_insight:
             current_information = Information.query.filter(Information.insight_id==int(x.id)).filter(Information.paper_id==paper_id).filter(Information.title == "").first()
             if (Information.query.filter(Information.insight_id==int(x.id)).filter(Information.paper_id==paper_id).filter(Information.title == "").count()==1):
