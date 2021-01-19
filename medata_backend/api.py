@@ -119,6 +119,7 @@ def get_further_information():
     response_object = {'status': 'success'}
     #url is send from the FE
     url = request.get_json().get('url')
+    url = url_checker(url)
     paper_id = url_checker(url)
     max_downvote_category = 2
     soup = scraper.get_soup(url)
