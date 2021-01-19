@@ -54,67 +54,61 @@ def get_all():
 
 @api.route('/get_specific', methods=['POST'])
 def get_specific():
-    """Get all Insights for a specific paperid
+    """Get all 'information' for a specific url (=paper_id)
 
     Returns:
-        [json]: [if no insights yet an empty string is returned, otherwise a json object with all relevant Insights is returned]
+        [json]: [if no 'informatin' is listed for this paper, an Array with the leaf 'categories' is returned, otherwise a json object with all relevant 'information'
+        and the leaf 'categories' are returned]
     """
-    response_object_length = 7
-    max_downvote_category = 2
-    response_object = []
     #fetch data from request
     url = request.get_json().get('url')
     url = url_checker(url)
-    #print(url)
-    relevant_categories_scraper = scraper.get_leaf_categories(url)
-    #print(relevant_categories_scraper)
 
+    #a max of 'number_information' is returned
+    number_information = 7
 
-    relevant_categories = relevant_categories_scraper
+    #'information' linked to 'insights' which have been downvoted for relevant_categories is not added
+    max_downvote_category = 2
+    response_information = []
+
+    #scrape leaf 'categories'
+    relevant_categories = scraper.get_leaf_categories(url)
     paper_id = url
 
-    #insights filtered by category
+    #query 'insights'
     matching_insight = Insights.query.join(Insights.categories).filter(or_(Categories.name==x for x in relevant_categories)).filter(Categories.downvote_category <= max_downvote_category).all()
-    #print(matching_insight)
-    #if (information for paper_id does not exist) create information with paper_id
+    #if 'information' for paper_id does not exist, create 'information' with paper_id
     for x in matching_insight:
         if (Information.query.filter(Information.insight_id==int(x.id)).filter(Information.paper_id==paper_id).count()==0):
-            #if an Information is first created the authors will be automatically pulled and added:
-            #TODO: add title, conference, authors and authors_profile_link to the Information
             i = Information(insight_id = x.id, 
                             insight_name=x.name, 
                             paper_id=paper_id)
             db.session.add(i)
     db.session.commit()
 
-    #filtered information, ordered by answer_score 
-    print("----------------------------------")
+    #query 'information' with and without 'answers'
+    #TODO limit filtered_information_answers
     filtered_information_answers = Information.query.join(Information.answers).filter(or_(Information.insight_id==int(x.id) for x in matching_insight)).filter(Information.paper_id==paper_id).order_by(Answers.answer_score.desc()).all()
-    response_object_length = response_object_length - len(filtered_information_answers)
-    #print(f"Info with answer: {len(filtered_information_answers)}")
-    filtered_information_without_answers = Information.query.filter(or_(Information.insight_id==int(x.id) for x in matching_insight)).filter(Information.paper_id==paper_id).filter(Information.answers == None).order_by((Information.insight_upvotes-Information.insight_downvotes).desc()).limit(response_object_length).all()
+    number_information = number_information - len(filtered_information_answers)
+    filtered_information_without_answers = Information.query.filter(or_(Information.insight_id==int(x.id) for x in matching_insight)).filter(Information.paper_id==paper_id).filter(Information.answers == None).order_by((Information.insight_upvotes-Information.insight_downvotes).desc()).limit(number_information).all()
     
-    #print(f"Infos w/o answers: {len(filtered_information_without_answers)}")
+    #add 'information' to response object
     for x in filtered_information_answers:
-        response_object.append(x.to_dict())
+        response_information.append(x.to_dict())
 
     for x in filtered_information_without_answers:
         if (x.answers == []):
-            response_object.append(x.to_dict())
+            response_information.append(x.to_dict())
 
-    if (Information.query.filter(or_(Information.insight_id==int(x.id) for x in matching_insight)).filter(Information.paper_id==paper_id).count()==0):
-        response_object = []
-        response_object_with_categories = {"metadata":response_object, "categories": relevant_categories }
-        return jsonify(response_object_with_categories)
-    else:
-        response_object_with_categories = {"metadata":response_object, "categories": relevant_categories }
-        return jsonify(response_object_with_categories)
+
+    response_object = {"metadata": response_information, "categories": relevant_categories }
+    return jsonify(response_object)
 
 
 
 @api.route('/get_further_information', methods=['POST'])
 def get_further_information():
-    """get scraper to look up more specific information about the url which is posted via POST method
+    """Get scraper to look up more specific information about the url which is posted via POST method
     this includes the title, authors, link to authors profile and the conference. The scraped information is then added
     to the correct 'information'
 
