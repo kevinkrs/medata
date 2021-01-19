@@ -25,13 +25,13 @@ app.register_blueprint(api)
 CORS(app, resources={r'/*': {'origins': '*'}})
 
 
-#create mock data
-#try:
-'''    with app.app_context():
+#create real data
+try:
+    with app.app_context():
         db.create_all()
         create_mock_data()
 except:
-    print("")'''
+    print("")
 
 
 
