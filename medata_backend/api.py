@@ -104,7 +104,8 @@ def get_specific():
 
     if (Information.query.filter(or_(Information.insight_id==int(x.id) for x in matching_insight)).filter(Information.paper_id==paper_id).count()==0):
         response_object = []
-        return jsonify(response_object)
+        response_object_with_categories = {"metadata":response_object, "categories": relevant_categories }
+        return jsonify(response_object_with_categories)
     else:
         response_object_with_categories = {"metadata":response_object, "categories": relevant_categories }
         return jsonify(response_object_with_categories)
@@ -129,17 +130,45 @@ def get_further_information():
     relevant_categories = scraper.get_leaf_categories(url)
     #query matching insights
     matching_insight = Insights.query.join(Insights.categories).filter(or_(Categories.name==x for x in relevant_categories)).filter(Categories.downvote_category <= max_downvote_category).all()
-    #boolean to indicate whether further information needs to be scraped
-    run_scraper = False
+    #boolean to indicate whether further information needs to be added and/or scraped
+    missing_scraper_information = False
+    add_information = False
 
-    #check if one of the 'information' linked to a matching insights has no title, if TRUE -> further information needs to be scraped 
+    #initialize scraper_information 
+    authors_profile_link = ""
+    authors = ""
+    title = ""
+    conference = ""
+    authors_profile_link = ""
+    
+
+    #check if one of the 'information' linked to a matching insights has no title
     for x in matching_insight:
         if (Information.query.filter(Information.insight_id==int(x.id)).filter(Information.paper_id==paper_id).filter(Information.title == "").count()==1):
-            run_scraper = True
+            missing_scraper_information = True
+            add_information = True
             break
     
+    #check if information has been scraped already
+    if(missing_scraper_information):
+        for x in matching_insight:
+            if (Information.query.filter(Information.insight_id==int(x.id)).filter(Information.paper_id==paper_id).filter(Information.title != "").count()==1):
+                current_information = Information.query.filter(Information.insight_id==int(x.id)).filter(Information.paper_id==paper_id).filter(Information.title != "").first()
+
+                authors_profile_link = current_information.authors_profile_link
+                authors = current_information.authors
+                title = current_information.title
+                conference = current_information.conference
+                authors_profile_link = current_information.authors_profile_link
+                authors = current_information.authors_profile_link
+
+                missing_scraper_information = False
+                break
+
+
+
     #scrape further information
-    if (run_scraper):        
+    if (missing_scraper_information):        
         soup = scraper.get_facts_soup(scraper.get_soup(paper_id))
         authors_profile_link = scraper.get_authors(soup)
         authors = [scraper.name_from_profile(profile_link) for profile_link in authors_profile_link]
@@ -148,10 +177,12 @@ def get_further_information():
         authors_profile_link = "--".join(authors_profile_link)
         authors = "--".join(authors)
 
-        #add scraped information to 'information'
+
+    if(add_information):	
+        #add information to 'information'
         for x in matching_insight:
-            current_information = Information.query.filter(Information.insight_id==int(x.id)).filter(Information.paper_id==paper_id).filter(Information.title == "").first()
             if (Information.query.filter(Information.insight_id==int(x.id)).filter(Information.paper_id==paper_id).filter(Information.title == "").count()==1):
+                current_information = Information.query.filter(Information.insight_id==int(x.id)).filter(Information.paper_id==paper_id).filter(Information.title == "").first()
 
                 #TODO: add title, conference, authors and authors_profile_link to the Information
                 current_information.title = title
@@ -159,7 +190,6 @@ def get_further_information():
                 current_information.authors_profile_link = authors_profile_link
                 current_information.conference = conference
                 db.session.commit()
-                print(f"added information: {current_information}")
 
     
     return jsonify(response_object)
