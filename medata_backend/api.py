@@ -10,6 +10,14 @@ import pathlib
 api = Blueprint('api', __name__)
 
 def url_checker(url):
+    """Modifies the url from a pdf or epdf view to a regular url
+
+    Args:
+        url (String): url of a pdf or edpf view or regular url
+
+    Returns:
+        url: regularised url as a paper id
+    """
     if "epdf/" in url:
         return url.replace("epdf/","")
     elif "pdf/" in url:
@@ -62,11 +70,7 @@ def get_specific():
     #print(relevant_categories_scraper)
 
 
-
-    #hardcoded for now 
-    #relevant_categories = ['laboratory experiments', 'supervised learning by classification', 'category3']
     relevant_categories = relevant_categories_scraper
-    #paper_id = "50"
     paper_id = url
 
     #insights filtered by category
