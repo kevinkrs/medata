@@ -220,7 +220,7 @@
                   </div>
                   <div class="insight-green-line"></div>
                   <div class="insight-green-number">
-                    <p>{{entry.answer[0].score}}</p>                   
+                    <p>{{entry.answer[0].answer_score}}</p>                   
                   </div>
                 </div>
                 <button class="green-button" @click='sendAnswerSelection()'>Confirm</button>
