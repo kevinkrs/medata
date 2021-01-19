@@ -6,7 +6,7 @@
     <div class="headline">
       <button   class="button-legend" >
       </button>
-      <button v-show="legendVisible" style="display:none" class="button-legend2" @click="legendVisible = !legendVisible, sendScraper()">
+      <button v-show="legendVisible" style="display:none" class="button-legend2" @click="legendVisible = !legendVisible">
         <div><img class="img-button-legend" src="../assets/arrow-up.png" ></div>      
       </button>
       <img class="logo" src="../assets/medata_black.png" width="200"> 
@@ -51,15 +51,18 @@ export default {
             })
         },
         getDom() {
-              function doStuffWithDom(domContent) {
-                alert.log('I received the following DOM content:\n' + domContent);
-              }
-
-            chrome.tabs.query({currentWindow: true, active: true}, 
-            function (tabs){
-              var dom= document.getElementByTagName('html')[0].innerHTML
-              doStuffWithDom(document.getElementByTagName('html')[0].innerHTML)
-            })
+          function display_h1 (results){
+          h1=results;
+          alert(document.querySelector("#id1").innerHTML = "<p>tab title: " + tab_title + "</p><p>dom h1: " + h1 + "</p>");
+          
+          }
+          chrome.tabs.query({active: true}, function(tabs) {
+          var tab = tabs[0];
+          tab_title = tab.title;
+          chrome.tabs.executeScript(tab.id, {
+          code: 'document.querySelector("h1").textContent'
+          }, display_h1);
+      });
        
       }
   },
