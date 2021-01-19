@@ -536,7 +536,7 @@ def typ_error():
 
 @api.route('/autocomplete', methods = ['POST'])
 def autocomplete():
-    """Creates an Array of words used for autocomplete in the FE based on all 'insights' and a set of 'categories'
+    """Creates an Array of Strings used for autocomplete in the FE based on all 'insights' and a set of 'categories'
 
       Args:
         json: 
@@ -545,29 +545,35 @@ def autocomplete():
             }
 
     Returns:
-        Array of words 
+        Array of Strings
     """
     #fetch data from request
     post_data = request.get_json()
     categories = post_data.get('categories')
+
     response_object = []
     base = []
+
+    #query 'insights'
     insights = Insights.query.all()
 
+    #add splitted 'insights' to response_object
     for i in insights:
         response_object.append(i.name)
         split = i.name.split()
         for s in split:
             base.append(s)
 
+    #add spltted 'categories' to response_object
     for c in categories:
         split = c.split()
         for s in split:
             base.append(s)        
 
+
     for word in base:
-        #each synset represents a diff concept
         try: 
+            #each synset represents a diff concept
             for ss in wn.synsets(word):
                 for x in ss.lemma_names():
                     #words have the form: "research_laboratory"
@@ -582,8 +588,9 @@ def autocomplete():
                 pass
             #TODO Unbeding fixen und try/ except rauslöschen
 
-    #remove double            
+    #remove duplicates           
     response_object = list(set(response_object))
+
     return jsonify(response_object)
 
 
