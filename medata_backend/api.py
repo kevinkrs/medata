@@ -500,7 +500,7 @@ def insight_not_relevant_for_category():
     return jsonify(response_object)
 
     
-@api.route('/type_error', methods = ['POST'])
+@api.route('/typo_error', methods = ['POST'])
 def typ_error():
     """Increments type_error linked to a specific 'insight'
 
