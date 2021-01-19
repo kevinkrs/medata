@@ -31,7 +31,7 @@ try:
         db.create_all()
         create_mock_data()
 except:
-    print("")'''
+    print("")
 
 
 
