@@ -18,7 +18,7 @@
     </div>
 
     <div class= "download-binder">
-        <button class="main-button" @click ='getDom()'>Download Binder Insights</button>
+        <button class="main-button" @click ='getDom(), checkBackground()'>Download Binder Insights</button>
     </div>
   </div>
 </div>
@@ -41,29 +41,19 @@ export default {
       chrome.tabs.create({url: "https://github.com"});
     },
 
+      checkBackground(){
+      
+      },
 
-      startBinderScraper() {
-            alert(this.query)
-            const cheerio = require('cheerio')
-            const request = require('request')
-            request(this.query, (error,response,html) => {
-                if(!error && response.statusCode == 200) {
-                    const $ = cheerio.load(html)
-                    const link = $ ('.issue-item__title')
-                    //alert(link.html())
-                    alert(html)
-                }
-            })
-        },
 
         getDom() {
-          var result = ''
-              // Send a request to the content script.
+            chrome.tabs.getSelected(null, function(tab) {
+            // Send a request to the content script.
               chrome.tabs.sendRequest(tab.id, {action: "getDOM"}, function(response) {
-                console.log(response.dom);
+              console.log(response.dom);
               });
-          alert(titles)
-        },
+            });
+          },
   
     computed: {
         ...mapState([
