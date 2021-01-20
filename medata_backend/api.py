@@ -165,10 +165,20 @@ def get_further_information():
 
 
     #scrape further information
-    if (missing_scraper_information):        
+    if (missing_scraper_information): 
+        pool = multiprocessing.Pool(multiprocessing.cpu_count())
+
         facts_soup = scraper.get_facts_soup(soup)
         authors_profile_link = scraper.get_authors(facts_soup)
-        authors = [scraper.name_from_profile(profile_link) for profile_link in authors_profile_link]
+        authors = []
+
+        start = datetime.now()
+
+        authors = pool.map_async(scraper.name_from_profile,[profile_link for profile_link in authors_profile_link]).get()
+        #authors = [scraper.name_from_profile(profile_link) for profile_link in authors_profile_link]
+
+        print(f"runtime for {len(authors)} authors: {datetime.now()-start} on {multiprocessing.cpu_count()} cores")
+
         title = scraper.get_title(facts_soup)
         conference = scraper.get_conference(paper_id)
         authors_profile_link = "--".join(authors_profile_link)
