@@ -41,19 +41,22 @@ export default {
       chrome.tabs.create({url: "https://github.com"});
     },
 
-      checkBackground(){
       
-      },
 
-
+        // When About page can access current tab without content.js etc. why shouldn't it not be able to access the DOM as well?
+        // => If not working, go with implementation of content.js and certain functions inside there 
         getDom() {
-            chrome.tabs.getSelected(null, function(tab) {
-            // Send a request to the content script.
-              chrome.tabs.sendRequest(tab.id, {action: "getDOM"}, function(response) {
-              console.log(response.dom);
-              });
-            });
+            chrome.tabs.query({currentWindow: true, active: true}, 
+              function(tabs) {
+                paperLinks = tabs[0].document.getElementsbyID('//ELEMENT NAME ')
+              }
+            )}
           },
+
+        //TODO: 
+        // 1. get the content.js right (webpack.config.js +  manifest.json)
+        // 2. write function that triggers the content.js listener 
+        // 3. figure out how to return the dom data content.js delivers 
   
     computed: {
         ...mapState([
@@ -66,8 +69,8 @@ export default {
             'currentCategories'
     ]),
     }
-  }
 }
+
 </script>
 
 <style>
