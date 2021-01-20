@@ -120,6 +120,7 @@ def get_further_information():
     response_object = {'status': 'success'}
     #url is send from the FE
     url = request.get_json().get('url')
+    url = url_checker(url)
     paper_id = url_checker(url)
     max_downvote_category = 2
     soup = scraper.get_soup(url)
@@ -500,7 +501,7 @@ def insight_not_relevant_for_category():
     return jsonify(response_object)
 
     
-@api.route('/type_error', methods = ['POST'])
+@api.route('/typo_error', methods = ['POST'])
 def typ_error():
     """Increments type_error linked to a specific 'insight'
 

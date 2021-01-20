@@ -1,5 +1,5 @@
 import { createStore } from 'vuex'
-import { fetchMetadata, postInsight, postAnswer, postRateAnswer, postRateRelevanceInsight, fetchDownload, postTypeError, postInsightNotRelevant, fetchFurtherInformation, fetchAutocomplete } from '@/api'
+import { fetchMetadata, postInsight, postAnswer, postRateAnswer, postRateRelevanceInsight, fetchDownload, postTypoError, postInsightNotRelevant, fetchFurtherInformation, fetchAutocomplete } from '@/api'
 
 
 export default createStore({
@@ -150,8 +150,8 @@ export default createStore({
         .then((response) => {console.log(response)})
         .catch((error) => {console.error(error)})
     },
-    sendTypeError() {
-      return postTypeError(this.state.currentIn)
+    sendTypoError() {
+      return postTypoError(this.state.currentIn)
         .then((response) => {console.log(response)})
         .catch((error) => {console.error(error)})
     }

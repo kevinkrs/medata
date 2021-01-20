@@ -110,8 +110,8 @@
 
               <div class="insight-toggleBox">
                 <button class="error-button" @click="visible2(entry.id+1000)">back</button>
-                <button id ="error1" class="error-button-2" @click='saveSelectedError("type_error"), sendTypoError()'>Report typo </button> <br> 
-                <button id ="error2" class="error-button-2" @click='saveSelectedError("relevance_error"), sendInsightNotRelevantError()'>Report insignificance of this insight </button>
+                <button id ="error1" class="error-button-2" @click='sendTypoError()'>Report typo </button> <br> 
+                <button id ="error2" class="error-button-2" @click='sendInsightNotRelevantError()'>Report insignificance of this insight </button>
               </div>
             </div> 
 
@@ -147,8 +147,8 @@
 
               <div class="insight-toggleBox">
                 <button class="error-button" @click="visible2(entry.id+1000)">back</button>
-                <button id ="error1" class="error-button-2" @click='saveSelectedError("type_error"),sendTypoError()'>Report typo </button> <br> 
-                <button id ="error2" class="error-button-2" @click='saveSelectedError("relevance_error"), sendInsightNotRelevantError()'>Report insignificance of this insight </button>
+                <button id ="error1" class="error-button-2" @click='sendTypoError()'>Report typo </button> <br> 
+                <button id ="error2" class="error-button-2" @click='sendInsightNotRelevantError()'>Report insignificance of this insight </button>
               </div>
             </div> 
 
@@ -198,8 +198,8 @@
 
               <div class="insight-toggleBox">
                 <button class="error-button" @click="visible2(entry.id+1000)">back</button>
-                 <button id ="error1" class="error-button-2" @click='saveSelectedError("type_error"),sendTypoError()'>Report typo </button> <br> 
-                <button id ="error2" class="error-button-2" @click='saveSelectedError("value_error"), sendValueError()'>Report incorrect value </button>
+                 <button id ="error1" class="error-button-2" @click='sendTypoError()'>Report typo </button> <br> 
+                <button id ="error2" class="error-button-2" @click='sendValueError()'>Report incorrect value </button>
               </div>
             </div> 
 
