@@ -6,6 +6,7 @@ import pandas as pd
 import acm_scraper as scraper
 from nltk.corpus import wordnet as wn
 import pathlib
+import multiprocessing 
 
 api = Blueprint('api', __name__)
 
