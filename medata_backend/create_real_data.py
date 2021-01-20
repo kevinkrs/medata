@@ -1,10 +1,10 @@
 from models import db, Insights, Information, Answers, Categories
 
 def create_mock_data():
-    insight_names1 = ["Number of participants", "Location of experiment", "Language of participants"]
+    insight_names1 = ["Number of participants", "Location of experiment", "Language of participants", "Percentage male participants","Average age of participants"]
     categories_names1 = ["Laboratory experiments"]
     
-    insight_names2 = ["Max Accuracy", "Type of Network"]
+    insight_names2 = ["Max Accuracy", "Type of Network", "F2 score", "Recall", "AUC", "Classification Model"]
     categories_names2 = ["Supervised learning by classification", "Supervised learning", "Learning paradigms", "Machine learning"]
     id_counter = 1
     
