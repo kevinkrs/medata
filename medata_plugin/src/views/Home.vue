@@ -110,8 +110,8 @@
 
               <div class="insight-toggleBox">
                 <button class="error-button" @click="visible2(entry.id+1000)">back</button>
-                <button id ="error1" class="error-button-2" @click='sendTypoError()'>Report typo </button> <br> 
-                <button id ="error2" class="error-button-2" @click='sendInsightNotRelevantError()'>Report insignificance of this insight </button>
+                <button id ="error1" class="error-button-2" @click='sendTypoError(),visible4()'>Report typo </button> <br> 
+                <button id ="error2" class="error-button-2" @click='sendInsightNotRelevantError(),visible4()'>Report insignificance of this insight </button>
               </div>
             </div> 
 
@@ -147,8 +147,8 @@
 
               <div class="insight-toggleBox">
                 <button class="error-button" @click="visible2(entry.id+1000)">back</button>
-                <button id ="error1" class="error-button-2" @click='sendTypoError()'>Report typo </button> <br> 
-                <button id ="error2" class="error-button-2" @click='sendInsightNotRelevantError()'>Report insignificance of this insight </button>
+                <button id ="error1" class="error-button-2" @click='sendTypoError(),visible4()'>Report typo </button> <br> 
+                <button id ="error2" class="error-button-2" @click='sendInsightNotRelevantError(),visible4()'>Report insignificance of this insight </button>
               </div>
             </div> 
 
@@ -198,8 +198,8 @@
 
               <div class="insight-toggleBox">
                 <button class="error-button" @click="visible2(entry.id+1000)">back</button>
-                 <button id ="error1" class="error-button-2" @click='sendTypoError()'>Report typo </button> <br> 
-                <button id ="error2" class="error-button-2" @click='sendValueError()'>Report incorrect value </button>
+                 <button id ="error1" class="error-button-2" @click='sendTypoError(),visible4()'>Report typo </button> <br> 
+                <button id ="error2" class="error-button-2" @click='sendValueError(),visible4()'>Report incorrect value </button>
               </div>
             </div> 
 
@@ -352,6 +352,20 @@ export default {
         document.getElementById(divId+100000).style.display = 'none';
         document.getElementById(divId+200000).style.display = 'inline';    
     },
+
+    visible4: function () {
+      /*The for loop closes all divs to ensure that only one div is open at a time*/
+      for (var i = -10000; i <= 10000; i++) {
+        if (document.getElementById(i) != null && i != -6){
+        document.getElementById(i).style.display = 'none';
+        }                
+      }
+      for (var i = -1010; i <= -10; i++) {
+        if (document.getElementById(i) != null){
+        document.getElementById(i).style.display = 'inline';
+        }                
+      }
+    },    
     // All the following methods are merely for saving data as state objects
     saveInName(name) {
       this.$store.dispatch('fetchInName', name)
