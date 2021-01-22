@@ -785,7 +785,7 @@ export default {
 
   .error-button {
     float: left;
-    font-size: 60%;
+    font-size: 65%;
     width: 25%;
     margin-bottom: 10px;
     margin-top: -10px;
