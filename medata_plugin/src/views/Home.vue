@@ -590,7 +590,7 @@ export default {
     border-radius: 5px 0px 0px 5px;
   }
   .insight-name2 {
-    width: 350%;
+    width: 349%;
     padding: 8px;
     color: transparent;
     margin-top: -8px;
