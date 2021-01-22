@@ -8,14 +8,17 @@
         <div><img class="img-button-legend" src="../assets/info.png" ></div>
       </button>
       <button v-show="legendVisible" style="display:none" class="button-legend2" @click="legendVisible = !legendVisible">
-        <div><img class="img-button-legend" src="../assets/info.png" ></div>   
-        <div class="button-legend2"> <p> Here you can download all the insides to the papers of your binder</p></div>   
+        <div><img class="img-button-legend" src="../assets/arrow-up.png" ></div>      
       </button>
       <img class="logo" src="../assets/medata_black.png" width="200"> 
       <button class="insight-button-yellow">
         <img class="img-button" src="../assets/github.png" @click = "openGit">
       </button>
     </div>
+
+    <fieldset v-show="legendVisible" style="display:none" class="grey-box-legend">
+        <p> Here you can download all the insides to the papers of your binder</p>
+    </fieldset>
 
     <div class= "download-binder">
         <button class="main-button" @click ='getDom()'>Download Binder Insights</button>
@@ -174,6 +177,22 @@ export default {
    border-radius: 5px 5px 0px 0px;
    box-shadow: 3px 0px 0px silver;  
    }
+
+   
+
+.grey-box-legend {
+  display: flex;
+  flex-direction: column;
+  flex-wrap: wrap;
+  width: 91.5%;
+  border: 0px;
+  padding: 10px;
+  margin-bottom: 20px;
+  background-color: #f7f7f7;
+  border-radius: 0px 5px 5px 5px;
+  box-shadow: 3px 3px 3px silver;
+}
+
 
 .logo{
   margin-bottom: 15px;
