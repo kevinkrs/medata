@@ -1,15 +1,19 @@
 <template>
-  <router-view/>
+  <hello-world />
 </template>
 
-<style>
-#app {
-  font-family: Avenir, Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-align: center;
-  font-size: 20px bold;
-  color: #2c3e50;
-}
+<script>
+import HelloWorld from '@/components/HelloWorld.vue'
 
+export default {
+  name: 'App',
+  components: { HelloWorld }
+}
+</script>
+
+<style>
+html {
+  width: 400px;
+  height: 400px;
+}
 </style>

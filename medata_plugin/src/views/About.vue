@@ -35,8 +35,8 @@ export default {
     return{
         substr: 'https://dl.acm.org/',
         regex: /dl\.acm\.org\/doi\/((fullHtml\/)|(epdf\/)|(pdf\/)){0,1}\d+\.\d{3,}\//,
-        status: 0,
-        defaultText: ''
+        regexBinder: /dl\.acm\.org\/action\/showBinder\?/,
+        status: 0
     }
   },
   computed: mapState({
@@ -60,6 +60,10 @@ export default {
               vm.$store.dispatch('loadQuery', tabs[0].url)
               .then(vm.loadData())
               // With router.push we can route to another url automatically 
+          }
+            else if(tabs[0].url.match(vm.regexBinder)){
+              vm.$store.dispatch('loadQuery', tabs[0].url)
+              vm.$router.push('/binder')
           }
             else if(querySub == vm.substr) {
               vm.status = 1
