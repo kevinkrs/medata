@@ -1,7 +1,6 @@
 browser.runtime.onMessage.addListener(function (request, sender, sendResponse) {
-  console.log('Hello from the background')
-  browser.tabs.sendMessage("hello")
-  browser.tabs.executeScript({
-    file: 'content-script.js',
+  console.log("Background Script is running")
+  chrome.tabs.executeScript({
+    file: 'js/content-script.js',
   })
 })

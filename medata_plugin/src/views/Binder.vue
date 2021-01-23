@@ -32,6 +32,9 @@
     import {mapState} from 'vuex'
 
 export default {
+   mounted () {
+    browser.runtime.sendMessage({})
+  },
     data () {
 
       return{
@@ -39,9 +42,19 @@ export default {
           legendVisible: false,
       }
     },
+
+    computed: {
+      dom () {
+      return browser.i18n.getMessage()
+      },
+    },
     methods: {
       openGit () {
       chrome.tabs.create({url: "https://github.com"});
+      },
+
+      getDom() {
+        alert(this.dom)
       }
     },
       

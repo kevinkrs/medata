@@ -23,14 +23,6 @@ import { mapState } from 'vuex'
 
 export default {
 
-  mounted () {
-    browser.runtime.sendMessage({})
-  },
- computed: {
-    defaultText () {
-      return browser.i18n.getMessage()
-    }
-  },
   data()  {
     return{
         substr: 'https://dl.acm.org/',
