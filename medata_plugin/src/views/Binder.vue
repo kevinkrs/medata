@@ -21,7 +21,7 @@
     </fieldset>
 
     <div class= "download-binder">
-        <button class="main-button" @click ='getDom(), checkBackground()'>Download Binder Insights</button>
+        <button class="main-button" @click ='getDom()'>Download Binder Insights</button>
     </div>
   </div>
 </div>
@@ -42,19 +42,12 @@ export default {
     methods: {
       openGit () {
       chrome.tabs.create({url: "https://github.com"});
+      }
     },
-
       
 
         // When About page can access current tab without content.js etc. why shouldn't it not be able to access the DOM as well?
-        // => If not working, go with implementation of content.js and certain functions inside there 
-        getDom() {
-            chrome.tabs.query({currentWindow: true, active: true}, 
-              function(tabs) {
-                paperLinks = tabs[0].document.getElementsbyID('//ELEMENT NAME ')
-              }
-            )}
-          },
+        // => If not working, go with implementation of content.js and certain functions inside there
 
         //TODO: 
         // 1. get the content.js right (webpack.config.js +  manifest.json)
