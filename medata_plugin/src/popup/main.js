@@ -1,6 +1,10 @@
-import { createApp } from 'vue'
+import Vue from 'vue'
 import App from './App.vue'
-import router from '../router'
-import store from '../store'
+import webpack from '../node-modules/webpack-extension-reloader'
 
-createApp(App).use(store).use(router).mount('#app')
+Vue
+/* eslint-disable no-new */
+new Vue({
+  el: '#app',
+  render: h => h(App)
+})
