@@ -46,15 +46,17 @@ export default {
         openGit () {
         chrome.tabs.create({url: "https://github.com"});
         },
-
+      //if this takes too long, loading symbol may be easy to implement
         setBinder() {
           var vm = this
+          //1. Chrome takes curreant tab
             chrome.tabs.query({
+            //2. Function that orders the current tab to send a message with...
               active: true, currentWindow: true}, function(tabs){
                 chrome.tabs.sendMessage(
-                          tabs[0].id,
-                          {from: 'binder', subject:'getLinks'},
-                          vm.sendBinder)
+                          tabs[0].id, // the tab ID
+                          {from: 'binder', subject:'getLinks'}, // the strings expected from the content-script function
+                          vm.sendBinder) // a callback to handle the response 
                         }
               )},
           
