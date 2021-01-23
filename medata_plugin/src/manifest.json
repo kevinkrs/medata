@@ -7,6 +7,7 @@
   "author": "Jan Effenberge, Jan Bode, Max Heydenmann, Kevin Kraus",
   "default_locale": "en",
   "permissions": [
+    "activeTab",
     "<all_urls>",
     "*://*/*"
   ],
@@ -22,7 +23,7 @@
     "persistent": false
   },
   "browser_action": {
-    "default_popup": "popup.html",
+    "default_popup": "popup.html", 
     "default_title": "Medata",
     "default_icon": {
       "19": "icons/19.png",
