@@ -16,6 +16,7 @@ export default createStore({
     selectedError: '', // User can report an error and select on of three possibilites
     insightVoteBool: true, //This boolean is for up- or downvoting insights by the user, default is true, insight is upvoted @click and only set to false for downvoting via InsightNotRelevantForCategory
     autocomplete: [],
+    binder: []
   },
   mutations: {
     // Saving the data from backend to the "metadata array"
@@ -44,12 +45,12 @@ export default createStore({
     setSelectedError(state,payload) {
         state.selectedError = payload
     },
-    etInsightVoteBool (state, payload) {
-          // TODO
-    },
     setAutocomplete(state,payload) {
         state.autocomplete = payload.autocomplete
     },
+    setBinder(state,payload){
+      state.binder = payload.binder
+    }
   },
   actions: {
     loadQuery({commit}, payload){
@@ -110,13 +111,13 @@ export default createStore({
       commit('setCurrentInName', {currentIn: payload})
     },
     // DEPRICATED -> Error name not relevant, click on error button dispatches the right call to backend
-    fetchError ({commit}, payload) {
-      commit('setSelectedError', payload)
+
+    fetchBinder({commit}, payload){
+      commit('setBinder', {binder: payload})
     },
     
 
 
-    // TODO: Implement query as paperID when backend is ready
     sendAnswer () {   // DONE
       return postAnswer(this.state.query, this.state.currentIn, this.state.currentUserInput)
         .then((response) => {console.log(response)})
@@ -154,7 +155,11 @@ export default createStore({
       return postTypoError(this.state.currentIn)
         .then((response) => {console.log(response)})
         .catch((error) => {console.error(error)})
-    }
+    },
+    //TODO
+    sendBinder() {
+       
+     }
 
   },
     getters: {

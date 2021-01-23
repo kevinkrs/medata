@@ -21,8 +21,12 @@
     </fieldset>
 
     <div class= "download-binder">
-        <button class="main-button" @click ='getDom()'>Download Binder Insights</button>
+        <button class="main-button" @click ='setBinder()'>Download Binder Insights</button>
     </div>
+     <div class= "download-binder">
+        <button class="main-button" @click ='checkBinder()'>Check Links</button>
+    </div>
+    
   </div>
 </div>
   
@@ -43,39 +47,36 @@ export default {
       }
     },
 
-    computed: {
-      dom () {
-      return browser.i18n.getMessage()
+      methods: {
+        openGit () {
+        chrome.tabs.create({url: "https://github.com"});
+        },
+
+        setBinder() {
+          var vm = this
+            chrome.tabs.query({
+              active: true, currentWindow: true}, function(tabs){
+                chrome.tabs.sendMessage(
+                          tabs[0].id,
+                          {from: 'binder', subject:'getLinks'},
+                          vm.sendBinder)
+                        }
+              )},
+          
+        sendBinder(responseDom) {
+          this.$store.dispatch('fetchBinder', responseDom)
+          alert(responseDom)
+          },
+
+
+        checkBinder(){
+          alert(this.binder)
+        }
       },
-    },
-    methods: {
-      openGit () {
-      chrome.tabs.create({url: "https://github.com"});
-      },
 
-      getDom() {
-        alert(this.dom)
-      }
-    },
-      
-
-        // When About page can access current tab without content.js etc. why shouldn't it not be able to access the DOM as well?
-        // => If not working, go with implementation of content.js and certain functions inside there
-
-        //TODO: 
-        // 1. get the content.js right (webpack.config.js +  manifest.json)
-        // 2. write function that triggers the content.js listener 
-        // 3. figure out how to return the dom data content.js delivers 
-  
     computed: {
         ...mapState([
-            'query',
-            'metadata', 
-            'currentIn',
-            'currentAnswer',
-            'currentUserInput',
-            'selectedError',
-            'currentCategories'
+            'binder'
     ]),
     }
 }
