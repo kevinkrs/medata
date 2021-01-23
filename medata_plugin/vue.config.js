@@ -1,8 +1,4 @@
 module.exports = {
-  productionSourceMap: true, // NOTE: this is default
-  configureWebpack: {
-  devtool: 'source-map', 
-  },
   pages: {
     popup: {
       template: 'public/browser-extension.html',
@@ -12,13 +8,18 @@ module.exports = {
   },
   pluginOptions: {
     browserExtension: {
-      components: {
-        background: true,
-        contentScripts: true,
-      },
       componentOptions: {
-        
+        background: {
+          entry: 'src/background.js'
+        },
+        contentScripts: {
+          entries: {
+            'content-script': [
+              'src/content-scripts/content-script.js'
+            ]
+          }
+        }
       }
     }
-  },
+  }
 }

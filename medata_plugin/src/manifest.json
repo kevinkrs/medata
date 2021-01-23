@@ -7,24 +7,19 @@
   "author": "Jan Effenberge, Jan Bode, Max Heydenmann, Kevin Kraus",
   "default_locale": "en",
   "permissions": [
+    "activeTab",
     "<all_urls>",
-    "*://*/*",
-    ""],
-    "content_scripts": [
-      {
-        "matches": [
-          "<all_urls>"
-        ],
-        "js": ["content-scripts/content.js"]
-      }
-    ],
+    "*://*/*"
+  ],
   "icons": {
     "16": "icons/16.png",
     "48": "icons/48.png",
     "128": "icons/128.png"
   },
   "background": {
-    "scripts": ["background.js"],
+    "scripts": [
+      "js/background.js"
+    ],
     "persistent": false
   },
   "browser_action": {
