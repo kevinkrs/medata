@@ -22,12 +22,21 @@
 import { mapState } from 'vuex'
 
 export default {
-  
+
+  mounted () {
+    browser.runtime.sendMessage({})
+  },
+ computed: {
+    defaultText () {
+      return browser.i18n.getMessage()
+    }
+  },
   data()  {
     return{
         substr: 'https://dl.acm.org/',
         regex: /dl\.acm\.org\/doi\/((fullHtml\/)|(epdf\/)|(pdf\/)){0,1}\d+\.\d{3,}\//,
-        status: 0
+        status: 0,
+        defaultText: ''
     }
   },
   computed: mapState({
