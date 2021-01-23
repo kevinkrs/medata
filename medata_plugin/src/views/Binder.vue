@@ -60,6 +60,8 @@ export default {
           
         sendBinder(responseDom) {
           this.$store.dispatch('fetchBinder', responseDom)
+           // Activate when backend connected
+          //.then(this.$store.dispacth('sendBinder'))
           alert("Your Binder links: " + responseDom)
           },
 
