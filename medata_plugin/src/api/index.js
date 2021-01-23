@@ -75,5 +75,10 @@ export function fetchAutocomplete (inCategories) {
   return axios.post(`${'autocomplete'}`, {categories: inCategories})
 }
 
+TODO
+export function postBinder(binder){
+  return axios.post(//`${'...'}`, {binder: binder}
+  )
+}
 
 

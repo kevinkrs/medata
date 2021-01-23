@@ -23,10 +23,6 @@
     <div class= "download-binder">
         <button class="main-button" @click ='setBinder()'>Download Binder Insights</button>
     </div>
-     <div class= "download-binder">
-        <button class="main-button" @click ='checkBinder()'>Check Links</button>
-    </div>
-    
   </div>
 </div>
   
@@ -41,8 +37,7 @@ export default {
   },
     data () {
 
-      return{
-          domContent: '',
+      return {
           legendVisible: false,
       }
     },
@@ -65,7 +60,7 @@ export default {
           
         sendBinder(responseDom) {
           this.$store.dispatch('fetchBinder', responseDom)
-          alert(responseDom)
+          alert("Your Binder links: " + responseDom)
           },
 
 

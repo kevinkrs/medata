@@ -1,5 +1,5 @@
 import { createStore } from 'vuex'
-import { fetchMetadata, postInsight, postAnswer, postRateAnswer, postRateRelevanceInsight, fetchDownload, postTypoError, postInsightNotRelevant, fetchFurtherInformation, fetchAutocomplete } from '@/api'
+import { fetchMetadata, postInsight, postAnswer, postRateAnswer, postRateRelevanceInsight, fetchDownload, postTypoError, postInsightNotRelevant, fetchFurtherInformation, fetchAutocomplete, postBinder } from '@/api'
 
 
 export default createStore({
@@ -158,8 +158,10 @@ export default createStore({
     },
     //TODO
     sendBinder() {
-       
-     }
+      return postBinder(this.state.binder) 
+      .then((response) => {console.log(response)})
+      .cach((error) => {console.log(error)})
+    }
 
   },
     getters: {
