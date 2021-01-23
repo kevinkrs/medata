@@ -398,25 +398,24 @@ def rate_relevance_insight():
 
 @api.route('/download', methods = ["POST"])
 def download():
-    """download the information of a single paper as a csv file
+    """download the information of a single or mutitple paper as a csv file
 
     answer_score_threshold defines the minimum Answer score for the answer to appear in the results. 
-    A score of 1 should be the absolute minimum.
+    A score of 1 should be the absolute minimum. This score should be set equal to the threshold in the frontend 
+    for Insights to be ranked as green.
 
-    FE can either send one url in the json response or a list of urls 
-
+    FE can either send one url in the json response or a list of urls.
+    
+    Args:
+        json: 
+            { 
+            "url" : Single url of the page. Does not matter if on epdf, pdf, html or other version of the paper, all work
+            "urls_from_binder": List of urls from the binder
+            }
 
     Returns:
-        csv file: includes title, authors names, all Insights and answers. 
+         csv file: includes title, authors names, link to the paper, all Insights and answer with answer_score above the threshold. 
     """
-    answer_score_threshold = 4
-    #fetch data from request
-    url = request.get_json().get('url')
-    url = url_checker(url)
-    urls_from_binder = request.get_json().get("urls_from_binder")
-
-
-    #TODO lets put this somewhere else
     def df_from_url(url):
         url = url
         inf = Information.query.join(Information.answers).filter(Information.paper_id==url).filter(Answers.answer_score > answer_score_threshold).order_by(Answers.answer_score.desc()).all()
@@ -436,7 +435,14 @@ def download():
         df = pd.DataFrame(data=data)
         return df
 
+    answer_score_threshold = 4
+    #fetch data from request
+    url = request.get_json().get('url')
+    url = url_checker(url)
+    urls_from_binder = request.get_json().get("urls_from_binder")
+
     if urls_from_binder is not None:
+        #TODO this must be changed if the FE returns a list of urls. Now its adapted for a single String with urls separated by ','
         urls_from_binder_list = urls_from_binder.split(",")
         urls = list(set([u.strip() for u in urls_from_binder_list]))
         #removes duplicates
@@ -447,6 +453,7 @@ def download():
             try:
                 one_line_df = df_from_url(u)
             except IndexError as ie:
+                #If we do not have sufficient information about this paper we return Unknown Title and Author and the Link to the Paper
                 no_data = {
                     "Title": "Unknown",
                     "Authors": ["Unknown"],
