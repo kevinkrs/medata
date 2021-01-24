@@ -432,7 +432,6 @@ def download():
         urls_from_binder_list = []
         for binder_url in urls_from_binder:
             temp_url = re.search(r"\/doi\/\d*\.\d+\/\d*(\.\d+)*", binder_url)
-            print(temp_url.group())
             temp_url = "https://dl.acm.org"+temp_url.group()
             urls_from_binder_list.append(temp_url)
 
