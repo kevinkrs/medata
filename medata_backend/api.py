@@ -399,7 +399,7 @@ def download():
     Returns:
         csv file: includes title, authors names, all Insights and answers. 
     """
-    answer_score_threshold = 4
+    answer_score_threshold = 3
     #fetch data from request
     url = request.get_json().get('url')
     if url is not None:
@@ -437,10 +437,6 @@ def download():
             urls_from_binder_list.append(temp_url)
 
         print(urls_from_binder_list)
-        #urls_from_binder_list = re.findall(r"\/doi\/\d*\.\d+\/\d*(\.\d+)*", urls_from_binder)
-        # for binder_url in urls_from_binder_list:
-        #     binder_url = "https://dl.acm.org"+binder_url
-        # print(urls_from_binder_list)
 
         urls = list(set([u.strip() for u in urls_from_binder_list]))
         #removes duplicates
