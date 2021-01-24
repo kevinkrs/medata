@@ -403,7 +403,7 @@ def download():
     url = request.get_json().get('url')
     url = url_checker(url)
     urls_from_binder = request.get_json().get("urls_from_binder")
-
+    print(urls_from_binder)
 
     #TODO lets put this somewhere else
     def df_from_url(url):

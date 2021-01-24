@@ -159,8 +159,15 @@ export default createStore({
     //TODO
     sendBinder() {
       return postBinder(this.state.binder) 
-      .then((response) => {console.log(response)})
-      .cach((error) => {console.log(error)})
+      .then((response) => {
+        var fileURL = window.URL.createObjectURL(new Blob([response.data]))
+        var fileLink = document.createElement('a')
+        fileLink.href = fileURL
+        fileLink.setAttribute('download', 'insights.csv')
+        document.body.appendChild(fileLink)
+        fileLink.click()
+      })
+      .catch((error) => {console.error(error)})
     }
 
   },

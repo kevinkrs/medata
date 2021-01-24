@@ -57,6 +57,12 @@ export function fetchDownload (query) {
     responseType: 'blob',
   })
 }
+//TODO
+export function postBinder(binder){
+  return axios.post(`${'download'}`, {urls_from_binder: binder}, {
+    responseType: 'blop',
+  })
+}
 
 export function postInsightNotRelevant (inInsight, inCategories) {
   return axios.post(`${'insight_not_relevant_for_category'}`, {
@@ -75,10 +81,5 @@ export function fetchAutocomplete (inCategories) {
   return axios.post(`${'autocomplete'}`, {categories: inCategories})
 }
 
-//TODO
-export function postBinder(binder){
-  return axios.post(//`${'...'}`, {binder: binder}
-  )
-}
 
 
