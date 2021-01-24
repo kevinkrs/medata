@@ -17,7 +17,7 @@
     </div>
 
     <fieldset v-show="legendVisible" style="display:none" class="grey-box-legend">
-        <p> Here you can download all the insides to the papers of your binder</p>
+        <p> You can download all <b>available</b> insights of the collected papers from your binder by clicking on <i>Download Binder Insights</i></p>
     </fieldset>
 
     <div class= "download-binder">
