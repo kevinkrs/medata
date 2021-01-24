@@ -401,7 +401,9 @@ def download():
     answer_score_threshold = 4
     #fetch data from request
     url = request.get_json().get('url')
-    url = url_checker(url)
+    if url is not None:
+        url = url_checker(url)
+        
     urls_from_binder = request.get_json().get("urls_from_binder")
     print(urls_from_binder)
 
