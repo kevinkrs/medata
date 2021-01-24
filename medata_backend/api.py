@@ -6,6 +6,7 @@ import pandas as pd
 import acm_scraper as scraper
 from nltk.corpus import wordnet as wn
 import pathlib
+import re
 
 api = Blueprint('api', __name__)
 
@@ -403,7 +404,7 @@ def download():
     url = request.get_json().get('url')
     if url is not None:
         url = url_checker(url)
-        
+
     urls_from_binder = request.get_json().get("urls_from_binder")
     print(urls_from_binder)
 
@@ -428,7 +429,11 @@ def download():
         return df
 
     if urls_from_binder is not None:
-        urls_from_binder_list = urls_from_binder.split(",")
+        urls_from_binder_list = re.findall(r"\/doi\/\d*\.\d+\/\d*(\.\d+)*", urls_from_binder)
+        for binder_url in urls_from_binder_list:
+            binder_url = "https://dl.acm.org"+binder_url
+        print(urls_from_binder_list)
+        
         urls = list(set([u.strip() for u in urls_from_binder_list]))
         #removes duplicates
         df = pd.DataFrame()
