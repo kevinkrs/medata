@@ -62,7 +62,6 @@ export default {
           
         sendBinder(responseDom) {
           this.$store.dispatch('fetchBinder', responseDom)
-          alert("Your Binder links: " + responseDom)
           this.$store.dispatch('sendBinder')
           },
 
