@@ -232,6 +232,16 @@ def add_insight():
     in_paper_id = post_data.get('paper_id')
     in_paper_id = url_checker(in_paper_id)
 
+
+    #create information for paper_id and increment information.insight_upvotes, to make sure the added insight is included
+    #array with (insight_upvotes - insight_downvotes) for all 'information' listed on paper
+    highscore = []
+    all_information_paper = Information.query.filter(Information.paper_id == in_paper_id).all()
+    for information in all_information_paper:
+        highscore.append((information.insight_upvotes - information.insight_downvotes))
+    highscore = max(highscore) + 1
+
+
     #if insight does not yet exist, add insight, add categories
     if (Insights.query.filter(Insights.name==in_insight_name).count()==0):
         #add insight
@@ -242,8 +252,8 @@ def add_insight():
             #add categories linked to the above added inisght
             c = Categories(insight_id = i.id, name = str(category))
             db.session.add(c)
-        #creats empty information
-        inf = Information(insight_id=i.id, insight_name=i.name, paper_id=in_paper_id)
+        #creats empty information linked to new insight
+        inf = Information(insight_id=i.id, insight_name=i.name, paper_id=in_paper_id, insight_upvotes=highscore)
         db.session.add(inf)
         db.session.commit()
     #if insight already exists, add categories if they do no yet exist
@@ -254,6 +264,9 @@ def add_insight():
             if (Categories.query.filter(Categories.insight_id==i.id).filter(Categories.name == str(category)).count()==0):
                 c = Categories(insight_id = i.id, name = str(category))
                 db.session.add(c)
+        #creats empty information linked to existing insight
+        inf = Information(insight_id=i.id, insight_name=i.name, paper_id=in_paper_id, insight_upvotes=highscore)
+        db.session.add(inf)
         db.session.commit()
 
     return jsonify(response_object)
