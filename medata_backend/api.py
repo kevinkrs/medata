@@ -7,6 +7,7 @@ import acm_scraper as scraper
 from nltk.corpus import wordnet as wn
 import pathlib
 import re
+import multiprocessing
 
 api = Blueprint('api', __name__)
 
@@ -165,10 +166,20 @@ def get_further_information():
 
 
     #scrape further information
-    if (missing_scraper_information):        
+    if (missing_scraper_information): 
+        pool = multiprocessing.Pool(multiprocessing.cpu_count())
+
         facts_soup = scraper.get_facts_soup(soup)
         authors_profile_link = scraper.get_authors(facts_soup)
-        authors = [scraper.name_from_profile(profile_link) for profile_link in authors_profile_link]
+        authors = []
+
+        start = datetime.now()
+
+        authors = pool.map_async(scraper.name_from_profile,[profile_link for profile_link in authors_profile_link]).get()
+        #authors = [scraper.name_from_profile(profile_link) for profile_link in authors_profile_link]
+
+        print(f"runtime for {len(authors)} authors: {datetime.now()-start} on {multiprocessing.cpu_count()} cores")
+
         title = scraper.get_title(facts_soup)
         conference = scraper.get_conference(paper_id)
         authors_profile_link = "--".join(authors_profile_link)
@@ -221,6 +232,16 @@ def add_insight():
     in_paper_id = post_data.get('paper_id')
     in_paper_id = url_checker(in_paper_id)
 
+
+    #create information for paper_id and increment information.insight_upvotes, to make sure the added insight is included
+    #array with (insight_upvotes - insight_downvotes) for all 'information' listed on paper
+    highscore = []
+    all_information_paper = Information.query.filter(Information.paper_id == in_paper_id).all()
+    for information in all_information_paper:
+        highscore.append((information.insight_upvotes - information.insight_downvotes))
+    highscore = max(highscore) + 1
+
+
     #if insight does not yet exist, add insight, add categories
     if (Insights.query.filter(Insights.name==in_insight_name).count()==0):
         #add insight
@@ -231,8 +252,8 @@ def add_insight():
             #add categories linked to the above added inisght
             c = Categories(insight_id = i.id, name = str(category))
             db.session.add(c)
-        #creats empty information
-        inf = Information(insight_id=i.id, insight_name=i.name, paper_id=in_paper_id)
+        #creats empty information linked to new insight
+        inf = Information(insight_id=i.id, insight_name=i.name, paper_id=in_paper_id, insight_upvotes=highscore)
         db.session.add(inf)
         db.session.commit()
     #if insight already exists, add categories if they do no yet exist
@@ -243,6 +264,9 @@ def add_insight():
             if (Categories.query.filter(Categories.insight_id==i.id).filter(Categories.name == str(category)).count()==0):
                 c = Categories(insight_id = i.id, name = str(category))
                 db.session.add(c)
+        #creats empty information linked to existing insight
+        inf = Information(insight_id=i.id, insight_name=i.name, paper_id=in_paper_id, insight_upvotes=highscore)
+        db.session.add(inf)
         db.session.commit()
 
     return jsonify(response_object)
@@ -388,16 +412,23 @@ def rate_relevance_insight():
 
 @api.route('/download', methods = ["POST"])
 def download():
-    """download the information of a single paper as a csv file
+    """download the information of a single or mutitple paper as a csv file
 
     answer_score_threshold defines the minimum Answer score for the answer to appear in the results. 
-    A score of 1 should be the absolute minimum.
+    A score of 1 should be the absolute minimum. This score should be set equal to the threshold in the frontend 
+    for Insights to be ranked as green.
 
-    FE can either send one url in the json response or a list of urls 
-
+    FE can either send one url in the json response or a list of urls.
+    
+    Args:
+        json: 
+            { 
+            "url" : Single url of the page. Does not matter if on epdf, pdf, html or other version of the paper, all work
+            "urls_from_binder": List of urls from the binder
+            }
 
     Returns:
-        csv file: includes title, authors names, all Insights and answers. 
+         csv file: includes title, authors names, link to the paper, all Insights and answer with answer_score above the threshold. 
     """
     answer_score_threshold = 3
     #fetch data from request
@@ -428,6 +459,12 @@ def download():
         df = pd.DataFrame(data=data)
         return df
 
+    answer_score_threshold = 4
+    #fetch data from request
+    url = request.get_json().get('url')
+    url = url_checker(url)
+    urls_from_binder = request.get_json().get("urls_from_binder")
+
     if urls_from_binder is not None:
         urls_from_binder_list = []
         for binder_url in urls_from_binder:
@@ -446,6 +483,7 @@ def download():
             try:
                 one_line_df = df_from_url(u)
             except IndexError as ie:
+                #If we do not have sufficient information about this paper we return Unknown Title and Author and the Link to the Paper
                 no_data = {
                     "Title": "Unknown",
                     "Authors": ["Unknown"],
