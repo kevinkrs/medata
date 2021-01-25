@@ -6,7 +6,7 @@ import pandas as pd
 import acm_scraper as scraper
 from nltk.corpus import wordnet as wn
 import pathlib
-import multiprocessing 
+import re
 
 api = Blueprint('api', __name__)
 
@@ -416,6 +416,16 @@ def download():
     Returns:
          csv file: includes title, authors names, link to the paper, all Insights and answer with answer_score above the threshold. 
     """
+    answer_score_threshold = 3
+    #fetch data from request
+    url = request.get_json().get('url')
+    if url is not None:
+        url = url_checker(url)
+
+    urls_from_binder = request.get_json().get("urls_from_binder")
+    print(urls_from_binder)
+
+    #TODO lets put this somewhere else
     def df_from_url(url):
         url = url
         inf = Information.query.join(Information.answers).filter(Information.paper_id==url).filter(Answers.answer_score > answer_score_threshold).order_by(Answers.answer_score.desc()).all()
@@ -442,8 +452,14 @@ def download():
     urls_from_binder = request.get_json().get("urls_from_binder")
 
     if urls_from_binder is not None:
-        #TODO this must be changed if the FE returns a list of urls. Now its adapted for a single String with urls separated by ','
-        urls_from_binder_list = urls_from_binder.split(",")
+        urls_from_binder_list = []
+        for binder_url in urls_from_binder:
+            temp_url = re.search(r"\/doi\/\d*\.\d+\/\d*(\.\d+)*", binder_url)
+            temp_url = "https://dl.acm.org"+temp_url.group()
+            urls_from_binder_list.append(temp_url)
+
+        print(urls_from_binder_list)
+
         urls = list(set([u.strip() for u in urls_from_binder_list]))
         #removes duplicates
         df = pd.DataFrame()

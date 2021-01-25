@@ -27,6 +27,8 @@
             <div id=-1001 style="display:inline"><img class="img-button" src="../assets/info-green.png" ></div>
             <div id=-2001 style="display:none"><img class="img-button" src="../assets/arrow-up-green.png" ></div>      
           </button>
+
+
           <div id=-1 style="display:none">
             <div class="grey-toggleBox">
               <p>The insights with a <b> green arrow </b> on the right are confirmed by <br> at <b> least 5 other </b> users. </p>
@@ -110,8 +112,8 @@
 
               <div class="insight-toggleBox">
                 <button class="error-button" @click="visible2(entry.id+1000)">back</button>
-                <button id ="error1" class="error-button-2" @click='sendTypoError()'>Report typo </button> <br> 
-                <button id ="error2" class="error-button-2" @click='sendInsightNotRelevantError()'>Report insignificance of this insight </button>
+                <button id ="error1" class="error-button-2" @click='sendTypoError(),visible4()'>Report typo </button> <br> 
+                <button id ="error2" class="error-button-2" @click='sendInsightNotRelevantError(),visible4()'>Report insignificance of this insight </button>
               </div>
             </div> 
 
@@ -132,7 +134,7 @@
             </div>
           </div>
         </div>
-        <div div v-else-if="entry.answer[0].answer_score < 3" class="insight-button">
+        <div div v-else-if="entry.answer[0].answer_score < 4" class="insight-button">
           <button class="insight-button-yellow" @click="visible(entry.id), saveInName(entry.name), sendInsightRelevance()">
             <div :id=entry.id-1000 style="display:inline"><img class="img-button" src="../assets/arrow-down-yellow.png" ></div>
             <div :id=entry.id-2000 style="display:none"><img class="img-button" src="../assets/arrow-up-yellow.png" ></div>
@@ -147,8 +149,8 @@
 
               <div class="insight-toggleBox">
                 <button class="error-button" @click="visible2(entry.id+1000)">back</button>
-                <button id ="error1" class="error-button-2" @click='sendTypoError()'>Report typo </button> <br> 
-                <button id ="error2" class="error-button-2" @click='sendInsightNotRelevantError()'>Report insignificance of this insight </button>
+                <button id ="error1" class="error-button-2" @click='sendTypoError(),visible4()'>Report typo </button> <br> 
+                <button id ="error2" class="error-button-2" @click='sendInsightNotRelevantError(),visible4()'>Report insignificance of this insight </button>
               </div>
             </div> 
 
@@ -198,8 +200,8 @@
 
               <div class="insight-toggleBox">
                 <button class="error-button" @click="visible2(entry.id+1000)">back</button>
-                 <button id ="error1" class="error-button-2" @click='sendTypoError()'>Report typo </button> <br> 
-                <button id ="error2" class="error-button-2" @click='sendValueError()'>Report incorrect value </button>
+                 <button id ="error1" class="error-button-2" @click='sendTypoError(),visible4()'>Report typo </button> <br> 
+                <button id ="error2" class="error-button-2" @click='sendValueError(),visible4()'>Report incorrect value </button>
               </div>
             </div> 
 
@@ -220,7 +222,7 @@
                   </div>
                   <div class="insight-green-line"></div>
                   <div class="insight-green-number">
-                    <p>{{entry.answer[0].score}}</p>                   
+                    <p>{{entry.answer[0].answer_score}}</p>                   
                   </div>
                 </div>
                 <button class="green-button" @click='sendAnswerSelection()'>Confirm</button>
@@ -352,6 +354,20 @@ export default {
         document.getElementById(divId+100000).style.display = 'none';
         document.getElementById(divId+200000).style.display = 'inline';    
     },
+
+    visible4: function () {
+      /*The for loop closes all divs to ensure that only one div is open at a time*/
+      for (var i = -10000; i <= 10000; i++) {
+        if (document.getElementById(i) != null && i != -6){
+        document.getElementById(i).style.display = 'none';
+        }                
+      }
+      for (var i = -1010; i <= -10; i++) {
+        if (document.getElementById(i) != null){
+        document.getElementById(i).style.display = 'inline';
+        }                
+      }
+    },    
     // All the following methods are merely for saving data as state objects
     saveInName(name) {
       this.$store.dispatch('fetchInName', name)
@@ -576,7 +592,7 @@ export default {
     border-radius: 5px 0px 0px 5px;
   }
   .insight-name2 {
-    width: 350%;
+    width: 349%;
     padding: 8px;
     color: transparent;
     margin-top: -8px;
@@ -785,7 +801,7 @@ export default {
 
   .error-button {
     float: left;
-    font-size: 60%;
+    font-size: 65%;
     width: 25%;
     margin-bottom: 10px;
     margin-top: -10px;
