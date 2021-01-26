@@ -32,6 +32,12 @@ The plugin is available in the [chrome web store](https://chrome.google.com/webs
 Detailed documentation:
 
 * [Backend](medata_backend/documentation_backend.md)
+  * [__](medata_backend/docs/__init__.html)[init__.py](medata_backend/docs/__init__.html)
+  * [acm_scraper.py](medata_backend/docs/acm_scraper.html)
+  * [api.py](medata_backend/docs/api.html)
+  * [app.py](medata_backend/docs/app.html)
+  * [create_real_data.py](medata_backend/docs/create_real_data.html)
+  * [models.py](medata_backend/docs/models.html)
 * [Frontend](medata_plugin/documentation_frontend.md)
 
 
