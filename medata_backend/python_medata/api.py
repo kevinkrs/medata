@@ -1,5 +1,5 @@
-'''api.py
-'''
+""" api.py
+"""
 from flask import Blueprint, jsonify, request, send_file, safe_join
 from sqlalchemy import or_, exists, and_, not_
 from datetime import datetime

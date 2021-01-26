@@ -1,5 +1,5 @@
-'''create_real_data.py
-'''
+""" create_real_data.py
+"""
 from models import db, Insights, Information, Answers, Categories
 
 def create_init_data():

@@ -1,12 +1,31 @@
-''' models.py 
-    this module contains the model for our database
+""" 
+Backend documentation:
 
-    variables like insight, categories etc. are always refered to with: ''
-        e.g. we have one 'insight' called "accuracy" 
-        this 'insight' supports the 'category' "supervised learning by classification"
-        on all acm papers in the 'category' "supervised learning by classification" exists one 'information' related to the 'insight'
-        all those 'information' can have multiple answers (because the value for accuracy is not the same in all papers)
-'''
+1. [[__init__.py]]
+2. [[acm_scraper.py]]
+3. [[api.py]]
+4. [[app.py]]
+5. [[create_init_data.py]]
+"""
+
+"""
+**models.py** 
+this module contains the model for our database
+
+variables like insight, categories etc. are always refered to with: ''
+
+e.g. we have one 'insight' called "accuracy" 
+this 'insight' supports the 'category' "supervised learning by classification"
+on all acm papers in the 'category' "supervised learning by classification" exists one 'information' related to the 'insight'
+all those 'information' can have multiple answers (because the value for accuracy is not the same in all papers)
+
+classes:
+1. 
+2.
+3. 
+4. 
+
+"""
 
 from enum import unique
 
@@ -17,9 +36,9 @@ from sqlalchemy.orm import backref
 
 db = SQLAlchemy()
 
+# === Insights Model ===
 class Insights(db.Model):
-    """ Insights Model
-
+    """ 
     Explanation:
         An 'insight' object has it's unique name
         Typo errors (e.g. spelling mistakes) are counted in typo_error

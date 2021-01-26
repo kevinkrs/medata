@@ -2,14 +2,14 @@
 <html>
 <head>
   <meta http-equiv="content-type" content="text/html;charset=utf-8">
-  <title>create_real_data.py</title>
-  <link rel="stylesheet" href="pycco.css">
+  <title>create_init_data.py</title>
+  <link rel="stylesheet" href="../pycco.css">
 </head>
 <body>
 <div id='container'>
   <div id="background"></div>
   <div class='section'>
-    <div class='docs'><h1>create_real_data.py</h1></div>
+    <div class='docs'><h1>create_init_data.py</h1></div>
   </div>
   <div class='clearall'>
   <div class='section' id='section-0'>
@@ -17,12 +17,10 @@
       <div class='octowrap'>
         <a class='octothorpe' href='#section-0'>#</a>
       </div>
-      
+      <p>create_real_data.py</p>
     </div>
     <div class='code'>
-      <div class="highlight"><pre><span></span><span class="sd">&#39;&#39;&#39;create_real_data.py</span>
-<span class="sd">&#39;&#39;&#39;</span>
-<span class="kn">from</span> <span class="nn">models</span> <span class="kn">import</span> <span class="n">db</span><span class="p">,</span> <span class="n">Insights</span><span class="p">,</span> <span class="n">Information</span><span class="p">,</span> <span class="n">Answers</span><span class="p">,</span> <span class="n">Categories</span></pre></div>
+      <div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">models</span> <span class="kn">import</span> <span class="n">db</span><span class="p">,</span> <span class="n">Insights</span><span class="p">,</span> <span class="n">Information</span><span class="p">,</span> <span class="n">Answers</span><span class="p">,</span> <span class="n">Categories</span></pre></div>
     </div>
   </div>
   <div class='clearall'></div>
@@ -34,7 +32,7 @@
       
     </div>
     <div class='code'>
-      <div class="highlight"><pre><span class="k">def</span> <span class="nf">create_mock_data</span><span class="p">():</span>
+      <div class="highlight"><pre><span class="k">def</span> <span class="nf">create_init_data</span><span class="p">():</span>
     <span class="n">insight_names1</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;Number of participants&quot;</span><span class="p">,</span> <span class="s2">&quot;Location of experiment&quot;</span><span class="p">,</span> <span class="s2">&quot;Language of participants&quot;</span><span class="p">,</span> <span class="s2">&quot;Percentage male participants&quot;</span><span class="p">,</span><span class="s2">&quot;Average age of participants&quot;</span><span class="p">]</span>
     <span class="n">categories_names1</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;Laboratory experiments&quot;</span><span class="p">]</span>
     

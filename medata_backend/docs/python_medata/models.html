@@ -3,7 +3,7 @@
 <head>
   <meta http-equiv="content-type" content="text/html;charset=utf-8">
   <title>models.py</title>
-  <link rel="stylesheet" href="pycco.css">
+  <link rel="stylesheet" href="../pycco.css">
 </head>
 <body>
 <div id='container'>
@@ -36,13 +36,18 @@
       <div class='octowrap'>
         <a class='octothorpe' href='#section-1'>#</a>
       </div>
-      <p>=== models.py === </p>
-<p>this module contains the model for our database</p>
-<p>variables like insight, categories etc. are always refered to with: &lsquo;&rsquo;
-    e.g. we have one &lsquo;insight&rsquo; called &ldquo;accuracy&rdquo; 
-    this &lsquo;insight&rsquo; supports the &lsquo;category&rsquo; &ldquo;supervised learning by classification&rdquo;
-    on all acm papers in the &lsquo;category&rsquo; &ldquo;supervised learning by classification&rdquo; exists one &lsquo;information&rsquo; related to the &lsquo;insight&rsquo;
-    all those &lsquo;information&rsquo; can have multiple answers (because the value for accuracy is not the same in all papers)</p>
+      <p><strong>models.py</strong> 
+this module contains the model for our database</p>
+<p>variables like insight, categories etc. are always refered to with: &lsquo;&rsquo;</p>
+<p>e.g. we have one &lsquo;insight&rsquo; called &ldquo;accuracy&rdquo; 
+this &lsquo;insight&rsquo; supports the &lsquo;category&rsquo; &ldquo;supervised learning by classification&rdquo;
+on all acm papers in the &lsquo;category&rsquo; &ldquo;supervised learning by classification&rdquo; exists one &lsquo;information&rsquo; related to the &lsquo;insight&rsquo;
+all those &lsquo;information&rsquo; can have multiple answers (because the value for accuracy is not the same in all papers)</p>
+<p>classes:
+1. 
+2.
+3. 
+4. </p>
     </div>
     <div class='code'>
       <div class="highlight"><pre><span class="kn">from</span> <span class="nn">enum</span> <span class="kn">import</span> <span class="n">unique</span>
@@ -61,15 +66,7 @@
       <div class='octowrap'>
         <a class='octothorpe' href='#section-2'>#</a>
       </div>
-      <pre><code>Insights Model
-
-Explanation:
-</code></pre>
-<p>An &lsquo;insight&rsquo; object has it&rsquo;s unique name
-   Typo errors (e.g. spelling mistakes) are counted in typo_error
-   &lsquo;insight&rsquo; has a one-to-many relationship with &lsquo;categories&rsquo; -&gt; one insight is supported for multiple &lsquo;categories&rsquo;
-   &lsquo;insight&rsquo; has a one-to-many relationship with &lsquo;information&rsquo; -&gt; &lsquo;information&rsquo; saves additional data for a specific acm-paper (see &lsquo;information&rsquo;)
-   The to_dict method is very powerful and returns basically the whole db, used only for testing</p>
+      <h3><span id="insights-model" href="insights-model"> Insights Model </span></h3>
     </div>
     <div class='code'>
       <div class="highlight"><pre><span class="k">class</span> <span class="nc">Insights</span><span class="p">(</span><span class="n">db</span><span class="o">.</span><span class="n">Model</span><span class="p">):</span></pre></div>
@@ -81,7 +78,13 @@ Explanation:
       <div class='octowrap'>
         <a class='octothorpe' href='#section-3'>#</a>
       </div>
-      
+      <pre><code>Explanation:
+</code></pre>
+<p>An &lsquo;insight&rsquo; object has it&rsquo;s unique name
+   Typo errors (e.g. spelling mistakes) are counted in typo_error
+   &lsquo;insight&rsquo; has a one-to-many relationship with &lsquo;categories&rsquo; -&gt; one insight is supported for multiple &lsquo;categories&rsquo;
+   &lsquo;insight&rsquo; has a one-to-many relationship with &lsquo;information&rsquo; -&gt; &lsquo;information&rsquo; saves additional data for a specific acm-paper (see &lsquo;information&rsquo;)
+   The to_dict method is very powerful and returns basically the whole db, used only for testing</p>
     </div>
     <div class='code'>
       <div class="highlight"><pre>    <span class="n">__tablename__</span> <span class="o">=</span> <span class="s1">&#39;insights&#39;</span>  
