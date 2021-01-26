@@ -7,6 +7,8 @@ from models import db
 from api import api
 from create_init_data import create_init_data
 
+
+
 #configuration
 DEBUG = True
 
