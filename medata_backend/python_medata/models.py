@@ -1,3 +1,13 @@
+''' models.py 
+    this module contains the model for our database
+
+    variables like insight, categories etc. are always refered to with: ''
+        e.g. we have one 'insight' called "accuracy" 
+        this 'insight' supports the 'category' "supervised learning by classification"
+        on all acm papers in the 'category' "supervised learning by classification" exists one 'information' related to the 'insight'
+        all those 'information' can have multiple answers (because the value for accuracy is not the same in all papers)
+'''
+
 from enum import unique
 
 from datetime import datetime
@@ -32,7 +42,7 @@ class Insights(db.Model):
         """to dict
 
         Returns:
-            [dict]: [returns name and all linked 'information' (with 'answers') and 'categories' as a JSON]
+            json: returns name and all linked 'information' (with 'answers') and 'categories'
         """
         return dict(id = self.id,
         name = self.name,
@@ -81,20 +91,15 @@ class Information(db.Model):
 
     Explanation:
         An 'information' is a more specific representation of an 'insight', which saves additional data related to one paper from acm
-        
         insight_id is determined by a foreign key, it links the 'information' with it's 'insight'
         insight_name is doubled but necessary. Otherwise we run into problems as two foreign keys are used
         paper_id is the link to the paper stored as a String
         insight_up/downvotes is selfexplanatory
         title, authors, authors_profile_link and conference of the acm-paper are saved in our db
         'information' has a one-to-many relationship with 'answers'
-        e.g.:
-            we have one 'insight' called 'accuracy' 
-            this 'insight' supports the 'category' 'supervised learning by classification'
-            on all acm papers in the 'category' 'supervised learning by classification' exists one 'information' related to the 'insight'
-            all those 'information' can have multiple answers (because the value for accuracy is not the same in all papers)
 
     """
+
     __tablename__ = 'information'
 
     information_id = db.Column(db.Integer, primary_key=True)
@@ -118,7 +123,7 @@ class Information(db.Model):
         Answers are limited by limit_answers()
 
         Returns:
-            dict: [all relevant columns of 'information' and the for most relevant 'answers']
+            json: all relevant columns of 'information' and the for most relevant 'answers'
         """
         return dict(id = self.insight_id,
         name = self.insight_name, 

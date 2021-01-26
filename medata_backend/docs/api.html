@@ -1,0 +1,1387 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="content-type" content="text/html;charset=utf-8">
+  <title>api.py</title>
+  <link rel="stylesheet" href="pycco.css">
+</head>
+<body>
+<div id='container'>
+  <div id="background"></div>
+  <div class='section'>
+    <div class='docs'><h1>api.py</h1></div>
+  </div>
+  <div class='clearall'>
+  <div class='section' id='section-0'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-0'>#</a>
+      </div>
+      
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre><span></span><span class="sd">&#39;&#39;&#39;api.py</span>
+<span class="sd">&#39;&#39;&#39;</span>
+<span class="kn">from</span> <span class="nn">flask</span> <span class="kn">import</span> <span class="n">Blueprint</span><span class="p">,</span> <span class="n">jsonify</span><span class="p">,</span> <span class="n">request</span><span class="p">,</span> <span class="n">send_file</span><span class="p">,</span> <span class="n">safe_join</span>
+<span class="kn">from</span> <span class="nn">sqlalchemy</span> <span class="kn">import</span> <span class="n">or_</span><span class="p">,</span> <span class="n">exists</span><span class="p">,</span> <span class="n">and_</span><span class="p">,</span> <span class="n">not_</span>
+<span class="kn">from</span> <span class="nn">datetime</span> <span class="kn">import</span> <span class="n">datetime</span>
+<span class="kn">from</span> <span class="nn">models</span> <span class="kn">import</span> <span class="n">db</span><span class="p">,</span> <span class="n">Insights</span><span class="p">,</span> <span class="n">Information</span><span class="p">,</span> <span class="n">Answers</span><span class="p">,</span> <span class="n">Categories</span>
+<span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
+<span class="kn">import</span> <span class="nn">acm_scraper</span> <span class="k">as</span> <span class="nn">scraper</span>
+<span class="kn">from</span> <span class="nn">nltk.corpus</span> <span class="kn">import</span> <span class="n">wordnet</span> <span class="k">as</span> <span class="n">wn</span>
+<span class="kn">import</span> <span class="nn">pathlib</span>
+<span class="kn">import</span> <span class="nn">re</span>
+<span class="kn">import</span> <span class="nn">multiprocessing</span>
+
+<span class="n">api</span> <span class="o">=</span> <span class="n">Blueprint</span><span class="p">(</span><span class="s1">&#39;api&#39;</span><span class="p">,</span> <span class="vm">__name__</span><span class="p">)</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-1'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-1'>#</a>
+      </div>
+      <p>Modifies the url from a pdf or epdf view to a regular url</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre><span class="k">def</span> <span class="nf">url_checker</span><span class="p">(</span><span class="n">url</span><span class="p">):</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-2'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-2'>#</a>
+      </div>
+      <p>Args:
+    String: url of a pdf or edpf view or regular url</p>
+<p>Returns:
+    url: regularised url as a paper id</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>    <span class="k">if</span> <span class="s2">&quot;epdf/&quot;</span> <span class="ow">in</span> <span class="n">url</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">url</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot;epdf/&quot;</span><span class="p">,</span><span class="s2">&quot;&quot;</span><span class="p">)</span>
+    <span class="k">elif</span> <span class="s2">&quot;pdf/&quot;</span> <span class="ow">in</span> <span class="n">url</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">url</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot;pdf/&quot;</span><span class="p">,</span><span class="s2">&quot;&quot;</span><span class="p">)</span>
+    <span class="k">elif</span> <span class="s2">&quot;fullHtml/&quot;</span> <span class="ow">in</span> <span class="n">url</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">url</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot;fullHtml/&quot;</span><span class="p">,</span><span class="s2">&quot;&quot;</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">url</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-3'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-3'>#</a>
+      </div>
+      <p>Check if Server is running</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre><span class="nd">@api</span><span class="o">.</span><span class="n">route</span><span class="p">(</span><span class="s1">&#39;/ping&#39;</span><span class="p">,</span> <span class="n">methods</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;GET&#39;</span><span class="p">])</span>
+<span class="k">def</span> <span class="nf">ping_pong</span><span class="p">():</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-4'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-4'>#</a>
+      </div>
+      <p>Returns:
+    json: just return a string &ldquo;pong&rdquo; in json format</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>    <span class="k">return</span> <span class="n">jsonify</span><span class="p">(</span><span class="s1">&#39;pong!&#39;</span><span class="p">)</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-5'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-5'>#</a>
+      </div>
+      <p>Testing Method to return whole database</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre><span class="nd">@api</span><span class="o">.</span><span class="n">route</span><span class="p">(</span><span class="s1">&#39;/get_all&#39;</span><span class="p">,</span> <span class="n">methods</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;GET&#39;</span><span class="p">])</span>
+<span class="k">def</span> <span class="nf">get_all</span><span class="p">():</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-6'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-6'>#</a>
+      </div>
+      <p>Returns:
+    json: complete database sorted by insights</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>    <span class="n">response_object</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;status&#39;</span><span class="p">:</span> <span class="s1">&#39;success&#39;</span><span class="p">}</span>
+    <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="n">Insights</span><span class="o">.</span><span class="n">query</span><span class="o">.</span><span class="n">count</span><span class="p">()):</span>
+        <span class="n">response_object</span><span class="p">[</span><span class="sa">f</span><span class="s1">&#39;insight </span><span class="si">{</span><span class="n">x</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">Insights</span><span class="o">.</span><span class="n">query</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="o">.</span><span class="n">to_dict</span><span class="p">()</span>
+    
+    <span class="k">return</span> <span class="n">jsonify</span><span class="p">(</span><span class="n">response_object</span><span class="p">)</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-7'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-7'>#</a>
+      </div>
+      <p>Get all &lsquo;information&rsquo; for a specific url (=paper_id)</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre><span class="nd">@api</span><span class="o">.</span><span class="n">route</span><span class="p">(</span><span class="s1">&#39;/get_specific&#39;</span><span class="p">,</span> <span class="n">methods</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;POST&#39;</span><span class="p">])</span>
+<span class="k">def</span> <span class="nf">get_specific</span><span class="p">():</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-8'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-8'>#</a>
+      </div>
+      <p>Returns:
+    json: if no &lsquo;informatin&rsquo; is listed for this paper, an Array with the leaf &lsquo;categories&rsquo; is returned, otherwise a json object with all relevant &lsquo;information&rsquo;
+    and the leaf &lsquo;categories&rsquo; are returned</p>
+<p>fetch data from request</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>    <span class="n">url</span> <span class="o">=</span> <span class="n">request</span><span class="o">.</span><span class="n">get_json</span><span class="p">()</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;url&#39;</span><span class="p">)</span>
+    <span class="n">url</span> <span class="o">=</span> <span class="n">url_checker</span><span class="p">(</span><span class="n">url</span><span class="p">)</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-9'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-9'>#</a>
+      </div>
+      <p>a max of &lsquo;number_information&rsquo; is returned</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>    <span class="n">number_information</span> <span class="o">=</span> <span class="mi">9</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-10'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-10'>#</a>
+      </div>
+      <p>&lsquo;information&rsquo; linked to &lsquo;insights&rsquo; which have been downvoted for relevant_categories is not added</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>    <span class="n">max_downvote_category</span> <span class="o">=</span> <span class="mi">2</span>
+    <span class="n">response_information</span> <span class="o">=</span> <span class="p">[]</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-11'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-11'>#</a>
+      </div>
+      <p>scrape leaf &lsquo;categories&rsquo;</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>    <span class="n">relevant_categories</span> <span class="o">=</span> <span class="n">scraper</span><span class="o">.</span><span class="n">get_leaf_categories</span><span class="p">(</span><span class="n">url</span><span class="p">)</span>
+    <span class="n">paper_id</span> <span class="o">=</span> <span class="n">url</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-12'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-12'>#</a>
+      </div>
+      <p>query &lsquo;insights&rsquo;</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>    <span class="n">matching_insight</span> <span class="o">=</span> <span class="n">Insights</span><span class="o">.</span><span class="n">query</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">Insights</span><span class="o">.</span><span class="n">categories</span><span class="p">)</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="n">or_</span><span class="p">(</span><span class="n">Categories</span><span class="o">.</span><span class="n">name</span><span class="o">==</span><span class="n">x</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">relevant_categories</span><span class="p">))</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="n">Categories</span><span class="o">.</span><span class="n">downvote_category</span> <span class="o">&lt;=</span> <span class="n">max_downvote_category</span><span class="p">)</span><span class="o">.</span><span class="n">all</span><span class="p">()</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-13'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-13'>#</a>
+      </div>
+      <p>if &lsquo;information&rsquo; for paper_id does not exist, create &lsquo;information&rsquo; with paper_id</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>    <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">matching_insight</span><span class="p">:</span>
+        <span class="k">if</span> <span class="p">(</span><span class="n">Information</span><span class="o">.</span><span class="n">query</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="n">Information</span><span class="o">.</span><span class="n">insight_id</span><span class="o">==</span><span class="nb">int</span><span class="p">(</span><span class="n">x</span><span class="o">.</span><span class="n">id</span><span class="p">))</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="n">Information</span><span class="o">.</span><span class="n">paper_id</span><span class="o">==</span><span class="n">paper_id</span><span class="p">)</span><span class="o">.</span><span class="n">count</span><span class="p">()</span><span class="o">==</span><span class="mi">0</span><span class="p">):</span>
+            <span class="n">i</span> <span class="o">=</span> <span class="n">Information</span><span class="p">(</span><span class="n">insight_id</span> <span class="o">=</span> <span class="n">x</span><span class="o">.</span><span class="n">id</span><span class="p">,</span> 
+                            <span class="n">insight_name</span><span class="o">=</span><span class="n">x</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> 
+                            <span class="n">paper_id</span><span class="o">=</span><span class="n">paper_id</span><span class="p">)</span>
+            <span class="n">db</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">i</span><span class="p">)</span>
+    <span class="n">db</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">commit</span><span class="p">()</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-14'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-14'>#</a>
+      </div>
+      <p>query &lsquo;information&rsquo; with and without &lsquo;answers&rsquo;</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>    <span class="n">filtered_information_answers</span> <span class="o">=</span> <span class="n">Information</span><span class="o">.</span><span class="n">query</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">Information</span><span class="o">.</span><span class="n">answers</span><span class="p">)</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="n">or_</span><span class="p">(</span><span class="n">Information</span><span class="o">.</span><span class="n">insight_id</span><span class="o">==</span><span class="nb">int</span><span class="p">(</span><span class="n">x</span><span class="o">.</span><span class="n">id</span><span class="p">)</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">matching_insight</span><span class="p">))</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="n">Information</span><span class="o">.</span><span class="n">paper_id</span><span class="o">==</span><span class="n">paper_id</span><span class="p">)</span><span class="o">.</span><span class="n">order_by</span><span class="p">(</span><span class="n">Answers</span><span class="o">.</span><span class="n">answer_score</span><span class="o">.</span><span class="n">desc</span><span class="p">())</span><span class="o">.</span><span class="n">all</span><span class="p">()</span>
+    <span class="n">number_information</span> <span class="o">=</span> <span class="n">number_information</span> <span class="o">-</span> <span class="nb">len</span><span class="p">(</span><span class="n">filtered_information_answers</span><span class="p">)</span>
+    <span class="n">filtered_information_without_answers</span> <span class="o">=</span> <span class="n">Information</span><span class="o">.</span><span class="n">query</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="n">or_</span><span class="p">(</span><span class="n">Information</span><span class="o">.</span><span class="n">insight_id</span><span class="o">==</span><span class="nb">int</span><span class="p">(</span><span class="n">x</span><span class="o">.</span><span class="n">id</span><span class="p">)</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">matching_insight</span><span class="p">))</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="n">Information</span><span class="o">.</span><span class="n">paper_id</span><span class="o">==</span><span class="n">paper_id</span><span class="p">)</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="n">Information</span><span class="o">.</span><span class="n">answers</span> <span class="o">==</span> <span class="kc">None</span><span class="p">)</span><span class="o">.</span><span class="n">order_by</span><span class="p">((</span><span class="n">Information</span><span class="o">.</span><span class="n">insight_upvotes</span><span class="o">-</span><span class="n">Information</span><span class="o">.</span><span class="n">insight_downvotes</span><span class="p">)</span><span class="o">.</span><span class="n">desc</span><span class="p">())</span><span class="o">.</span><span class="n">limit</span><span class="p">(</span><span class="n">number_information</span><span class="p">)</span><span class="o">.</span><span class="n">all</span><span class="p">()</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-15'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-15'>#</a>
+      </div>
+      <p>add &lsquo;information&rsquo; to response object</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>    <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">filtered_information_answers</span><span class="p">:</span>
+        <span class="n">response_information</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">x</span><span class="o">.</span><span class="n">to_dict</span><span class="p">())</span>
+
+    <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">filtered_information_without_answers</span><span class="p">:</span>
+        <span class="k">if</span> <span class="p">(</span><span class="n">x</span><span class="o">.</span><span class="n">answers</span> <span class="o">==</span> <span class="p">[]):</span>
+            <span class="n">response_information</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">x</span><span class="o">.</span><span class="n">to_dict</span><span class="p">())</span>
+
+
+    <span class="n">response_object</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;metadata&quot;</span><span class="p">:</span> <span class="n">response_information</span><span class="p">,</span> <span class="s2">&quot;categories&quot;</span><span class="p">:</span> <span class="n">relevant_categories</span> <span class="p">}</span>
+    <span class="k">return</span> <span class="n">jsonify</span><span class="p">(</span><span class="n">response_object</span><span class="p">)</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-16'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-16'>#</a>
+      </div>
+      <p>Get scraper to look up more specific information about the url which is posted via POST method</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre><span class="nd">@api</span><span class="o">.</span><span class="n">route</span><span class="p">(</span><span class="s1">&#39;/get_further_information&#39;</span><span class="p">,</span> <span class="n">methods</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;POST&#39;</span><span class="p">])</span>
+<span class="k">def</span> <span class="nf">get_further_information</span><span class="p">():</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-17'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-17'>#</a>
+      </div>
+      <p>this includes the title, authors, link to authors profile and the conference. The scraped information is then added
+to the correct &lsquo;information&rsquo;</p>
+<p>Returns:
+    json: {&lsquo;status&rsquo;: &lsquo;success&rsquo;}</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>    <span class="n">response_object</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;status&#39;</span><span class="p">:</span> <span class="s1">&#39;success&#39;</span><span class="p">}</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-18'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-18'>#</a>
+      </div>
+      <p>url is send from the FE</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>    <span class="n">url</span> <span class="o">=</span> <span class="n">request</span><span class="o">.</span><span class="n">get_json</span><span class="p">()</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;url&#39;</span><span class="p">)</span>
+    <span class="n">url</span> <span class="o">=</span> <span class="n">url_checker</span><span class="p">(</span><span class="n">url</span><span class="p">)</span>
+    <span class="n">paper_id</span> <span class="o">=</span> <span class="n">url_checker</span><span class="p">(</span><span class="n">url</span><span class="p">)</span>
+    <span class="n">max_downvote_category</span> <span class="o">=</span> <span class="mi">2</span>
+    <span class="n">soup</span> <span class="o">=</span> <span class="n">scraper</span><span class="o">.</span><span class="n">get_soup</span><span class="p">(</span><span class="n">url</span><span class="p">)</span>
+    <span class="n">relevant_categories</span> <span class="o">=</span> <span class="n">scraper</span><span class="o">.</span><span class="n">get_categories</span><span class="p">(</span><span class="n">soup</span><span class="p">)</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-19'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-19'>#</a>
+      </div>
+      <p>query matching insights</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>    <span class="n">matching_insight</span> <span class="o">=</span> <span class="n">Insights</span><span class="o">.</span><span class="n">query</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">Insights</span><span class="o">.</span><span class="n">categories</span><span class="p">)</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="n">or_</span><span class="p">(</span><span class="n">Categories</span><span class="o">.</span><span class="n">name</span><span class="o">==</span><span class="n">x</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">relevant_categories</span><span class="p">))</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="n">Categories</span><span class="o">.</span><span class="n">downvote_category</span> <span class="o">&lt;=</span> <span class="n">max_downvote_category</span><span class="p">)</span><span class="o">.</span><span class="n">all</span><span class="p">()</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-20'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-20'>#</a>
+      </div>
+      <p>boolean to indicate whether further information needs to be added and/or scraped</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>    <span class="n">missing_scraper_information</span> <span class="o">=</span> <span class="kc">False</span>
+    <span class="n">add_information</span> <span class="o">=</span> <span class="kc">False</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-21'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-21'>#</a>
+      </div>
+      <p>initialize scraper_information </p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>    <span class="n">authors_profile_link</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
+    <span class="n">authors</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
+    <span class="n">title</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
+    <span class="n">conference</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
+    <span class="n">authors_profile_link</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-22'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-22'>#</a>
+      </div>
+      <p>check if one of the &lsquo;information&rsquo; linked to a matching insights has no title, if True scraper_information needs to be added</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>    <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">matching_insight</span><span class="p">:</span>
+        <span class="k">if</span> <span class="p">(</span><span class="n">Information</span><span class="o">.</span><span class="n">query</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="n">Information</span><span class="o">.</span><span class="n">insight_id</span><span class="o">==</span><span class="nb">int</span><span class="p">(</span><span class="n">x</span><span class="o">.</span><span class="n">id</span><span class="p">))</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="n">Information</span><span class="o">.</span><span class="n">paper_id</span><span class="o">==</span><span class="n">paper_id</span><span class="p">)</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="n">Information</span><span class="o">.</span><span class="n">title</span> <span class="o">==</span> <span class="s2">&quot;&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">count</span><span class="p">()</span><span class="o">==</span><span class="mi">1</span><span class="p">):</span>
+            <span class="n">missing_scraper_information</span> <span class="o">=</span> <span class="kc">True</span>
+            <span class="n">add_information</span> <span class="o">=</span> <span class="kc">True</span>
+            <span class="k">break</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-23'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-23'>#</a>
+      </div>
+      <p>check if information has been scraped already</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>    <span class="k">if</span><span class="p">(</span><span class="n">missing_scraper_information</span><span class="p">):</span>
+        <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">matching_insight</span><span class="p">:</span>
+            <span class="k">if</span> <span class="p">(</span><span class="n">Information</span><span class="o">.</span><span class="n">query</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="n">Information</span><span class="o">.</span><span class="n">insight_id</span><span class="o">==</span><span class="nb">int</span><span class="p">(</span><span class="n">x</span><span class="o">.</span><span class="n">id</span><span class="p">))</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="n">Information</span><span class="o">.</span><span class="n">paper_id</span><span class="o">==</span><span class="n">paper_id</span><span class="p">)</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="n">Information</span><span class="o">.</span><span class="n">title</span> <span class="o">!=</span> <span class="s2">&quot;&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">count</span><span class="p">()</span><span class="o">==</span><span class="mi">1</span><span class="p">):</span>
+                <span class="n">current_information</span> <span class="o">=</span> <span class="n">Information</span><span class="o">.</span><span class="n">query</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="n">Information</span><span class="o">.</span><span class="n">insight_id</span><span class="o">==</span><span class="nb">int</span><span class="p">(</span><span class="n">x</span><span class="o">.</span><span class="n">id</span><span class="p">))</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="n">Information</span><span class="o">.</span><span class="n">paper_id</span><span class="o">==</span><span class="n">paper_id</span><span class="p">)</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="n">Information</span><span class="o">.</span><span class="n">title</span> <span class="o">!=</span> <span class="s2">&quot;&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">first</span><span class="p">()</span>
+
+                <span class="n">authors_profile_link</span> <span class="o">=</span> <span class="n">current_information</span><span class="o">.</span><span class="n">authors_profile_link</span>
+                <span class="n">authors</span> <span class="o">=</span> <span class="n">current_information</span><span class="o">.</span><span class="n">authors</span>
+                <span class="n">title</span> <span class="o">=</span> <span class="n">current_information</span><span class="o">.</span><span class="n">title</span>
+                <span class="n">conference</span> <span class="o">=</span> <span class="n">current_information</span><span class="o">.</span><span class="n">conference</span>
+                <span class="n">authors_profile_link</span> <span class="o">=</span> <span class="n">current_information</span><span class="o">.</span><span class="n">authors_profile_link</span>
+                <span class="n">authors</span> <span class="o">=</span> <span class="n">current_information</span><span class="o">.</span><span class="n">authors_profile_link</span>
+
+                <span class="n">missing_scraper_information</span> <span class="o">=</span> <span class="kc">False</span>
+                <span class="k">break</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-24'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-24'>#</a>
+      </div>
+      <p>scrape further information</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>    <span class="k">if</span> <span class="p">(</span><span class="n">missing_scraper_information</span><span class="p">):</span> 
+        <span class="n">pool</span> <span class="o">=</span> <span class="n">multiprocessing</span><span class="o">.</span><span class="n">Pool</span><span class="p">(</span><span class="n">multiprocessing</span><span class="o">.</span><span class="n">cpu_count</span><span class="p">())</span>
+
+        <span class="n">facts_soup</span> <span class="o">=</span> <span class="n">scraper</span><span class="o">.</span><span class="n">get_facts_soup</span><span class="p">(</span><span class="n">soup</span><span class="p">)</span>
+        <span class="n">authors_profile_link</span> <span class="o">=</span> <span class="n">scraper</span><span class="o">.</span><span class="n">get_authors</span><span class="p">(</span><span class="n">facts_soup</span><span class="p">)</span>
+        <span class="n">authors</span> <span class="o">=</span> <span class="p">[]</span>
+
+        <span class="n">start</span> <span class="o">=</span> <span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">()</span>
+
+        <span class="n">authors</span> <span class="o">=</span> <span class="n">pool</span><span class="o">.</span><span class="n">map_async</span><span class="p">(</span><span class="n">scraper</span><span class="o">.</span><span class="n">name_from_profile</span><span class="p">,[</span><span class="n">profile_link</span> <span class="k">for</span> <span class="n">profile_link</span> <span class="ow">in</span> <span class="n">authors_profile_link</span><span class="p">])</span><span class="o">.</span><span class="n">get</span><span class="p">()</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-25'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-25'>#</a>
+      </div>
+      <p>authors = [scraper.name_from_profile(profile_link) for profile_link in authors_profile_link]</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>        <span class="n">title</span> <span class="o">=</span> <span class="n">scraper</span><span class="o">.</span><span class="n">get_title</span><span class="p">(</span><span class="n">facts_soup</span><span class="p">)</span>
+        <span class="n">conference</span> <span class="o">=</span> <span class="n">scraper</span><span class="o">.</span><span class="n">get_conference</span><span class="p">(</span><span class="n">paper_id</span><span class="p">)</span>
+        <span class="n">authors_profile_link</span> <span class="o">=</span> <span class="s2">&quot;--&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">authors_profile_link</span><span class="p">)</span>
+        <span class="n">authors</span> <span class="o">=</span> <span class="s2">&quot;--&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">authors</span><span class="p">)</span>
+
+
+    <span class="k">if</span><span class="p">(</span><span class="n">add_information</span><span class="p">):</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-26'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-26'>#</a>
+      </div>
+      <p>add information to &lsquo;information&rsquo;</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>        <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">matching_insight</span><span class="p">:</span>
+            <span class="k">if</span> <span class="p">(</span><span class="n">Information</span><span class="o">.</span><span class="n">query</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="n">Information</span><span class="o">.</span><span class="n">insight_id</span><span class="o">==</span><span class="nb">int</span><span class="p">(</span><span class="n">x</span><span class="o">.</span><span class="n">id</span><span class="p">))</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="n">Information</span><span class="o">.</span><span class="n">paper_id</span><span class="o">==</span><span class="n">paper_id</span><span class="p">)</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="n">Information</span><span class="o">.</span><span class="n">title</span> <span class="o">==</span> <span class="s2">&quot;&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">count</span><span class="p">()</span><span class="o">==</span><span class="mi">1</span><span class="p">):</span>
+                <span class="n">current_information</span> <span class="o">=</span> <span class="n">Information</span><span class="o">.</span><span class="n">query</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="n">Information</span><span class="o">.</span><span class="n">insight_id</span><span class="o">==</span><span class="nb">int</span><span class="p">(</span><span class="n">x</span><span class="o">.</span><span class="n">id</span><span class="p">))</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="n">Information</span><span class="o">.</span><span class="n">paper_id</span><span class="o">==</span><span class="n">paper_id</span><span class="p">)</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="n">Information</span><span class="o">.</span><span class="n">title</span> <span class="o">==</span> <span class="s2">&quot;&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">first</span><span class="p">()</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-27'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-27'>#</a>
+      </div>
+      <p>add title, conference, authors and authors_profile_link to &lsquo;information&rsquo;</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>                <span class="n">current_information</span><span class="o">.</span><span class="n">title</span> <span class="o">=</span> <span class="n">title</span>
+                <span class="n">current_information</span><span class="o">.</span><span class="n">authors</span> <span class="o">=</span> <span class="n">authors</span>
+                <span class="n">current_information</span><span class="o">.</span><span class="n">authors_profile_link</span> <span class="o">=</span> <span class="n">authors_profile_link</span>
+                <span class="n">current_information</span><span class="o">.</span><span class="n">conference</span> <span class="o">=</span> <span class="n">conference</span>
+                <span class="n">db</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">commit</span><span class="p">()</span>
+
+    <span class="k">return</span> <span class="n">jsonify</span><span class="p">(</span><span class="n">response_object</span><span class="p">)</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-28'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-28'>#</a>
+      </div>
+      <p>Add an insight to a specific category</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre><span class="nd">@api</span><span class="o">.</span><span class="n">route</span><span class="p">(</span><span class="s1">&#39;/add_insight&#39;</span><span class="p">,</span> <span class="n">methods</span> <span class="o">=</span><span class="p">[</span><span class="s2">&quot;POST&quot;</span><span class="p">])</span>
+<span class="k">def</span> <span class="nf">add_insight</span><span class="p">():</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-29'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-29'>#</a>
+      </div>
+      <p>Args:
+    json: 
+        { 
+        &ldquo;insight&rdquo; : String with the name of the Insight
+        &ldquo;categories&rdquo; : List of Strings with category names
+        &ldquo;paper_id&rdquo; : String with the paper_id which is in our case the completet link to the paper
+        }</p>
+<p>Returns:     <br />
+    json: {&lsquo;status&rsquo;: &lsquo;success&rsquo;}</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>    <span class="n">response_object</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;status&#39;</span><span class="p">:</span> <span class="s1">&#39;success&#39;</span><span class="p">}</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-30'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-30'>#</a>
+      </div>
+      <p>fetch data from request</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>    <span class="n">post_data</span> <span class="o">=</span> <span class="n">request</span><span class="o">.</span><span class="n">get_json</span><span class="p">()</span>
+    <span class="n">in_insight_name</span> <span class="o">=</span> <span class="n">post_data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;insight&#39;</span><span class="p">)</span>
+    <span class="n">in_categories</span> <span class="o">=</span> <span class="n">post_data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;categories&#39;</span><span class="p">)</span>
+    <span class="n">in_paper_id</span> <span class="o">=</span> <span class="n">post_data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;paper_id&#39;</span><span class="p">)</span>
+    <span class="n">in_paper_id</span> <span class="o">=</span> <span class="n">url_checker</span><span class="p">(</span><span class="n">in_paper_id</span><span class="p">)</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-31'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-31'>#</a>
+      </div>
+      <p>create information for paper_id and increment information.insight_upvotes, to make sure the added insight is included
+array with (insight_upvotes - insight_downvotes) for all &lsquo;information&rsquo; listed on paper</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>    <span class="n">highscore</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="n">all_information_paper</span> <span class="o">=</span> <span class="n">Information</span><span class="o">.</span><span class="n">query</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="n">Information</span><span class="o">.</span><span class="n">paper_id</span> <span class="o">==</span> <span class="n">in_paper_id</span><span class="p">)</span><span class="o">.</span><span class="n">all</span><span class="p">()</span>
+    <span class="k">for</span> <span class="n">information</span> <span class="ow">in</span> <span class="n">all_information_paper</span><span class="p">:</span>
+        <span class="n">highscore</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">information</span><span class="o">.</span><span class="n">insight_upvotes</span> <span class="o">-</span> <span class="n">information</span><span class="o">.</span><span class="n">insight_downvotes</span><span class="p">))</span>
+    <span class="n">highscore</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="n">highscore</span><span class="p">)</span> <span class="o">+</span> <span class="mi">1</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-32'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-32'>#</a>
+      </div>
+      <p>if insight does not yet exist, add insight, add categories</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>    <span class="k">if</span> <span class="p">(</span><span class="n">Insights</span><span class="o">.</span><span class="n">query</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="n">Insights</span><span class="o">.</span><span class="n">name</span><span class="o">==</span><span class="n">in_insight_name</span><span class="p">)</span><span class="o">.</span><span class="n">count</span><span class="p">()</span><span class="o">==</span><span class="mi">0</span><span class="p">):</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-33'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-33'>#</a>
+      </div>
+      <p>add insight</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>        <span class="n">i</span> <span class="o">=</span> <span class="n">Insights</span><span class="p">(</span><span class="n">name</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">in_insight_name</span><span class="p">))</span>
+        <span class="n">db</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">i</span><span class="p">)</span>
+        <span class="n">db</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">commit</span><span class="p">()</span>
+        <span class="k">for</span> <span class="n">category</span> <span class="ow">in</span> <span class="n">in_categories</span><span class="p">:</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-34'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-34'>#</a>
+      </div>
+      <p>add categories linked to the above added inisght</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>            <span class="n">c</span> <span class="o">=</span> <span class="n">Categories</span><span class="p">(</span><span class="n">insight_id</span> <span class="o">=</span> <span class="n">i</span><span class="o">.</span><span class="n">id</span><span class="p">,</span> <span class="n">name</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">category</span><span class="p">))</span>
+            <span class="n">db</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">c</span><span class="p">)</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-35'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-35'>#</a>
+      </div>
+      <p>creats empty information linked to new insight</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>        <span class="n">inf</span> <span class="o">=</span> <span class="n">Information</span><span class="p">(</span><span class="n">insight_id</span><span class="o">=</span><span class="n">i</span><span class="o">.</span><span class="n">id</span><span class="p">,</span> <span class="n">insight_name</span><span class="o">=</span><span class="n">i</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="n">paper_id</span><span class="o">=</span><span class="n">in_paper_id</span><span class="p">,</span> <span class="n">insight_upvotes</span><span class="o">=</span><span class="n">highscore</span><span class="p">)</span>
+        <span class="n">db</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">inf</span><span class="p">)</span>
+        <span class="n">db</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">commit</span><span class="p">()</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-36'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-36'>#</a>
+      </div>
+      <p>if insight already exists, add categories if they do no yet exist</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>    <span class="k">else</span><span class="p">:</span>
+        <span class="n">i</span> <span class="o">=</span> <span class="n">Insights</span><span class="o">.</span><span class="n">query</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="n">Insights</span><span class="o">.</span><span class="n">name</span><span class="o">==</span><span class="n">in_insight_name</span><span class="p">)</span><span class="o">.</span><span class="n">first</span><span class="p">()</span>
+        <span class="k">for</span> <span class="n">category</span> <span class="ow">in</span> <span class="n">in_categories</span><span class="p">:</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-37'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-37'>#</a>
+      </div>
+      <p>check if category already exists, if not, add category linked to insight</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>            <span class="k">if</span> <span class="p">(</span><span class="n">Categories</span><span class="o">.</span><span class="n">query</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="n">Categories</span><span class="o">.</span><span class="n">insight_id</span><span class="o">==</span><span class="n">i</span><span class="o">.</span><span class="n">id</span><span class="p">)</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="n">Categories</span><span class="o">.</span><span class="n">name</span> <span class="o">==</span> <span class="nb">str</span><span class="p">(</span><span class="n">category</span><span class="p">))</span><span class="o">.</span><span class="n">count</span><span class="p">()</span><span class="o">==</span><span class="mi">0</span><span class="p">):</span>
+                <span class="n">c</span> <span class="o">=</span> <span class="n">Categories</span><span class="p">(</span><span class="n">insight_id</span> <span class="o">=</span> <span class="n">i</span><span class="o">.</span><span class="n">id</span><span class="p">,</span> <span class="n">name</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">category</span><span class="p">))</span>
+                <span class="n">db</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">c</span><span class="p">)</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-38'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-38'>#</a>
+      </div>
+      <p>creats empty information linked to existing insight</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>        <span class="n">inf</span> <span class="o">=</span> <span class="n">Information</span><span class="p">(</span><span class="n">insight_id</span><span class="o">=</span><span class="n">i</span><span class="o">.</span><span class="n">id</span><span class="p">,</span> <span class="n">insight_name</span><span class="o">=</span><span class="n">i</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="n">paper_id</span><span class="o">=</span><span class="n">in_paper_id</span><span class="p">,</span> <span class="n">insight_upvotes</span><span class="o">=</span><span class="n">highscore</span><span class="p">)</span>
+        <span class="n">db</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">inf</span><span class="p">)</span>
+        <span class="n">db</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">commit</span><span class="p">()</span>
+
+    <span class="k">return</span> <span class="n">jsonify</span><span class="p">(</span><span class="n">response_object</span><span class="p">)</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-39'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-39'>#</a>
+      </div>
+      <p>Add a new answer to an existing &lsquo;information&rsquo;</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre><span class="nd">@api</span><span class="o">.</span><span class="n">route</span><span class="p">(</span><span class="s1">&#39;/add_answer&#39;</span><span class="p">,</span> <span class="n">methods</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;POST&quot;</span><span class="p">])</span>
+<span class="k">def</span> <span class="nf">add_answer</span><span class="p">():</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-40'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-40'>#</a>
+      </div>
+      <p>Args:
+    json: 
+        { 
+        &ldquo;paper_id&rdquo; : String with the paper_id which is in our case the completet link to the paper
+        &ldquo;insight&rdquo; : String with the name of the Insight
+        &ldquo;answer&rdquo; : String with the Answer
+        }</p>
+<p>Returns:     <br />
+    json: {&lsquo;status&rsquo;: &lsquo;success&rsquo;}</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>    <span class="n">response_object</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;status&#39;</span><span class="p">:</span> <span class="s1">&#39;success&#39;</span><span class="p">}</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-41'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-41'>#</a>
+      </div>
+      <p>fetch data from request</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>    <span class="n">post_data</span> <span class="o">=</span> <span class="n">request</span><span class="o">.</span><span class="n">get_json</span><span class="p">()</span>
+    <span class="n">in_insight_name</span> <span class="o">=</span> <span class="n">post_data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;insight&#39;</span><span class="p">)</span>
+    <span class="n">in_answer</span> <span class="o">=</span> <span class="n">post_data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;answer&#39;</span><span class="p">)</span>
+    <span class="n">in_paper_id</span> <span class="o">=</span> <span class="n">post_data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;paper_id&#39;</span><span class="p">)</span>
+    <span class="n">in_paper_id</span> <span class="o">=</span> <span class="n">url_checker</span><span class="p">(</span><span class="n">in_paper_id</span><span class="p">)</span>
+    <span class="n">answer_already_exists</span> <span class="o">=</span> <span class="kc">False</span>
+
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">in_answer</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
+    <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2"> - given answer is not a String object!&quot;</span><span class="p">)</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-42'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-42'>#</a>
+      </div>
+      <p>query &lsquo;information&rsquo; </p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>    <span class="n">inf</span> <span class="o">=</span> <span class="n">Information</span><span class="o">.</span><span class="n">query</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="n">Information</span><span class="o">.</span><span class="n">paper_id</span><span class="o">==</span><span class="n">in_paper_id</span><span class="p">)</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="n">Information</span><span class="o">.</span><span class="n">insight_name</span><span class="o">==</span><span class="nb">str</span><span class="p">(</span><span class="n">in_insight_name</span><span class="p">))</span><span class="o">.</span><span class="n">first</span><span class="p">()</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-43'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-43'>#</a>
+      </div>
+      <p>query &lsquo;answers&rsquo; linked to &lsquo;information&rsquo; </p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>    <span class="n">ans</span> <span class="o">=</span> <span class="n">Answers</span><span class="o">.</span><span class="n">query</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="n">Answers</span><span class="o">.</span><span class="n">information_id</span><span class="o">==</span><span class="n">inf</span><span class="o">.</span><span class="n">information_id</span><span class="p">)</span><span class="o">.</span><span class="n">all</span><span class="p">()</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-44'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-44'>#</a>
+      </div>
+      <p>check if the answer already exists</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>    <span class="k">for</span> <span class="n">a</span> <span class="ow">in</span> <span class="n">ans</span><span class="p">:</span>
+        <span class="k">if</span> <span class="p">(</span><span class="n">a</span><span class="o">.</span><span class="n">answer</span><span class="o">==</span><span class="n">in_answer</span><span class="p">):</span>
+            <span class="n">answer_already_exists</span> <span class="o">=</span> <span class="kc">True</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-45'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-45'>#</a>
+      </div>
+      <p>if false, add new &lsquo;answer&rsquo; linked to &lsquo;information&rsquo; with one upvote </p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>    <span class="k">if</span> <span class="p">(</span><span class="n">answer_already_exists</span><span class="o">==</span><span class="kc">False</span><span class="p">):</span>
+        <span class="n">new_answer</span> <span class="o">=</span> <span class="n">Answers</span><span class="p">(</span><span class="n">information_id</span><span class="o">=</span><span class="n">inf</span><span class="o">.</span><span class="n">information_id</span><span class="p">,</span> <span class="n">answer</span> <span class="o">=</span> <span class="n">in_answer</span><span class="p">,</span> <span class="n">answer_upvotes</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span> <span class="n">answer_score</span> <span class="o">=</span> <span class="mi">1</span><span class="p">)</span>
+        <span class="n">db</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">new_answer</span><span class="p">)</span>
+        <span class="n">db</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">commit</span><span class="p">()</span>
+
+    <span class="k">return</span> <span class="n">jsonify</span><span class="p">(</span><span class="n">response_object</span><span class="p">)</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-46'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-46'>#</a>
+      </div>
+      <p>Rates an already given answer</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre><span class="nd">@api</span><span class="o">.</span><span class="n">route</span><span class="p">(</span><span class="s1">&#39;/rate_answer&#39;</span><span class="p">,</span> <span class="n">methods</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;POST&quot;</span><span class="p">])</span>
+<span class="k">def</span> <span class="nf">rate_answer</span><span class="p">():</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-47'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-47'>#</a>
+      </div>
+      <p>Args:
+    json: 
+        { 
+        &ldquo;insight&rdquo; : String with the name of the Insight
+        &ldquo;paper_id&rdquo; : String with the paper_id which is in our case the completet link to the paper
+        &ldquo;upvote&rdquo; : Boolean if the answer was upvoted(= true) or downvoted (= false)
+        &ldquo;answer&rdquo; : String with the Answer
+        }</p>
+<p>Returns:
+    json: {&lsquo;status&rsquo;: &lsquo;success&rsquo;}</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>    <span class="n">response_object</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;status&#39;</span><span class="p">:</span> <span class="s1">&#39;success&#39;</span><span class="p">}</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-48'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-48'>#</a>
+      </div>
+      <p>fetch data from request</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>    <span class="n">post_data</span> <span class="o">=</span> <span class="n">request</span><span class="o">.</span><span class="n">get_json</span><span class="p">()</span>
+    <span class="n">in_insight_name</span> <span class="o">=</span> <span class="n">post_data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;insight&#39;</span><span class="p">)</span>
+    <span class="n">in_paper_id</span> <span class="o">=</span> <span class="n">post_data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;paper_id&#39;</span><span class="p">)</span>
+    <span class="n">in_paper_id</span> <span class="o">=</span> <span class="n">url_checker</span><span class="p">(</span><span class="n">in_paper_id</span><span class="p">)</span>
+    <span class="n">in_upvote</span> <span class="o">=</span> <span class="n">post_data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;upvote&#39;</span><span class="p">)</span>
+    <span class="n">in_answer</span> <span class="o">=</span> <span class="n">post_data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;answer&#39;</span><span class="p">)</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-49'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-49'>#</a>
+      </div>
+      <p>query &lsquo;information&rsquo; </p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>    <span class="n">inf</span> <span class="o">=</span> <span class="n">Information</span><span class="o">.</span><span class="n">query</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="n">Information</span><span class="o">.</span><span class="n">paper_id</span> <span class="o">==</span> <span class="n">in_paper_id</span><span class="p">)</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="n">Information</span><span class="o">.</span><span class="n">insight_name</span><span class="o">==</span><span class="nb">str</span><span class="p">(</span><span class="n">in_insight_name</span><span class="p">))</span><span class="o">.</span><span class="n">first</span><span class="p">()</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-50'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-50'>#</a>
+      </div>
+      <p>query &lsquo;answers&rsquo;</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>    <span class="n">ans</span> <span class="o">=</span> <span class="n">Answers</span><span class="o">.</span><span class="n">query</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="n">Answers</span><span class="o">.</span><span class="n">information_id</span><span class="o">==</span><span class="n">inf</span><span class="o">.</span><span class="n">information_id</span><span class="p">)</span><span class="o">.</span><span class="n">all</span><span class="p">()</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-51'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-51'>#</a>
+      </div>
+      <p>upvote correct answer</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>    <span class="k">if</span> <span class="p">(</span><span class="n">in_upvote</span><span class="p">):</span>
+        <span class="k">for</span> <span class="n">a</span> <span class="ow">in</span> <span class="n">ans</span><span class="p">:</span>
+            <span class="k">if</span> <span class="p">(</span><span class="n">a</span><span class="o">.</span><span class="n">answer</span><span class="o">==</span><span class="n">in_answer</span><span class="p">):</span>
+                <span class="n">a</span><span class="o">.</span><span class="n">answer_upvotes</span> <span class="o">=</span> <span class="n">a</span><span class="o">.</span><span class="n">answer_upvotes</span> <span class="o">+</span> <span class="mi">1</span>
+                <span class="n">a</span><span class="o">.</span><span class="n">answer_score</span> <span class="o">=</span> <span class="n">a</span><span class="o">.</span><span class="n">answer_score</span> <span class="o">+</span> <span class="mi">1</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-52'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-52'>#</a>
+      </div>
+      <p>downvote correct answer</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>    <span class="k">else</span> <span class="p">:</span>
+        <span class="k">for</span> <span class="n">a</span> <span class="ow">in</span> <span class="n">ans</span><span class="p">:</span>
+            <span class="k">if</span> <span class="p">(</span><span class="n">a</span><span class="o">.</span><span class="n">answer</span><span class="o">==</span><span class="n">in_answer</span><span class="p">):</span>
+                <span class="n">a</span><span class="o">.</span><span class="n">answer_downvotes</span> <span class="o">=</span> <span class="n">a</span><span class="o">.</span><span class="n">answer_downvotes</span> <span class="o">+</span> <span class="mi">2</span>
+                <span class="n">a</span><span class="o">.</span><span class="n">answer_score</span> <span class="o">=</span> <span class="n">a</span><span class="o">.</span><span class="n">answer_score</span> <span class="o">-</span> <span class="mi">2</span>
+
+    <span class="n">db</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">commit</span><span class="p">()</span>
+    <span class="k">return</span> <span class="n">jsonify</span><span class="p">(</span><span class="n">response_object</span><span class="p">)</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-53'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-53'>#</a>
+      </div>
+      <p>Rate the relevance of an already given Insight for a specific paper</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre><span class="nd">@api</span><span class="o">.</span><span class="n">route</span><span class="p">(</span><span class="s1">&#39;/rate_relevance_insight&#39;</span><span class="p">,</span> <span class="n">methods</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;POST&quot;</span><span class="p">])</span>
+<span class="k">def</span> <span class="nf">rate_relevance_insight</span><span class="p">():</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-54'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-54'>#</a>
+      </div>
+      <p>Args:
+    json: 
+        { 
+        &ldquo;insight&rdquo; : String with the name of the Insight
+        &ldquo;paper_id&rdquo; : String with the paper_id which is in our case the completet link to the paper
+        &ldquo;upvote&rdquo; : Boolean if the insight was upvoted(= true) or downvoted (= false)
+        }</p>
+<p>Returns:
+    json: {&lsquo;status&rsquo;: &lsquo;success&rsquo;}</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>    <span class="n">response_object</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;status&#39;</span><span class="p">:</span> <span class="s1">&#39;success&#39;</span><span class="p">}</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-55'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-55'>#</a>
+      </div>
+      <p>fetch data from request</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>    <span class="n">post_data</span> <span class="o">=</span> <span class="n">request</span><span class="o">.</span><span class="n">get_json</span><span class="p">()</span>
+    <span class="n">in_insight_name</span> <span class="o">=</span> <span class="n">post_data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;insight&#39;</span><span class="p">)</span>
+    <span class="n">in_paper_id</span> <span class="o">=</span> <span class="n">post_data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;paper_id&#39;</span><span class="p">)</span>
+    <span class="n">in_paper_id</span> <span class="o">=</span> <span class="n">url_checker</span><span class="p">(</span><span class="n">in_paper_id</span><span class="p">)</span>
+    <span class="n">in_upvote</span> <span class="o">=</span> <span class="n">post_data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;upvote&#39;</span><span class="p">)</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-56'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-56'>#</a>
+      </div>
+      <p>query &lsquo;information&rsquo; </p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>    <span class="n">inf</span> <span class="o">=</span> <span class="n">Information</span><span class="o">.</span><span class="n">query</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="n">Information</span><span class="o">.</span><span class="n">paper_id</span> <span class="o">==</span> <span class="n">in_paper_id</span><span class="p">)</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="n">Information</span><span class="o">.</span><span class="n">insight_name</span><span class="o">==</span><span class="nb">str</span><span class="p">(</span><span class="n">in_insight_name</span><span class="p">))</span><span class="o">.</span><span class="n">first</span><span class="p">()</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-57'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-57'>#</a>
+      </div>
+      <p>upvote </p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>    <span class="k">if</span> <span class="p">(</span><span class="n">in_upvote</span><span class="p">):</span>
+        <span class="n">inf</span><span class="o">.</span><span class="n">insight_upvotes</span> <span class="o">=</span> <span class="n">inf</span><span class="o">.</span><span class="n">insight_upvotes</span> <span class="o">+</span> <span class="mi">1</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-58'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-58'>#</a>
+      </div>
+      <p>downvote</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>    <span class="k">else</span> <span class="p">:</span>
+        <span class="n">inf</span><span class="o">.</span><span class="n">insight_downvotes</span> <span class="o">=</span> <span class="n">inf</span><span class="o">.</span><span class="n">insight_downvotes</span> <span class="o">+</span> <span class="mi">1</span>
+
+    <span class="n">db</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">commit</span><span class="p">()</span>
+    <span class="k">return</span> <span class="n">jsonify</span><span class="p">(</span><span class="n">response_object</span><span class="p">)</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-59'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-59'>#</a>
+      </div>
+      <p>download the information of a single or mutitple paper as a csv file</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre><span class="nd">@api</span><span class="o">.</span><span class="n">route</span><span class="p">(</span><span class="s1">&#39;/download&#39;</span><span class="p">,</span> <span class="n">methods</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;POST&quot;</span><span class="p">])</span>
+<span class="k">def</span> <span class="nf">download</span><span class="p">():</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-60'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-60'>#</a>
+      </div>
+      <p>answer_score_threshold defines the minimum Answer score for the answer to appear in the results. 
+A score of 1 should be the absolute minimum. This score should be set equal to the threshold in the frontend 
+for Insights to be ranked as green.</p>
+<p>FE can either send one url in the json response or a list of urls.</p>
+<p>Args:
+    json: 
+        { 
+        &ldquo;url&rdquo; : Single url of the page. Does not matter if on epdf, pdf, html or other version of the paper, all work
+        &ldquo;urls_from_binder&rdquo;: List of urls from the binder
+        }</p>
+<p>Returns:
+     csv file: includes title, authors names, link to the paper, all Insights and answer with answer_score above the threshold. </p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>    <span class="k">def</span> <span class="nf">df_from_url</span><span class="p">(</span><span class="n">url</span><span class="p">):</span>
+        <span class="n">url</span> <span class="o">=</span> <span class="n">url</span>
+        <span class="n">inf</span> <span class="o">=</span> <span class="n">Information</span><span class="o">.</span><span class="n">query</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">Information</span><span class="o">.</span><span class="n">answers</span><span class="p">)</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="n">Information</span><span class="o">.</span><span class="n">paper_id</span><span class="o">==</span><span class="n">url</span><span class="p">)</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="n">Answers</span><span class="o">.</span><span class="n">answer_score</span> <span class="o">&gt;</span> <span class="n">answer_score_threshold</span><span class="p">)</span><span class="o">.</span><span class="n">order_by</span><span class="p">(</span><span class="n">Answers</span><span class="o">.</span><span class="n">answer_score</span><span class="o">.</span><span class="n">desc</span><span class="p">())</span><span class="o">.</span><span class="n">all</span><span class="p">()</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-61'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-61'>#</a>
+      </div>
+      <p>catch aioor<br />
+makes a list of authors splitted by a &lsquo;,&rsquo;</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>        <span class="n">authors</span> <span class="o">=</span> <span class="n">inf</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">authors</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot;--&quot;</span><span class="p">,</span> <span class="s2">&quot;,&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
+
+        <span class="n">data</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="s2">&quot;Title&quot;</span><span class="p">:</span> <span class="n">inf</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">title</span><span class="p">,</span>
+            <span class="s2">&quot;Authors&quot;</span><span class="p">:</span> <span class="p">[</span><span class="n">authors</span><span class="p">],</span>
+            <span class="s2">&quot;Link to paper&quot;</span><span class="p">:</span> <span class="n">inf</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">paper_id</span>
+        <span class="p">}</span>
+
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">inf</span><span class="p">:</span>
+            <span class="n">data</span><span class="p">[</span><span class="n">i</span><span class="o">.</span><span class="n">insight_name</span><span class="p">]</span> <span class="o">=</span> <span class="n">i</span><span class="o">.</span><span class="n">answers</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">answer</span>
+
+        <span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">data</span><span class="o">=</span><span class="n">data</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">df</span>
+
+
+
+
+    <span class="n">answer_score_threshold</span> <span class="o">=</span> <span class="mi">3</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-62'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-62'>#</a>
+      </div>
+      <p>fetch data from request</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>    <span class="n">url</span> <span class="o">=</span> <span class="n">request</span><span class="o">.</span><span class="n">get_json</span><span class="p">()</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;url&#39;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">url</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">url</span> <span class="o">=</span> <span class="n">url_checker</span><span class="p">(</span><span class="n">url</span><span class="p">)</span>
+
+    <span class="n">urls_from_binder</span> <span class="o">=</span> <span class="n">request</span><span class="o">.</span><span class="n">get_json</span><span class="p">()</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;urls_from_binder&quot;</span><span class="p">)</span>
+
+    <span class="n">answer_score_threshold</span> <span class="o">=</span> <span class="mi">4</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-63'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-63'>#</a>
+      </div>
+      <p>fetch data from request</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>    <span class="n">url</span> <span class="o">=</span> <span class="n">request</span><span class="o">.</span><span class="n">get_json</span><span class="p">()</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;url&#39;</span><span class="p">)</span>
+    <span class="n">url</span> <span class="o">=</span> <span class="n">url_checker</span><span class="p">(</span><span class="n">url</span><span class="p">)</span>
+    <span class="n">urls_from_binder</span> <span class="o">=</span> <span class="n">request</span><span class="o">.</span><span class="n">get_json</span><span class="p">()</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;urls_from_binder&quot;</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">urls_from_binder</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">urls_from_binder_list</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">binder_url</span> <span class="ow">in</span> <span class="n">urls_from_binder</span><span class="p">:</span>
+            <span class="n">temp_url</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">search</span><span class="p">(</span><span class="sa">r</span><span class="s2">&quot;\/doi\/\d*\.\d+\/\d*(\.\d+)*&quot;</span><span class="p">,</span> <span class="n">binder_url</span><span class="p">)</span>
+            <span class="n">temp_url</span> <span class="o">=</span> <span class="s2">&quot;https://dl.acm.org&quot;</span><span class="o">+</span><span class="n">temp_url</span><span class="o">.</span><span class="n">group</span><span class="p">()</span>
+            <span class="n">urls_from_binder_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">temp_url</span><span class="p">)</span>
+
+        <span class="n">urls</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">set</span><span class="p">([</span><span class="n">u</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span> <span class="k">for</span> <span class="n">u</span> <span class="ow">in</span> <span class="n">urls_from_binder_list</span><span class="p">]))</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-64'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-64'>#</a>
+      </div>
+      <p>removes duplicates</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>        <span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">()</span>
+
+        <span class="k">for</span> <span class="n">u</span> <span class="ow">in</span> <span class="n">urls</span><span class="p">:</span>
+            <span class="n">one_line_df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">()</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">one_line_df</span> <span class="o">=</span> <span class="n">df_from_url</span><span class="p">(</span><span class="n">u</span><span class="p">)</span>
+            <span class="k">except</span> <span class="ne">IndexError</span> <span class="k">as</span> <span class="n">ie</span><span class="p">:</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-65'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-65'>#</a>
+      </div>
+      <p>If we do not have sufficient information about this paper we return Unknown Title and Author and the Link to the Paper</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>                <span class="n">no_data</span> <span class="o">=</span> <span class="p">{</span>
+                    <span class="s2">&quot;Title&quot;</span><span class="p">:</span> <span class="s2">&quot;Unknown&quot;</span><span class="p">,</span>
+                    <span class="s2">&quot;Authors&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;Unknown&quot;</span><span class="p">],</span>
+                    <span class="s2">&quot;Link to paper&quot;</span><span class="p">:</span> <span class="n">u</span>
+                <span class="p">}</span>
+                <span class="n">one_line_df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">data</span> <span class="o">=</span> <span class="n">no_data</span><span class="p">)</span>
+                
+            <span class="k">if</span> <span class="n">df</span><span class="o">.</span><span class="n">empty</span><span class="p">:</span>
+                <span class="n">df</span> <span class="o">=</span> <span class="n">one_line_df</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">concat</span><span class="p">([</span><span class="n">df</span><span class="p">,</span><span class="n">one_line_df</span><span class="p">],</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">ignore_index</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">df</span> <span class="o">=</span> <span class="n">df_from_url</span><span class="p">(</span><span class="n">url</span><span class="p">)</span>
+        <span class="k">except</span> <span class="ne">IndexError</span> <span class="k">as</span> <span class="n">ie</span><span class="p">:</span>
+            <span class="n">no_data</span> <span class="o">=</span> <span class="p">{</span>
+                <span class="s2">&quot;Title&quot;</span><span class="p">:</span> <span class="s2">&quot;Unknown&quot;</span><span class="p">,</span>
+                <span class="s2">&quot;Authors&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;Unknown&quot;</span><span class="p">],</span>
+                <span class="s2">&quot;Link to paper&quot;</span><span class="p">:</span> <span class="n">url</span>
+            <span class="p">}</span>
+            <span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">data</span> <span class="o">=</span> <span class="n">no_data</span><span class="p">)</span>
+             
+
+    <span class="n">path_to_csv</span> <span class="o">=</span> <span class="n">pathlib</span><span class="o">.</span><span class="n">Path</span><span class="o">.</span><span class="n">cwd</span><span class="p">()</span> <span class="o">/</span> <span class="s2">&quot;exports&quot;</span> <span class="o">/</span> <span class="s2">&quot;export_data.csv&quot;</span>
+    <span class="n">df</span><span class="o">.</span><span class="n">to_csv</span><span class="p">(</span><span class="n">pathlib</span><span class="o">.</span><span class="n">Path</span><span class="p">(</span><span class="n">path_to_csv</span><span class="p">))</span>
+    
+    <span class="k">return</span> <span class="n">send_file</span><span class="p">(</span><span class="n">safe_join</span><span class="p">(</span><span class="n">pathlib</span><span class="o">.</span><span class="n">Path</span><span class="p">(</span><span class="n">path_to_csv</span><span class="p">)),</span> <span class="n">as_attachment</span><span class="o">=</span><span class="kc">True</span> <span class="p">)</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-66'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-66'>#</a>
+      </div>
+      <p>Downvotes the relevance of an &lsquo;insight&rsquo; for a set of &lsquo;categories&rsquo;</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre><span class="nd">@api</span><span class="o">.</span><span class="n">route</span><span class="p">(</span><span class="s1">&#39;/insight_not_relevant_for_category&#39;</span><span class="p">,</span> <span class="n">methods</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;POST&quot;</span><span class="p">])</span>
+<span class="k">def</span> <span class="nf">insight_not_relevant_for_category</span><span class="p">():</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-67'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-67'>#</a>
+      </div>
+      <p>Args:
+    json: 
+        { 
+        &ldquo;insight&rdquo; : String with the name of the Insight
+        &ldquo;categories&rdquo; : Array with a set of categories
+        }</p>
+<p>Returns:
+    json: {&lsquo;status&rsquo;: &lsquo;success&rsquo;}</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>    <span class="n">response_object</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;status&#39;</span><span class="p">:</span> <span class="s1">&#39;success&#39;</span><span class="p">}</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-68'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-68'>#</a>
+      </div>
+      <p>fetch data from request</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>    <span class="n">post_data</span> <span class="o">=</span> <span class="n">request</span><span class="o">.</span><span class="n">get_json</span><span class="p">()</span>
+    <span class="n">in_insight_name</span> <span class="o">=</span> <span class="n">post_data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;insight&#39;</span><span class="p">)</span>
+    <span class="n">in_categories</span> <span class="o">=</span> <span class="n">post_data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;categories&#39;</span><span class="p">)</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-69'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-69'>#</a>
+      </div>
+      <p>query &lsquo;insight&rsquo;</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>    <span class="n">ins</span> <span class="o">=</span> <span class="n">Insights</span><span class="o">.</span><span class="n">query</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="n">Insights</span><span class="o">.</span><span class="n">name</span><span class="o">==</span><span class="n">in_insight_name</span><span class="p">)</span><span class="o">.</span><span class="n">first</span><span class="p">()</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-70'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-70'>#</a>
+      </div>
+      <p>query &lsquo;categories&rsquo;</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>    <span class="n">categories</span> <span class="o">=</span> <span class="n">Categories</span><span class="o">.</span><span class="n">query</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="n">Categories</span><span class="o">.</span><span class="n">insight_id</span> <span class="o">==</span> <span class="n">ins</span><span class="o">.</span><span class="n">id</span><span class="p">)</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="n">or_</span><span class="p">(</span><span class="n">Categories</span><span class="o">.</span><span class="n">name</span><span class="o">==</span><span class="n">x</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">in_categories</span><span class="p">))</span><span class="o">.</span><span class="n">all</span><span class="p">()</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-71'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-71'>#</a>
+      </div>
+      <p>downvote</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>    <span class="k">for</span> <span class="n">category</span> <span class="ow">in</span> <span class="n">categories</span><span class="p">:</span>
+        <span class="n">category</span><span class="o">.</span><span class="n">downvote_category</span> <span class="o">=</span> <span class="n">category</span><span class="o">.</span><span class="n">downvote_category</span> <span class="o">+</span> <span class="mi">1</span>
+    <span class="n">db</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">commit</span><span class="p">()</span>
+
+    <span class="k">return</span> <span class="n">jsonify</span><span class="p">(</span><span class="n">response_object</span><span class="p">)</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-72'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-72'>#</a>
+      </div>
+      <p>Increments typo_error linked to a specific &lsquo;insight&rsquo;</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre><span class="nd">@api</span><span class="o">.</span><span class="n">route</span><span class="p">(</span><span class="s1">&#39;/typo_error&#39;</span><span class="p">,</span> <span class="n">methods</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;POST&#39;</span><span class="p">])</span>
+<span class="k">def</span> <span class="nf">typ_error</span><span class="p">():</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-73'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-73'>#</a>
+      </div>
+      <p>Args:
+    json: 
+        { 
+        &ldquo;insight&rdquo; : String with the name of the Insight
+        }</p>
+<p>Returns:
+    json: {&lsquo;status&rsquo;: &lsquo;success&rsquo;}</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>    <span class="n">response_object</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;status&#39;</span><span class="p">:</span> <span class="s1">&#39;success&#39;</span><span class="p">}</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-74'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-74'>#</a>
+      </div>
+      <p>fetch data from request</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>    <span class="n">post_data</span> <span class="o">=</span> <span class="n">request</span><span class="o">.</span><span class="n">get_json</span><span class="p">()</span>
+    <span class="n">in_insight_name</span> <span class="o">=</span> <span class="n">post_data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;insight&#39;</span><span class="p">)</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-75'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-75'>#</a>
+      </div>
+      <p>query &lsquo;insight&rsquo;</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>    <span class="n">i</span> <span class="o">=</span> <span class="n">Insights</span><span class="o">.</span><span class="n">query</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="n">Insights</span><span class="o">.</span><span class="n">name</span><span class="o">==</span><span class="n">in_insight_name</span><span class="p">)</span><span class="o">.</span><span class="n">first</span><span class="p">()</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-76'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-76'>#</a>
+      </div>
+      <p>increment typo_error</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>    <span class="n">i</span><span class="o">.</span><span class="n">typo_error</span> <span class="o">=</span> <span class="n">i</span><span class="o">.</span><span class="n">typo_error</span> <span class="o">+</span> <span class="mi">1</span>
+    <span class="n">db</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">commit</span><span class="p">()</span>
+
+    <span class="k">return</span> <span class="n">jsonify</span><span class="p">(</span><span class="n">response_object</span><span class="p">)</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-77'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-77'>#</a>
+      </div>
+      <p>Creates an Array of Strings used for autocomplete in the FE based on all &lsquo;insights&rsquo; and a set of &lsquo;categories&rsquo;</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre><span class="nd">@api</span><span class="o">.</span><span class="n">route</span><span class="p">(</span><span class="s1">&#39;/autocomplete&#39;</span><span class="p">,</span> <span class="n">methods</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;POST&#39;</span><span class="p">])</span>
+<span class="k">def</span> <span class="nf">autocomplete</span><span class="p">():</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-78'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-78'>#</a>
+      </div>
+      <p>Args:
+    json: 
+        { 
+        &ldquo;categories&rdquo; : Array with a set of categories
+        }</p>
+<p>Returns:
+    Array: Strings with word suggestions</p>
+<p>fetch data from request</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>    <span class="n">post_data</span> <span class="o">=</span> <span class="n">request</span><span class="o">.</span><span class="n">get_json</span><span class="p">()</span>
+    <span class="n">categories</span> <span class="o">=</span> <span class="n">post_data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;categories&#39;</span><span class="p">)</span>
+
+    <span class="n">response_object</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="n">base</span> <span class="o">=</span> <span class="p">[]</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-79'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-79'>#</a>
+      </div>
+      <p>query &lsquo;insights&rsquo;</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>    <span class="n">insights</span> <span class="o">=</span> <span class="n">Insights</span><span class="o">.</span><span class="n">query</span><span class="o">.</span><span class="n">all</span><span class="p">()</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-80'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-80'>#</a>
+      </div>
+      <p>add splitted &lsquo;insights&rsquo; to response_object</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">insights</span><span class="p">:</span>
+        <span class="n">response_object</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">i</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>
+        <span class="n">split</span> <span class="o">=</span> <span class="n">i</span><span class="o">.</span><span class="n">name</span><span class="o">.</span><span class="n">split</span><span class="p">()</span>
+        <span class="k">for</span> <span class="n">s</span> <span class="ow">in</span> <span class="n">split</span><span class="p">:</span>
+            <span class="n">base</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">s</span><span class="p">)</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-81'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-81'>#</a>
+      </div>
+      <p>add spltted &lsquo;categories&rsquo; to response_object</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>    <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="n">categories</span><span class="p">:</span>
+        <span class="n">split</span> <span class="o">=</span> <span class="n">c</span><span class="o">.</span><span class="n">split</span><span class="p">()</span>
+        <span class="k">for</span> <span class="n">s</span> <span class="ow">in</span> <span class="n">split</span><span class="p">:</span>
+            <span class="n">base</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">s</span><span class="p">)</span>        
+
+
+    <span class="k">for</span> <span class="n">word</span> <span class="ow">in</span> <span class="n">base</span><span class="p">:</span>
+        <span class="k">try</span><span class="p">:</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-82'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-82'>#</a>
+      </div>
+      <p>each synset represents a diff concept</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>            <span class="k">for</span> <span class="n">ss</span> <span class="ow">in</span> <span class="n">wn</span><span class="o">.</span><span class="n">synsets</span><span class="p">(</span><span class="n">word</span><span class="p">):</span>
+                <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">ss</span><span class="o">.</span><span class="n">lemma_names</span><span class="p">():</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-83'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-83'>#</a>
+      </div>
+      <p>words have the form: &ldquo;research_laboratory&rdquo;</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>                    <span class="n">response_object</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">x</span><span class="o">.</span><span class="n">capitalize</span><span class="p">()</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;_&#39;</span><span class="p">,</span> <span class="s1">&#39; &#39;</span><span class="p">))</span>
+        <span class="k">except</span> <span class="ne">LookupError</span><span class="p">:</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="kn">import</span> <span class="nn">nltk</span>
+                <span class="n">nltk</span><span class="o">.</span><span class="n">download</span><span class="p">(</span><span class="s2">&quot;wordnet&quot;</span><span class="p">)</span>
+            <span class="k">except</span><span class="p">:</span>
+                <span class="k">pass</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-84'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-84'>#</a>
+      </div>
+      <p>remove duplicates           </p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>    <span class="n">response_object</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">set</span><span class="p">(</span><span class="n">response_object</span><span class="p">))</span>
+
+    <span class="k">return</span> <span class="n">jsonify</span><span class="p">(</span><span class="n">response_object</span><span class="p">)</span>
+
+</pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+</div>
+</body>
