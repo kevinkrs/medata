@@ -14,7 +14,7 @@ import multiprocessing
 api = Blueprint('api', __name__)
 
 def url_checker(url):
-    """Modifies the url from a pdf or epdf view to a regular url
+    """ Modifies the url from a pdf or epdf view to a regular url
 
     Args:
         String: url of a pdf or edpf view or regular url
@@ -34,7 +34,7 @@ def url_checker(url):
 
 @api.route('/ping', methods=['GET'])
 def ping_pong():
-    """Check if Server is running
+    """ Check if Server is running
 
     Returns:
         json: just return a string "pong" in json format
@@ -43,7 +43,7 @@ def ping_pong():
 
 @api.route('/get_all', methods=['GET'])
 def get_all():
-    """Testing Method to return whole database
+    """ Testing Method to return whole database
 
     Returns:
         json: complete database sorted by insights
@@ -57,7 +57,7 @@ def get_all():
 
 @api.route('/get_specific', methods=['POST'])
 def get_specific():
-    """Get all 'information' for a specific url (=paper_id)
+    """ Get all 'information' for a specific url (=paper_id)
 
     Returns:
         json: if no 'informatin' is listed for this paper, an Array with the leaf 'categories' is returned, otherwise a json object with all relevant 'information'
@@ -110,7 +110,7 @@ def get_specific():
 
 @api.route('/get_further_information', methods=['POST'])
 def get_further_information():
-    """Get scraper to look up more specific information about the url which is posted via POST method
+    """ Get scraper to look up more specific information about the url which is posted via POST method
     this includes the title, authors, link to authors profile and the conference. The scraped information is then added
     to the correct 'information'
 
@@ -207,7 +207,7 @@ def get_further_information():
 
 @api.route('/add_insight', methods =["POST"])
 def add_insight():
-    """Add an insight to a specific category
+    """ Add an insight to a specific category
 
     Args:
         json: 
@@ -272,7 +272,7 @@ def add_insight():
 
 @api.route('/add_answer', methods = ["POST"])
 def add_answer():
-    """Add a new answer to an existing 'information'  
+    """ Add a new answer to an existing 'information'  
 
     Args:
         json: 
@@ -322,7 +322,7 @@ def add_answer():
 
 @api.route('/rate_answer', methods = ["POST"])
 def rate_answer():
-    """Rates an already given answer
+    """ Rates an already given answer
 
       Args:
         json: 
@@ -371,7 +371,7 @@ def rate_answer():
 
 @api.route('/rate_relevance_insight', methods = ["POST"])
 def rate_relevance_insight():
-    """Rate the relevance of an already given Insight for a specific paper
+    """ Rate the relevance of an already given Insight for a specific paper
 
       Args:
         json: 
@@ -409,7 +409,7 @@ def rate_relevance_insight():
 
 @api.route('/download', methods = ["POST"])
 def download():
-    """download the information of a single or mutitple paper as a csv file
+    """ Download the information of a single or mutitple paper as a csv file
 
     answer_score_threshold defines the minimum Answer score for the answer to appear in the results. 
     A score of 1 should be the absolute minimum. This score should be set equal to the threshold in the frontend 
@@ -514,7 +514,7 @@ def download():
 
 @api.route('/insight_not_relevant_for_category', methods = ["POST"])
 def insight_not_relevant_for_category():
-    """Downvotes the relevance of an 'insight' for a set of 'categories'
+    """ Downvotes the relevance of an 'insight' for a set of 'categories'
 
       Args:
         json: 
@@ -547,7 +547,7 @@ def insight_not_relevant_for_category():
     
 @api.route('/typo_error', methods = ['POST'])
 def typ_error():
-    """Increments typo_error linked to a specific 'insight'
+    """ Increments typo_error linked to a specific 'insight'
 
       Args:
         json: 
@@ -576,7 +576,7 @@ def typ_error():
 
 @api.route('/autocomplete', methods = ['POST'])
 def autocomplete():
-    """Creates an Array of Strings used for autocomplete in the FE based on all 'insights' and a set of 'categories'
+    """ Creates an Array of Strings used for autocomplete in the FE based on all 'insights' and a set of 'categories'
 
       Args:
         json: 

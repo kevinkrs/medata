@@ -18,7 +18,7 @@ from sqlalchemy.orm import backref
 db = SQLAlchemy()
 
 class Insights(db.Model):
-    """Insights Model
+    """ Insights Model
 
     Explanation:
         An 'insight' object has it's unique name
@@ -39,7 +39,7 @@ class Insights(db.Model):
     information = db.relationship('Information', backref = 'insights', lazy = True)
 
     def to_dict(self):
-        """to dict
+        """ 
 
         Returns:
             json: returns name and all linked 'information' (with 'answers') and 'categories'
@@ -55,7 +55,7 @@ class Insights(db.Model):
 
 
 class Categories(db.Model):
-    """Category Model
+    """ Category Model
 
     Explanation:
         'categories' keep track of the supported categories for a specific 'insight'
@@ -75,7 +75,7 @@ class Categories(db.Model):
 
     
     def to_dict(self):
-        """Category name to a dict
+        """ Category name to a dict
 
         Returns:
             dict: name of the category as a string
@@ -87,7 +87,7 @@ class Categories(db.Model):
 
 
 class Information(db.Model):
-    """Information Model
+    """ Information Model
 
     Explanation:
         An 'information' is a more specific representation of an 'insight', which saves additional data related to one paper from acm
@@ -118,7 +118,7 @@ class Information(db.Model):
     answers = db.relationship('Answers', order_by = 'desc(Answers.answer_score)', backref = 'information', lazy = True)
 
     def to_dict(self):
-        """to dict
+        """ 
 
         Answers are limited by limit_answers()
 
@@ -138,7 +138,7 @@ class Information(db.Model):
         )
 
     def limit_answers(self):
-        """limit the returned 'answers' to answer_limit
+        """ limit the returned 'answers' to answer_limit
 
         Returns:
             list: of answer.to_dict() ranked by descending answer score, if two 'answers' have the same score, the newer one is preferred 
@@ -152,7 +152,7 @@ class Information(db.Model):
 
 
 class Answers(db.Model):
-    """Answers Model
+    """ Answers Model
 
     Explanation:
         information_id links the 'answer' to one 'information'
@@ -171,7 +171,7 @@ class Answers(db.Model):
     timestamp = db.Column(db.DateTime, default = datetime.utcnow)
 
     def to_dict(self):
-        """Answer as a dict
+        """ Answer as a dict
 
         Returns:
             dict: all information stored in this object
