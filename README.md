@@ -11,6 +11,9 @@
 8. Now your virtual enviroment is ready to rumble!
 
 
+## Bug Fix download function
+In order to get the download function working you have to navigate to the backend folder first and then excecute the the app.py
+
 ## Vue Frontend testen
 1. chrome:// extension in Chrome öffnen
 2. Developer Mode oben rechts aktivieren
