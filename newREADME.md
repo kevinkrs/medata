@@ -28,6 +28,11 @@ The plugin is available in the [chrome web store](https://chrome.google.com/webs
 * select the newly created dist-folder 
 
 
+# Documentation
+Detailed documentation:
+
+* [Backend](medata_backend/documentation_backend.md)
+* [Frontend](medata_plugin/documentation_frontend.md)
 
 
 ## Usage
