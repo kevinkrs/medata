@@ -169,10 +169,16 @@
 
                <div class="row">
                     <div v-for="answer in entry.answer" :key ="answer">
-                     
-                      <button type="button"  class="answer-button" @click="saveAnswerSelection(answer.answer), sendAnswerSelection()">
+                     <div :id=entry.id+100000 style ="display:inline">
+                      <button type="button"  class="answer-button" @click="saveAnswerSelection(answer.answer), sendAnswerSelection(), visible3(entry.id)">
                         {{answer.answer}}
                       </button>
+                     </div>
+                      <div :id=entry.id+200000 style ="display:none">
+                      <button type="button"  class="main-button-clicked">
+                        {{answer.answer}}
+                      </button>
+                     </div>
                     </div>
                 </div>
 
@@ -225,7 +231,12 @@
                     <p>{{entry.answer[0].answer_score}}</p>                   
                   </div>
                 </div>
-                <button class="green-button" @click='sendAnswerSelection()'>Confirm</button>
+                <div :id=entry.id+100000 style ="display:inline">
+                <button class="green-button" @click='sendAnswerSelection(),visible3(entry.id)'>Confirm</button>
+                </div>
+                <div :id=entry.id+200000 style ="display:none">
+                <button class="green-button-clicked">Confirm</button>
+                </div>
             </div>
           </div>
         </div>
