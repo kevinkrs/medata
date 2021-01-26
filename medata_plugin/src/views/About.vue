@@ -8,6 +8,9 @@
       <div v-else-if = "status == 1">
          <p class ="info"> Please open an <a href= "https://dl.acm.org/"> <i>dl.acm.org</i></a><br> articel or paper to continue </p>
       </div>
+      <div v-else-if = "status == 3">
+         <p class ="info"> Please select a certain Binder to continue </p>
+      </div>
       <div v-else>
        <div class="lds-roller"><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div></div>
       <div>
@@ -25,9 +28,10 @@ export default {
 
   data()  {
     return{
-        substr: 'https://dl.acm.org/',
+        substr: /dl\.acm\.org\//,
         regex: /dl\.acm\.org\/doi\/((fullHtml\/)|(epdf\/)|(pdf\/)){0,1}\d+\.\d{3,}\//,
         regexBinder: /dl\.acm\.org\/action\/showBinder\?/,
+        readingList: /dl\.acm\.org\/action\/showMyBinders/,
         status: 0
     }
   },
@@ -44,7 +48,6 @@ export default {
       // Takes current chrome tab window
       chrome.tabs.query({currentWindow: true, active: true}, 
           function (tabs){
-            var querySub = tabs[0].url.substring(0, 19)
             if (tabs[0].url.match(vm.regex)) { 
               vm.status = 0
               // alert('Valid URL found')
@@ -57,13 +60,16 @@ export default {
               vm.$store.dispatch('loadQuery', tabs[0].url)
               vm.$router.push('/binder')
           }
-            else if(querySub == vm.substr) {
+           else if(tabs[0].url.match(vm.readingList)){
+              vm.status = 3
+            }
+            else if(tabs[0].url.match(vm.substr)) {
               vm.status = 1
-              //alert("Please open a particular article to continue")
+         
           }
             else {
               vm.status = 2
-              //alert("You're currently not on the dl.acm.org website")
+             
           }
       })
     },

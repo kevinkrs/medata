@@ -399,7 +399,7 @@ export default {
     sendAnswerSelection() {
       this.$store.dispatch('sendRateAnswer')
       alert('Thanks for rating!')
-      this.$store.dispatch('loadMetadata')
+      //this.$store.dispatch('loadMetadata')
     },
     // For new answers by user
     sendUserAnswer() {
@@ -433,7 +433,6 @@ export default {
     // User sends relevance of insight (upvote) on insight click
     sendInsightRelevance(){
       this.$store.dispatch('sendRateRelevanceInsight')
-      //this.$store.dispatch('loadMetadata')
     },
 
     sendInsightNotRelevantError() {
