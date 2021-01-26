@@ -1,4 +1,4 @@
-'''acm_scraper.py
+''' acm_scraper.py
 '''
 import requests
 from bs4 import BeautifulSoup
@@ -86,6 +86,14 @@ def get_soup(url):
 
 
 def get_facts_soup(soup:BeautifulSoup):
+    """ Creates a sub-soup object
+
+    Args:
+        soup (BeautifulSoup): Beautifulsoup soup Object of the complete page
+
+    Returns:
+        Beautifulsoup: a sub-soup element of the complete page
+    """
     return soup.find(class_="citation")
 
 
@@ -124,19 +132,16 @@ def get_authors(facts_soup):
     #finds all classes which contain the authors information
     authors_profile_list = []
     for author in authors_info:
-        # #print(f"{author}\n\n\n")
-        # print(author.find("a").get("title")) #Name of the Author
-        # print(author.find(class_="author-info__body").find("p").text) #Institute he/she is working at
+        #Institute he/she is working at
         try:
             authors_profile_link = author.find(class_="author-info").find("a").get("href")
             authors_profile_link = "https://dl.acm.org" + authors_profile_link
             
             authors_profile_list.append(authors_profile_link)
-            # print(authors_profile_link) #link to their profile
+
         except AttributeError as ae:
             print(f"AttributeError: {ae}")
-
-        #print(name_from_profile(author.find(class_="author-info").find("a").get("href")))          
+        
     return authors_profile_list
     
 
@@ -153,7 +158,6 @@ def name_from_profile(link):
         url = link
     else:
         url = "https://dl.acm.org"+link
-    # print(url)
 
     if r"/author/" in url:
         name = re.sub(r"[\W\w]*\/author\/", "", url)
@@ -166,7 +170,6 @@ def name_from_profile(link):
         #at recently published papers it may happen that the profile of the author is not yet linked to the paper
         html = requests.get(url).text
         profile = BeautifulSoup(html, "lxml")
-        #print(f"scraper.name_from_profile for this url: {url}")
         name = profile.find(class_="colored-block item-meta profile-meta").find("h2").text.replace("  "," ").strip()
 
     return name
@@ -199,13 +202,11 @@ def get_conference(link):
     #first you have to remove the paperid from the link to get the conference link
     if re.match(r"[\W\w]*\/\d{4,}.\d{4,}", link):
         conf_link = re.sub(r'\.\d{5,}', "", link)
-        #print(conf_link)
         html = requests.get(conf_link).text
         soup = BeautifulSoup(html, "lxml")
 
         conference = soup.find(class_="left-bordered-title").text
     else:
-        #TODO return Journals name it was published under
         conference = "Not published with a Conference"
     return conference
 
@@ -224,7 +225,6 @@ def get_categories(soup):
     """
     organizational_chart = soup.find("ol", class_="rlist organizational-chart")     
     categories_container = organizational_chart.find_all("a")
-    #print(len(categories_container))
     categories_text = []
     categories_list = []
     leaf_categories_list = []
@@ -262,7 +262,7 @@ def get_categories(soup):
 
 
 def get_infos_of_cat_link(link):
-    """ Get all category numbers from a given link
+    """ get all category numbers from a given link
 
     Args:
         link (link to a (sub-) category): this link contains all parent categories numbers
