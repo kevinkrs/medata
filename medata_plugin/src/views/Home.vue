@@ -399,7 +399,7 @@ export default {
     sendAnswerSelection() {
       this.$store.dispatch('sendRateAnswer')
       alert('Thanks for rating!')
-      //this.$store.dispatch('loadMetadata')
+      this.$store.dispatch('loadMetadata')
     },
     // For new answers by user
     sendUserAnswer() {
