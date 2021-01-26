@@ -6,7 +6,7 @@ import re
 
 
 class Category():
-    """Class to store one Categorie found in the paper
+    """ Class to store one Categorie found in the paper
 
     Returns:
         None: simply there to store more information 
@@ -28,7 +28,7 @@ class Category():
 
 
 def main():
-    """for testing purposes
+    """ for testing purposes
     """
 
     url = "https://dl.acm.org/doi/10.1145/3230543.3230575"
@@ -72,7 +72,7 @@ def get_leaf_categories(url):
 
 
 def get_soup(url):
-    """Return a soup object
+    """ Return a soup object
 
     Args:
         url (String): URL of the page as String
@@ -96,7 +96,7 @@ def get_all_infos(soup):
 
 
 def get_title(facts_soup):
-    """Get the title of the Paper
+    """ Get the title of the Paper
 
     Args:
         facts_soup (BeautifulSoup soup): sub soup of the complete page
@@ -112,7 +112,7 @@ def get_title(facts_soup):
 
    
 def get_authors(facts_soup):
-    """Returns a list of the links to the authors profiles
+    """ Returns a list of the links to the authors profiles
 
     Args:
         facts_soup (BeautifulSoup soup): sub soup
@@ -141,7 +141,7 @@ def get_authors(facts_soup):
     
 
 def name_from_profile(link):
-    """get the Authors name from his/her profile
+    """ get the Authors name from his/her profile
 
     Args:
         link (string): link to the authors profile
@@ -173,7 +173,7 @@ def name_from_profile(link):
     
 
 def get_paper_id(link):
-    """Paper Id and conference Id - probably unnecessary
+    """ Paper Id and conference Id - probably unnecessary
 
     Args:
         link (string): link to the paper
@@ -186,7 +186,7 @@ def get_paper_id(link):
 
 
 def get_conference(link):
-    """Get the name of the conference by the link of the paper
+    """ Get the name of the conference by the link of the paper
 
     Args:
         link (string): link of the paper    
@@ -211,7 +211,7 @@ def get_conference(link):
 
 
 def get_categories(soup):
-    """Get a list of the leaf Categories
+    """ Get a list of the leaf Categories
 
     Args:
         soup (BeautifulSoup): the soup of the complete website
@@ -262,7 +262,7 @@ def get_categories(soup):
 
 
 def get_infos_of_cat_link(link):
-    """get all category numbers from a given link
+    """ Get all category numbers from a given link
 
     Args:
         link (link to a (sub-) category): this link contains all parent categories numbers
