@@ -425,6 +425,28 @@ def download():
     Returns:
          csv file: includes title, authors names, link to the paper, all Insights and answer with answer_score above the threshold. 
     """
+    def df_from_url(url):
+        url = url
+        inf = Information.query.join(Information.answers).filter(Information.paper_id==url).filter(Answers.answer_score > answer_score_threshold).order_by(Answers.answer_score.desc()).all()
+        #catch aioor  
+        #makes a list of authors splitted by a ','
+        authors = inf[0].authors.replace("--", ",").strip()
+
+        data = {
+            "Title": inf[0].title,
+            "Authors": [authors],
+            "Link to paper": inf[0].paper_id
+        }
+
+        for i in inf:
+            data[i.insight_name] = i.answers[0].answer
+
+        df = pd.DataFrame(data=data)
+        return df
+
+        
+
+
     answer_score_threshold = 3
     #fetch data from request
     url = request.get_json().get('url')
@@ -484,24 +506,6 @@ def download():
     
     return send_file(safe_join(pathlib.Path(path_to_csv)), as_attachment=True )
 
-    def df_from_url(url):
-        url = url
-        inf = Information.query.join(Information.answers).filter(Information.paper_id==url).filter(Answers.answer_score > answer_score_threshold).order_by(Answers.answer_score.desc()).all()
-        #catch aioor  
-        #makes a list of authors splitted by a ','
-        authors = inf[0].authors.replace("--", ",").strip()
-
-        data = {
-            "Title": inf[0].title,
-            "Authors": [authors],
-            "Link to paper": inf[0].paper_id
-        }
-
-        for i in inf:
-            data[i.insight_name] = i.answers[0].answer
-
-        df = pd.DataFrame(data=data)
-        return df
     
 
 

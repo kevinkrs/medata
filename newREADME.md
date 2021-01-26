@@ -6,7 +6,7 @@ Medata is a chrome-plugin that helps researchers to collect and contribute insig
 
 In future the backend is going to be hosted online, to setup your own backend:
 
-* [clone the GitHub repo](https://github.com)
+* clone the GitHub repo
 * navigate to the medata_backend folder
 * create venv: ```python -m venv venv```
     * ```venv\Scripts\activate.bat```(Windows)
@@ -31,14 +31,19 @@ The plugin is available in the [chrome web store](https://chrome.google.com/webs
 
 
 ## Usage
+Go on a [ACM Digital Library](https://dl.acm.org/) website, and click on the plugin to load the available data for the selected paper.
+![main](medata_backend/example_pictures/main.png)
 
-```python
-import foobar
+Green insights hold confirmed answers, while answers in a yellow insight still need to be validated by other users. Red insights are without answers - so feel free to add one!
 
-foobar.pluralize('word') # returns 'words'
-foobar.pluralize('goose') # returns 'geese'
-foobar.singularize('phenomena') # returns 'phenomenon'
-```
+Insights themselves are listed depending on the categories of the paper. But you can always add one and thereby contribute to our database!
+
+The implemented download function allows you to download either the confirmed insights for the selected paper or 
+the confirmed insights for multiple papers stored in an ACM-Binder.  
+
+![download_binder](medata_backend/example_pictures/download_binder.png)
+
+Our plugin relys on a supportive community so please add answers and new insights, confirm existing answers and make use of the report an error function to improve the quality of our database!
 
 ## Built With
 
@@ -50,7 +55,5 @@ foobar.singularize('phenomena') # returns 'phenomenon'
 ## Contributing
 Pull requests are welcome. For major changes, please open an issue first to discuss what you would like to change.
 
-Please make sure to update tests as appropriate.
-
 ## License
-[MIT](https://ct/licenses/mit/)
+[MIT](LICENSE.md)
