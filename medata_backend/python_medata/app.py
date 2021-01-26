@@ -24,12 +24,12 @@ CORS(app, resources={r'/*': {'origins': '*'}})
 
 
 #create real data
-# try:
-#     with app.app_context():
-#         db.create_all()
-#         create_mock_data()
-# except Exception as e:
-#     print(e)
+#try:
+#    with app.app_context():
+#        db.create_all()
+#        create_mock_data()
+#except Exception as e:
+#    print(e)
 
 
 

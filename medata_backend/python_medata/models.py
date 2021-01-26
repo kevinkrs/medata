@@ -1,7 +1,3 @@
-'''
-Database Models
-'''
-
 from enum import unique
 
 from datetime import datetime
@@ -10,16 +6,6 @@ from sqlalchemy import ForeignKey
 from sqlalchemy.orm import backref
 
 db = SQLAlchemy()
-
-
-"""[__repr__]
-
-Explanation:
-    Used only for testing 
-
-"""
-
-
 
 class Insights(db.Model):
     """Insights Model
@@ -36,7 +22,7 @@ class Insights(db.Model):
 
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(30), unique=True)
-    type_error = db.Column(db.Integer, default = 0)
+    typo_error = db.Column(db.Integer, default = 0)
     timestamp = db.Column(db.DateTime, default = datetime.utcnow)
 
     categories = db.relationship('Categories', backref = 'insights', lazy = True)
@@ -161,7 +147,7 @@ class Information(db.Model):
 
 
 class Answers(db.Model):
-    """nswers Model
+    """Answers Model
 
     Explanation:
         information_id links the 'answer' to one 'information'

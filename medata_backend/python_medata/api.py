@@ -15,7 +15,7 @@ def url_checker(url):
     """Modifies the url from a pdf or epdf view to a regular url
 
     Args:
-        url (String): url of a pdf or edpf view or regular url
+        String: url of a pdf or edpf view or regular url
 
     Returns:
         url: regularised url as a paper id
@@ -35,7 +35,7 @@ def ping_pong():
     """Check if Server is running
 
     Returns:
-        [json]: [just return a string "pong" in json format]
+        json: just return a string "pong" in json format
     """
     return jsonify('pong!')
 
@@ -44,10 +44,9 @@ def get_all():
     """Testing Method to return whole database
 
     Returns:
-        [json]: [complete database sorted by insights]
+        json: complete database sorted by insights
     """
-    response_object = {'status':     'success'}
-    print(Insights.query.count())
+    response_object = {'status': 'success'}
     for x in range(1,Insights.query.count()):
         response_object[f'insight {x}'] = Insights.query.get(x).to_dict()
     
@@ -59,15 +58,15 @@ def get_specific():
     """Get all 'information' for a specific url (=paper_id)
 
     Returns:
-        [json]: [if no 'informatin' is listed for this paper, an Array with the leaf 'categories' is returned, otherwise a json object with all relevant 'information'
-        and the leaf 'categories' are returned]
+        json: if no 'informatin' is listed for this paper, an Array with the leaf 'categories' is returned, otherwise a json object with all relevant 'information'
+        and the leaf 'categories' are returned
     """
     #fetch data from request
     url = request.get_json().get('url')
     url = url_checker(url)
 
     #a max of 'number_information' is returned
-    number_information = 7
+    number_information = 9
 
     #'information' linked to 'insights' which have been downvoted for relevant_categories is not added
     max_downvote_category = 2
@@ -89,7 +88,6 @@ def get_specific():
     db.session.commit()
 
     #query 'information' with and without 'answers'
-    #TODO limit filtered_information_answers
     filtered_information_answers = Information.query.join(Information.answers).filter(or_(Information.insight_id==int(x.id) for x in matching_insight)).filter(Information.paper_id==paper_id).order_by(Answers.answer_score.desc()).all()
     number_information = number_information - len(filtered_information_answers)
     filtered_information_without_answers = Information.query.filter(or_(Information.insight_id==int(x.id) for x in matching_insight)).filter(Information.paper_id==paper_id).filter(Information.answers == None).order_by((Information.insight_upvotes-Information.insight_downvotes).desc()).limit(number_information).all()
@@ -116,7 +114,7 @@ def get_further_information():
 
 
     Returns:
-        [{'status': 'success'}]: [returns 'success' if the call went successful]
+        json: {'status': 'success'}
     """
     response_object = {'status': 'success'}
     #url is send from the FE
@@ -178,8 +176,6 @@ def get_further_information():
         authors = pool.map_async(scraper.name_from_profile,[profile_link for profile_link in authors_profile_link]).get()
         #authors = [scraper.name_from_profile(profile_link) for profile_link in authors_profile_link]
 
-        print(f"runtime for {len(authors)} authors: {datetime.now()-start} on {multiprocessing.cpu_count()} cores")
-
         title = scraper.get_title(facts_soup)
         conference = scraper.get_conference(paper_id)
         authors_profile_link = "--".join(authors_profile_link)
@@ -199,7 +195,6 @@ def get_further_information():
                 current_information.conference = conference
                 db.session.commit()
 
-    
     return jsonify(response_object)
 
 
@@ -222,7 +217,7 @@ def add_insight():
 
 
     Returns:       
-        json: {"status": "success"}
+        json: {'status': 'success'}
     """     
     response_object = {'status': 'success'}
     #fetch data from request
@@ -287,7 +282,7 @@ def add_answer():
 
 
     Returns:       
-        json: {"status": "success"}
+        json: {'status': 'success'}
     """
     response_object = {'status': 'success'}
     #fetch data from request
@@ -338,7 +333,7 @@ def rate_answer():
 
 
     Returns:
-        json: {"status": "success"}
+        json: {'status': 'success'}
     """
     response_object = {'status': 'success'}
     #fetch data from request
@@ -386,7 +381,7 @@ def rate_relevance_insight():
 
 
     Returns:
-        json: {"status": "success"}
+        json: {'status': 'success'}
     """
     response_object = {'status': 'success'}
     #fetch data from request
@@ -430,16 +425,6 @@ def download():
     Returns:
          csv file: includes title, authors names, link to the paper, all Insights and answer with answer_score above the threshold. 
     """
-    answer_score_threshold = 3
-    #fetch data from request
-    url = request.get_json().get('url')
-    if url is not None:
-        url = url_checker(url)
-
-    urls_from_binder = request.get_json().get("urls_from_binder")
-    print(urls_from_binder)
-
-    #TODO lets put this somewhere else
     def df_from_url(url):
         url = url
         inf = Information.query.join(Information.answers).filter(Information.paper_id==url).filter(Answers.answer_score > answer_score_threshold).order_by(Answers.answer_score.desc()).all()
@@ -459,6 +444,17 @@ def download():
         df = pd.DataFrame(data=data)
         return df
 
+        
+
+
+    answer_score_threshold = 3
+    #fetch data from request
+    url = request.get_json().get('url')
+    if url is not None:
+        url = url_checker(url)
+
+    urls_from_binder = request.get_json().get("urls_from_binder")
+
     answer_score_threshold = 4
     #fetch data from request
     url = request.get_json().get('url')
@@ -471,8 +467,6 @@ def download():
             temp_url = re.search(r"\/doi\/\d*\.\d+\/\d*(\.\d+)*", binder_url)
             temp_url = "https://dl.acm.org"+temp_url.group()
             urls_from_binder_list.append(temp_url)
-
-        print(urls_from_binder_list)
 
         urls = list(set([u.strip() for u in urls_from_binder_list]))
         #removes duplicates
@@ -511,6 +505,7 @@ def download():
     df.to_csv(pathlib.Path(path_to_csv))
     
     return send_file(safe_join(pathlib.Path(path_to_csv)), as_attachment=True )
+
     
 
 
@@ -527,7 +522,7 @@ def insight_not_relevant_for_category():
             }
 
     Returns:
-        json: {"status": "success"}
+        json: {'status': 'success'}
     """
     response_object = {'status': 'success'}
     #fetch data from request
@@ -550,7 +545,7 @@ def insight_not_relevant_for_category():
     
 @api.route('/typo_error', methods = ['POST'])
 def typ_error():
-    """Increments type_error linked to a specific 'insight'
+    """Increments typo_error linked to a specific 'insight'
 
       Args:
         json: 
@@ -560,7 +555,7 @@ def typ_error():
 
 
     Returns:
-        json: {"status": "success"}
+        json: {'status': 'success'}
     """
     response_object = {'status': 'success'}
     #fetch data from request
@@ -569,8 +564,8 @@ def typ_error():
 
     #query 'insight'
     i = Insights.query.filter(Insights.name==in_insight_name).first()
-    #increment type_error
-    i.type_error = i.type_error + 1
+    #increment typo_error
+    i.typo_error = i.typo_error + 1
     db.session.commit()
 
     return jsonify(response_object)
@@ -588,7 +583,7 @@ def autocomplete():
             }
 
     Returns:
-        Array of Strings
+        Array: Strings with word suggestions
     """
     #fetch data from request
     post_data = request.get_json()
@@ -622,14 +617,11 @@ def autocomplete():
                     #words have the form: "research_laboratory"
                     response_object.append(x.capitalize().replace('_', ' '))
         except LookupError:
-            """Wordnet only has to be installed once
-            """
             try:
                 import nltk
                 nltk.download("wordnet")
             except:
                 pass
-            #TODO Unbeding fixen und try/ except rauslöschen
 
     #remove duplicates           
     response_object = list(set(response_object))
