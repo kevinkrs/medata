@@ -4,10 +4,10 @@ import requests
 from bs4 import BeautifulSoup
 import re
 
-
+# === Category ===
 class Category():
     """  
-    ** Class to store one Categorie found in the paper **
+        ** Class to store one Categorie found in the paper **
 
         ** Returns: **
 
