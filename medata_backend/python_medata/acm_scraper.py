@@ -6,10 +6,11 @@ import re
 
 
 class Category():
-    """ Class to store one Categorie found in the paper
+    """ 
+    ** Class to store one Categorie found in the paper **
 
-    Returns:
-        None: simply there to store more information 
+        ** Returns: **
+        * None: simply there to store more information 
     """
     numbers = []
     name = ""
@@ -26,45 +27,14 @@ class Category():
             "numbers": this.numbers
         }
 
-
-def main():
-    """ for testing purposes
-    """
-
-    url = "https://dl.acm.org/doi/10.1145/3230543.3230575"
-    url = "https://dl.acm.org/doi/10.1145/3432935"
-    binder_url = "https://dl.acm.org/action/showBinder?binderCode=READINGLIST-a74de539-6fb8-4617-8b68-66e52f59c64a"
-    
-    soup = get_soup(url)
-    leaf_cats = get_categories(soup)
-    facts_soup = get_facts_soup(soup)
-
-    print(get_title(soup))
-
-
-    authors = get_authors(facts_soup)
-    print("------------------")
-    for author in authors:
-        name_from_profile(author)
-
-    authors_string = ",".join(authors)
-    print(",".join(authors))
-    print(authors_string.split(","))
-
-
-def get_urls_from_binder(url):
-    soup = get_soup(url)
-    print(soup)
-
-
 def get_leaf_categories(url):
-    """ Get all leaf Categories as a list of Strings
+    """ ** Get all leaf Categories as a list of Strings **
 
-    Args:
-        url (str): url of the paper on ACM. Url is not checked
+        ** Args: **
+        * url (str): url of the paper on ACM. Url is not checked
 
-    Returns:
-        leaf_list (list of str): List of Strings with the names of all Leaf categories
+        ** Returns: **
+        * leaf_list (list of str): List of Strings with the names of all Leaf categories
     """
     soup = get_soup(url)
     leaf_list = get_categories(soup)
@@ -74,11 +44,11 @@ def get_leaf_categories(url):
 def get_soup(url):
     """ Return a soup object
 
-    Args:
-        url (String): URL of the page as String
+        ** Args: **
+        * url (String): URL of the page as String
 
-    Returns:
-        BeautifulSoup: soup object
+        ** Returns: **
+        * BeautifulSoup: soup object
     """
     html_string = requests.get(url).text
     soup = BeautifulSoup(html_string, "lxml")
@@ -86,47 +56,40 @@ def get_soup(url):
 
 
 def get_facts_soup(soup:BeautifulSoup):
-    """ Creates a sub-soup object
+    """ ** Creates a sub-soup object **
 
-    Args:
-        soup (BeautifulSoup): Beautifulsoup soup Object of the complete page
+        ** Args: **
+        * soup (BeautifulSoup): Beautifulsoup soup Object of the complete page
 
-    Returns:
-        Beautifulsoup: a sub-soup element of the complete page
+        ** Returns: **
+        * Beautifulsoup: a sub-soup element of the complete page
     """
     return soup.find(class_="citation")
 
-
-def get_all_infos(soup):
-    #sub div from soup
-    facts = soup.find(class_="citation")
-    print(f"there are {len(authors_info)} authors in this paper")
-
-
 def get_title(facts_soup):
-    """ Get the title of the Paper
+    """ ** Get the title of the Paper **
 
-    Args:
-        facts_soup (BeautifulSoup soup): sub soup of the complete page
+        As the Informations appear multiple times on the webpage we need to split the complete soup into sub-soups
+        This should also improve the performance - at least by a little :)
 
-    As the Informations appear multiple times on the webpage we need to split the complete soup into sub-soups
-    This should also improve the performance - at least by a little :)
+        ** Args: **
+        * facts_soup (BeautifulSoup soup): sub soup of the complete page
 
-    Returns:
-        String: title of the page
+        ** Returns: **
+        * String: title of the page
     """
     title = facts_soup.find("h1", class_="citation__title").text
     return title
 
    
 def get_authors(facts_soup):
-    """ Returns a list of the links to the authors profiles
+    """ ** Returns a list of the links to the authors profiles **
 
-    Args:
-        facts_soup (BeautifulSoup soup): sub soup
+        ** Args: **
+        * facts_soup (BeautifulSoup soup): sub soup
 
-    Returns:
-        list: list of links to authors profiles, better to track as names can be doubled
+        ** Returns: **
+        * list: list of links to authors profiles, better to track as names can be doubled
     """
     authors_info = facts_soup.find_all(class_="loa__item")
     #finds all classes which contain the authors information
@@ -146,13 +109,13 @@ def get_authors(facts_soup):
     
 
 def name_from_profile(link):
-    """ get the Authors name from his/her profile
+    """ ** Get the Authors name from his/her profile **
 
-    Args:
-        link (string): link to the authors profile
+        ** Args: **
+        * link (string): link to the authors profile
 
-    Returns:
-        string: name of the Author
+        ** Returns: **
+        * string: name of the Author
     """
     if "dl.acm.org" in link:
         url = link
@@ -176,26 +139,26 @@ def name_from_profile(link):
     
 
 def get_paper_id(link):
-    """ Paper Id and conference Id - probably unnecessary
+    """ **Paper Id and conference Id - probably unnecessary**
 
-    Args:
-        link (string): link to the paper
+        **Args:**
+        * link (string): link to the paper
 
-    Returns:
-        string: conferenceId.paperId
+        **Returns:**
+        * string: conferenceId.paperId
     """
     id = re.sub(r"https:\/\/dl\.acm\.org\/doi\/[\d*\.\d*]+\/", "", link)
     return id
 
 
 def get_conference(link):
-    """ Get the name of the conference by the link of the paper
+    """ **Get the name of the conference by the link of the paper**
 
-    Args:
-        link (string): link of the paper    
+        **Args:**
+        * link (string): link of the paper    
 
-    Returns:
-        string : name of the conference the paper was published under
+        **Returns:**
+        * string : name of the conference the paper was published under
     """
 
 
@@ -212,16 +175,16 @@ def get_conference(link):
 
 
 def get_categories(soup):
-    """ Get a list of the leaf Categories
+    """ **Get a list of the leaf Categories**
 
-    Args:
-        soup (BeautifulSoup): the soup of the complete website
 
-    for an explanation how the children categories are identified have a look at the comments for 
-    get_infos_of_cat_link(link) there is a more in-depth explanation of how the links to the categories are build
+        for an explanation how the children categories are identified have a look at the comments for 
+        get_infos_of_cat_link(link) there is a more in-depth explanation of how the links to the categories are build
 
-    Returns:
-        list (String): List of the names of the leaf categories
+        **Args:**
+        * soup (BeautifulSoup): the soup of the complete website
+        **Returns:**
+        * list (String): List of the names of the leaf categories
     """
     organizational_chart = soup.find("ol", class_="rlist organizational-chart")     
     categories_container = organizational_chart.find_all("a")
@@ -262,43 +225,41 @@ def get_categories(soup):
 
 
 def get_infos_of_cat_link(link):
-    """ get all category numbers from a given link
+    """ **get all category numbers from a given link**
 
-    Args:
-        link (link to a (sub-) category): this link contains all parent categories numbers
+        a link to a category is build up like this:
+        https://dl.acm.org/topic/ccs2012/10003120.10003138.10003141?SeriesKey=imwut&expand=all
 
-    a link to a category is build up like this:
-    https://dl.acm.org/topic/ccs2012/10003120.10003138.10003141?SeriesKey=imwut&expand=all
+        first we remove everything after the ?
 
-    first we remove everything after the ?
+        https://dl.acm.org/topic/ccs2012/10003120.10003138.10003141
 
-    https://dl.acm.org/topic/ccs2012/10003120.10003138.10003141
+        then everthing before the last /
 
-    then everthing before the last /
+        10003120.10003138.10003141
 
-    10003120.10003138.10003141
+        these 3 numbers indicate that this category has 2 parent categories
+        these 3 numbers are then split by the . and are put into a list which is returned
 
-    these 3 numbers indicate that this category has 2 parent categories
-    these 3 numbers are then split by the . and are put into a list which is returned
+        If a category number is later found more then once you can be sure that this is NOT a leaf category.
+        This is because the link to the first parent category looks like this:
 
-    If a category number is later found more then once you can be sure that this is NOT a leaf category.
-    This is because the link to the first parent category looks like this:
+        https://dl.acm.org/topic/ccs2012/10003120.10003138
 
-    https://dl.acm.org/topic/ccs2012/10003120.10003138
+        **Args:**
+        * link (link to a (sub-) category): this link contains all parent categories numbers
 
-    
-
-    Returns:
-        list(int): List of Integers to all the parent categories
+        **Returns:**
+        * list(int): List of Integers to all the parent categories
     """
-    #return an ordered list with all category and subcategories Numbers
+
     categories_numbers = []
     cat_string = re.sub(r"\?[\w*\W*]*","", link)
-    # removes everything after the ?
+
     cat_string = re.sub(r"[\w*\W*]*\/", "", cat_string)
-    # removes everything before the last /
+
     categories_numbers = re.split(r"\.", cat_string)
-    # splits the numbery by the .
+
     return categories_numbers
 
 if __name__ == "__main__":
