@@ -1,16 +1,16 @@
 # Medata 
 
-Medata is a chrome-plugin that helps researchers to collect and contribute insights/datapoints to a paper listed in the [ACM Digital Library](https://dl.acm.org/).
+Medata is a chrome-plugin that helps researchers to collect and contribute insights to a paper listed in the [ACM Digital Library](https://dl.acm.org/).
 
 ## Installation Backend
 
 In future the backend is going to be hosted online, to setup your own backend:
 
-* clone the GitHub repo
+* clone the GitHub repo ```TODO: link to out repo```
 * navigate to the medata_backend folder
 * create venv: ```python -m venv venv```
-    * ```venv\Scripts\activate.bat```(Windows)
-    * ```source venv/bin/activate```(Mac/Linux)
+    * run ```venv\Scripts\activate.bat``` (Windows)
+    * or ```source venv/bin/activate``` (Mac/Linux) to activate the virtual environment 
 * use [pip](https://pip.pypa.io/en/stable/) to install the requirements: ```pip install -r requirements.txt```
 * run app.py to start the backend server
 
@@ -25,7 +25,7 @@ The plugin is available in the [chrome web store](https://chrome.google.com/webs
 * open Chrome and search for [chrome://extensions/](chrome://extensions/)
 * enable developer mode 
 * load unpacked extension 
-* select the "dist" folder 
+* select the newly created dist-folder 
 
 
 
@@ -54,6 +54,12 @@ Our plugin relys on a supportive community so please add answers and new insight
 
 ## Contributing
 Pull requests are welcome. For major changes, please open an issue first to discuss what you would like to change.
+
+## Authors and acknowledgment
+The plugin and the underlying logic was developed by
+Kevin Kraus, Max Heydemann, Jan Effenberger, Jan Bode with the support of Merlin Knäble and Tim Rietz 
+
+@IISM - Karlsruhe Institute of Technology
 
 ## License
 [MIT](LICENSE.md)
