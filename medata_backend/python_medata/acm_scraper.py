@@ -79,7 +79,7 @@ def get_soup(url):
         ** Returns: **
 
         * BeautifulSoup: 
-            *soup object
+            * soup object
     """
     html_string = requests.get(url).text
     soup = BeautifulSoup(html_string, "lxml")
