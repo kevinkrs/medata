@@ -17,15 +17,18 @@
       <div class='octowrap'>
         <a class='octothorpe' href='#section-0'>#</a>
       </div>
-      <p>app.py</p>
+      <p><strong> backend documentation: </strong></p>
+<ol>
+<li><a href="__init__.html"><strong>init</strong>.py</a></li>
+<li><a href="acm_scraper.html">acm_scraper.py</a></li>
+<li><a href="api.html">api.py</a></li>
+<li><a href="app.html">app.py</a></li>
+<li><a href="create_init_data.html">create_init_data.py</a></li>
+<li><a href="models.html">models.py</a></li>
+</ol>
     </div>
     <div class='code'>
-      <div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">flask</span> <span class="kn">import</span> <span class="n">Flask</span><span class="p">,</span> <span class="n">jsonify</span><span class="p">,</span> <span class="n">request</span>
-<span class="kn">from</span> <span class="nn">flask_cors</span> <span class="kn">import</span> <span class="n">CORS</span>
-<span class="kn">from</span> <span class="nn">flask_sqlalchemy</span> <span class="kn">import</span> <span class="n">SQLAlchemy</span>
-<span class="kn">from</span> <span class="nn">models</span> <span class="kn">import</span> <span class="n">db</span>
-<span class="kn">from</span> <span class="nn">api</span> <span class="kn">import</span> <span class="n">api</span>
-<span class="kn">from</span> <span class="nn">create_init_data</span> <span class="kn">import</span> <span class="n">create_init_data</span></pre></div>
+      <div class="highlight"><pre><span></span></pre></div>
     </div>
   </div>
   <div class='clearall'></div>
@@ -34,10 +37,15 @@
       <div class='octowrap'>
         <a class='octothorpe' href='#section-1'>#</a>
       </div>
-      <p>configuration</p>
+      <p><strong> app.py </strong> </p>
     </div>
     <div class='code'>
-      <div class="highlight"><pre><span class="n">DEBUG</span> <span class="o">=</span> <span class="kc">True</span></pre></div>
+      <div class="highlight"><pre><span class="kn">from</span> <span class="nn">flask</span> <span class="kn">import</span> <span class="n">Flask</span><span class="p">,</span> <span class="n">jsonify</span><span class="p">,</span> <span class="n">request</span>
+<span class="kn">from</span> <span class="nn">flask_cors</span> <span class="kn">import</span> <span class="n">CORS</span>
+<span class="kn">from</span> <span class="nn">flask_sqlalchemy</span> <span class="kn">import</span> <span class="n">SQLAlchemy</span>
+<span class="kn">from</span> <span class="nn">models</span> <span class="kn">import</span> <span class="n">db</span>
+<span class="kn">from</span> <span class="nn">api</span> <span class="kn">import</span> <span class="n">api</span>
+<span class="kn">from</span> <span class="nn">create_init_data</span> <span class="kn">import</span> <span class="n">create_init_data</span></pre></div>
     </div>
   </div>
   <div class='clearall'></div>
@@ -45,6 +53,18 @@
     <div class='docs'>
       <div class='octowrap'>
         <a class='octothorpe' href='#section-2'>#</a>
+      </div>
+      <p>configuration</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre><span class="n">DEBUG</span> <span class="o">=</span> <span class="kc">True</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-3'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-3'>#</a>
       </div>
       <p>instantiate the app</p>
     </div>
@@ -54,10 +74,10 @@
     </div>
   </div>
   <div class='clearall'></div>
-  <div class='section' id='section-3'>
+  <div class='section' id='section-4'>
     <div class='docs'>
       <div class='octowrap'>
-        <a class='octothorpe' href='#section-3'>#</a>
+        <a class='octothorpe' href='#section-4'>#</a>
       </div>
       <p>/// for relative location of db file</p>
     </div>
@@ -71,10 +91,10 @@
     </div>
   </div>
   <div class='clearall'></div>
-  <div class='section' id='section-4'>
+  <div class='section' id='section-5'>
     <div class='docs'>
       <div class='octowrap'>
-        <a class='octothorpe' href='#section-4'>#</a>
+        <a class='octothorpe' href='#section-5'>#</a>
       </div>
       <p>enable CORS</p>
     </div>
@@ -83,10 +103,10 @@
     </div>
   </div>
   <div class='clearall'></div>
-  <div class='section' id='section-5'>
+  <div class='section' id='section-6'>
     <div class='docs'>
       <div class='octowrap'>
-        <a class='octothorpe' href='#section-5'>#</a>
+        <a class='octothorpe' href='#section-6'>#</a>
       </div>
       <p>create real data
 try:
