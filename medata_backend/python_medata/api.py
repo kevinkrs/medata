@@ -7,6 +7,8 @@
 4. [[app.py]]
 5. [[create_init_data.py]]
 6. [[models.py]]
+
+------
 """
 
 """ 
@@ -27,7 +29,8 @@ import multiprocessing
 
 api = Blueprint('api', __name__)
 
-
+# ---------------------------------------------------------
+ 
 # === url_checker ===
 def url_checker(url):
     """ 
@@ -54,7 +57,8 @@ def url_checker(url):
 
 
 
-
+# ---------------------------------------------------------
+ 
 # === ping ===
 @api.route('/ping', methods=['GET'])
 def ping_pong():
@@ -70,7 +74,8 @@ def ping_pong():
 
 
 
-
+# ---------------------------------------------------------
+ 
 # === get_all ===
 @api.route('/get_all', methods=['GET'])
 def get_all():
@@ -90,7 +95,8 @@ def get_all():
 
 
 
-
+# ---------------------------------------------------------
+ 
 # === get_specific ===
 @api.route('/get_specific', methods=['POST'])
 def get_specific():
@@ -147,15 +153,16 @@ def get_specific():
 
 
 
-
+# ---------------------------------------------------------
+ 
 # === get_further_information ===
 @api.route('/get_further_information', methods=['POST'])
 def get_further_information():
-    #TODO: umformulieren
     """ 
-        **Get scraper to look up more specific information about the url which is posted via POST method
-        this includes the title, authors, link to authors profile and the conference. The scraped information is then added
-        to the correct 'information'**
+        **add further information, like author to 'information' linked to the 'paper_id' (=url)**
+
+        * json: 
+            * {"paper_id" : String with the paper_id which is in our case the completet link to the paper}
 
 
         **Returns:**
@@ -246,7 +253,8 @@ def get_further_information():
 
 
 
-
+# ---------------------------------------------------------
+ 
 # === add_insight ===
 @api.route('/add_insight', methods =["POST"])
 def add_insight():
@@ -315,7 +323,8 @@ def add_insight():
 
 
 
-
+# ---------------------------------------------------------
+ 
 # === add_answer ===
 @api.route('/add_answer', methods = ["POST"])
 def add_answer():
@@ -370,7 +379,8 @@ def add_answer():
 
 
 
-
+# ---------------------------------------------------------
+ 
 # === rate_answer ===
 @api.route('/rate_answer', methods = ["POST"])
 def rate_answer():
@@ -423,8 +433,9 @@ def rate_answer():
     return jsonify(response_object)
 
 
-
-
+# ---------------------------------------------------------
+ 
+# === rate_relevance_insight ===
 @api.route('/rate_relevance_insight', methods = ["POST"])
 def rate_relevance_insight():
     """ 
@@ -466,7 +477,8 @@ def rate_relevance_insight():
 
 
 
-
+# ---------------------------------------------------------
+ 
 # === download ===
 @api.route('/download', methods = ["POST"])
 def download():
@@ -492,6 +504,7 @@ def download():
     def df_from_url(url):
         url = url
         inf = Information.query.join(Information.answers).filter(Information.paper_id==url).filter(Answers.answer_score > answer_score_threshold).order_by(Answers.answer_score.desc()).all()
+
         #makes a list of authors splitted by a ','
         authors = inf[0].authors.replace("--", ",").strip()
 
@@ -572,7 +585,8 @@ def download():
     
 
 
-
+# ---------------------------------------------------------
+ 
 # === insight_not_relevant_for_category ===
 @api.route('/insight_not_relevant_for_category', methods = ["POST"])
 def insight_not_relevant_for_category():
@@ -610,7 +624,8 @@ def insight_not_relevant_for_category():
 
 
 
-
+# ---------------------------------------------------------
+ 
 # === typo_error ===
 @api.route('/typo_error', methods = ['POST'])
 def typ_error():
@@ -619,7 +634,8 @@ def typ_error():
 
         **Args:**
 
-        * json: {"insight" : String with the name of the Insight}
+        * json: 
+            * {"insight" : String with the name of the Insight}
 
 
         **Returns:**
@@ -642,7 +658,8 @@ def typ_error():
 
 
 
-
+# ---------------------------------------------------------
+ 
 # === autocomplete ===
 @api.route('/autocomplete', methods = ['POST'])
 def autocomplete():
@@ -651,7 +668,8 @@ def autocomplete():
 
         **Args:**
 
-        * json: {"categories" : Array with a set of categories}
+        * json: 
+            * {"categories" : Array with a set of categories}
 
         **Returns:**
 

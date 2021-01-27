@@ -26,6 +26,7 @@
 <li><a href="create_init_data.html">create_init_data.py</a></li>
 <li><a href="models.html">models.py</a></li>
 </ol>
+<hr />
     </div>
     <div class='code'>
       <div class="highlight"><pre><span></span></pre></div>
@@ -38,6 +39,9 @@
         <a class='octothorpe' href='#section-1'>#</a>
       </div>
       <p><strong> acm_scraper.py </strong></p>
+<ul>
+<li>this module scrapes data from an ACM-DL page </li>
+</ul>
     </div>
     <div class='code'>
       <div class="highlight"><pre><span class="kn">import</span> <span class="nn">requests</span>
@@ -51,10 +55,10 @@
       <div class='octowrap'>
         <a class='octothorpe' href='#section-2'>#</a>
       </div>
-      <h3><span id="category" href="category"> Category </span></h3>
+      <hr />
     </div>
     <div class='code'>
-      <div class="highlight"><pre><span class="k">class</span> <span class="nc">Category</span><span class="p">():</span></pre></div>
+      <div class="highlight"><pre></pre></div>
     </div>
   </div>
   <div class='clearall'></div>
@@ -63,10 +67,25 @@
       <div class='octowrap'>
         <a class='octothorpe' href='#section-3'>#</a>
       </div>
+      <h3><span id="category" href="category"> Category </span></h3>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre><span class="k">class</span> <span class="nc">Category</span><span class="p">():</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-4'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-4'>#</a>
+      </div>
       <p><strong> Class to store one Categorie found in the paper </strong></p>
 <p><strong> Returns: </strong></p>
 <ul>
-<li>None: simply there to store more information </li>
+<li>None: <ul>
+<li>simply there to store more information </li>
+</ul>
+</li>
 </ul>
     </div>
     <div class='code'>
@@ -77,10 +96,10 @@
     </div>
   </div>
   <div class='clearall'></div>
-  <div class='section' id='section-4'>
+  <div class='section' id='section-5'>
     <div class='docs'>
       <div class='octowrap'>
-        <a class='octothorpe' href='#section-4'>#</a>
+        <a class='octothorpe' href='#section-5'>#</a>
       </div>
       
     </div>
@@ -91,10 +110,10 @@
     </div>
   </div>
   <div class='clearall'></div>
-  <div class='section' id='section-5'>
+  <div class='section' id='section-6'>
     <div class='docs'>
       <div class='octowrap'>
-        <a class='octothorpe' href='#section-5'>#</a>
+        <a class='octothorpe' href='#section-6'>#</a>
       </div>
       
     </div>
@@ -107,36 +126,15 @@
     </div>
   </div>
   <div class='clearall'></div>
-  <div class='section' id='section-6'>
-    <div class='docs'>
-      <div class='octowrap'>
-        <a class='octothorpe' href='#section-6'>#</a>
-      </div>
-      <p><strong> Get all leaf Categories as a list of Strings </strong></p>
-    </div>
-    <div class='code'>
-      <div class="highlight"><pre><span class="k">def</span> <span class="nf">get_leaf_categories</span><span class="p">(</span><span class="n">url</span><span class="p">):</span></pre></div>
-    </div>
-  </div>
-  <div class='clearall'></div>
   <div class='section' id='section-7'>
     <div class='docs'>
       <div class='octowrap'>
         <a class='octothorpe' href='#section-7'>#</a>
       </div>
-      <p><strong> Args: </strong></p>
-<ul>
-<li>url (str): url of the paper on ACM. Url is not checked</li>
-</ul>
-<p><strong> Returns: </strong></p>
-<ul>
-<li>leaf_list (list of str): List of Strings with the names of all Leaf categories</li>
-</ul>
+      <hr />
     </div>
     <div class='code'>
-      <div class="highlight"><pre>    <span class="n">soup</span> <span class="o">=</span> <span class="n">get_soup</span><span class="p">(</span><span class="n">url</span><span class="p">)</span>
-    <span class="n">leaf_list</span> <span class="o">=</span> <span class="n">get_categories</span><span class="p">(</span><span class="n">soup</span><span class="p">)</span>
-    <span class="k">return</span> <span class="n">leaf_list</span></pre></div>
+      <div class="highlight"><pre></pre></div>
     </div>
   </div>
   <div class='clearall'></div>
@@ -145,10 +143,24 @@
       <div class='octowrap'>
         <a class='octothorpe' href='#section-8'>#</a>
       </div>
-      <p>Return a soup object</p>
+      <p><strong> Get all leaf Categories as a list of Strings </strong></p>
+<p><strong> Args: </strong></p>
+<ul>
+<li>url (str): <ul>
+<li>url of the paper on ACM. Url is not checked</li>
+</ul>
+</li>
+</ul>
+<p><strong> Returns: </strong></p>
+<ul>
+<li>leaf_list (list of str): <ul>
+<li>List of Strings with the names of all Leaf categories</li>
+</ul>
+</li>
+</ul>
     </div>
     <div class='code'>
-      <div class="highlight"><pre><span class="k">def</span> <span class="nf">get_soup</span><span class="p">(</span><span class="n">url</span><span class="p">):</span></pre></div>
+      <div class="highlight"><pre><span class="k">def</span> <span class="nf">get_leaf_categories</span><span class="p">(</span><span class="n">url</span><span class="p">):</span></pre></div>
     </div>
   </div>
   <div class='clearall'></div>
@@ -157,19 +169,12 @@
       <div class='octowrap'>
         <a class='octothorpe' href='#section-9'>#</a>
       </div>
-      <p><strong> Args: </strong></p>
-<ul>
-<li>url (String): URL of the page as String</li>
-</ul>
-<p><strong> Returns: </strong></p>
-<ul>
-<li>BeautifulSoup: soup object</li>
-</ul>
+      
     </div>
     <div class='code'>
-      <div class="highlight"><pre>    <span class="n">html_string</span> <span class="o">=</span> <span class="n">requests</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">url</span><span class="p">)</span><span class="o">.</span><span class="n">text</span>
-    <span class="n">soup</span> <span class="o">=</span> <span class="n">BeautifulSoup</span><span class="p">(</span><span class="n">html_string</span><span class="p">,</span> <span class="s2">&quot;lxml&quot;</span><span class="p">)</span>
-    <span class="k">return</span> <span class="n">soup</span></pre></div>
+      <div class="highlight"><pre>    <span class="n">soup</span> <span class="o">=</span> <span class="n">get_soup</span><span class="p">(</span><span class="n">url</span><span class="p">)</span>
+    <span class="n">leaf_list</span> <span class="o">=</span> <span class="n">get_categories</span><span class="p">(</span><span class="n">soup</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">leaf_list</span></pre></div>
     </div>
   </div>
   <div class='clearall'></div>
@@ -178,10 +183,10 @@
       <div class='octowrap'>
         <a class='octothorpe' href='#section-10'>#</a>
       </div>
-      <p><strong> Creates a sub-soup object </strong></p>
+      <hr />
     </div>
     <div class='code'>
-      <div class="highlight"><pre><span class="k">def</span> <span class="nf">get_facts_soup</span><span class="p">(</span><span class="n">soup</span><span class="p">:</span><span class="n">BeautifulSoup</span><span class="p">):</span></pre></div>
+      <div class="highlight"><pre></pre></div>
     </div>
   </div>
   <div class='clearall'></div>
@@ -192,15 +197,19 @@
       </div>
       <p><strong> Args: </strong></p>
 <ul>
-<li>soup (BeautifulSoup): Beautifulsoup soup Object of the complete page</li>
+<li>url (String): <ul>
+<li>URL of the page as String</li>
+</ul>
+</li>
 </ul>
 <p><strong> Returns: </strong></p>
 <ul>
-<li>Beautifulsoup: a sub-soup element of the complete page</li>
+<li>BeautifulSoup: 
+       *soup object</li>
 </ul>
     </div>
     <div class='code'>
-      <div class="highlight"><pre>    <span class="k">return</span> <span class="n">soup</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="n">class_</span><span class="o">=</span><span class="s2">&quot;citation&quot;</span><span class="p">)</span></pre></div>
+      <div class="highlight"><pre><span class="k">def</span> <span class="nf">get_soup</span><span class="p">(</span><span class="n">url</span><span class="p">):</span></pre></div>
     </div>
   </div>
   <div class='clearall'></div>
@@ -209,10 +218,12 @@
       <div class='octowrap'>
         <a class='octothorpe' href='#section-12'>#</a>
       </div>
-      <p><strong> Get the title of the Paper </strong></p>
+      
     </div>
     <div class='code'>
-      <div class="highlight"><pre><span class="k">def</span> <span class="nf">get_title</span><span class="p">(</span><span class="n">facts_soup</span><span class="p">):</span></pre></div>
+      <div class="highlight"><pre>    <span class="n">html_string</span> <span class="o">=</span> <span class="n">requests</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">url</span><span class="p">)</span><span class="o">.</span><span class="n">text</span>
+    <span class="n">soup</span> <span class="o">=</span> <span class="n">BeautifulSoup</span><span class="p">(</span><span class="n">html_string</span><span class="p">,</span> <span class="s2">&quot;lxml&quot;</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">soup</span></pre></div>
     </div>
   </div>
   <div class='clearall'></div>
@@ -221,20 +232,10 @@
       <div class='octowrap'>
         <a class='octothorpe' href='#section-13'>#</a>
       </div>
-      <p>As the Informations appear multiple times on the webpage we need to split the complete soup into sub-soups
-   This should also improve the performance - at least by a little :)</p>
-<p><strong> Args: </strong></p>
-<ul>
-<li>facts_soup (BeautifulSoup soup): sub soup of the complete page</li>
-</ul>
-<p><strong> Returns: </strong></p>
-<ul>
-<li>String: title of the page</li>
-</ul>
+      <hr />
     </div>
     <div class='code'>
-      <div class="highlight"><pre>    <span class="n">title</span> <span class="o">=</span> <span class="n">facts_soup</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="s2">&quot;h1&quot;</span><span class="p">,</span> <span class="n">class_</span><span class="o">=</span><span class="s2">&quot;citation__title&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">text</span>
-    <span class="k">return</span> <span class="n">title</span></pre></div>
+      <div class="highlight"><pre></pre></div>
     </div>
   </div>
   <div class='clearall'></div>
@@ -243,10 +244,24 @@
       <div class='octowrap'>
         <a class='octothorpe' href='#section-14'>#</a>
       </div>
-      <p><strong> Returns a list of the links to the authors profiles </strong></p>
+      <p><strong> Creates a sub-soup object </strong></p>
+<p><strong> Args: </strong></p>
+<ul>
+<li>soup (BeautifulSoup): <ul>
+<li>Beautifulsoup soup Object of the complete page</li>
+</ul>
+</li>
+</ul>
+<p><strong> Returns: </strong></p>
+<ul>
+<li>Beautifulsoup: <ul>
+<li>a sub-soup element of the complete page</li>
+</ul>
+</li>
+</ul>
     </div>
     <div class='code'>
-      <div class="highlight"><pre><span class="k">def</span> <span class="nf">get_authors</span><span class="p">(</span><span class="n">facts_soup</span><span class="p">):</span></pre></div>
+      <div class="highlight"><pre><span class="k">def</span> <span class="nf">get_facts_soup</span><span class="p">(</span><span class="n">soup</span><span class="p">:</span><span class="n">BeautifulSoup</span><span class="p">):</span></pre></div>
     </div>
   </div>
   <div class='clearall'></div>
@@ -255,17 +270,10 @@
       <div class='octowrap'>
         <a class='octothorpe' href='#section-15'>#</a>
       </div>
-      <p><strong> Args: </strong></p>
-<ul>
-<li>facts_soup (BeautifulSoup soup): sub soup</li>
-</ul>
-<p><strong> Returns: </strong></p>
-<ul>
-<li>list: list of links to authors profiles, better to track as names can be doubled</li>
-</ul>
+      
     </div>
     <div class='code'>
-      <div class="highlight"><pre>    <span class="n">authors_info</span> <span class="o">=</span> <span class="n">facts_soup</span><span class="o">.</span><span class="n">find_all</span><span class="p">(</span><span class="n">class_</span><span class="o">=</span><span class="s2">&quot;loa__item&quot;</span><span class="p">)</span></pre></div>
+      <div class="highlight"><pre>    <span class="k">return</span> <span class="n">soup</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="n">class_</span><span class="o">=</span><span class="s2">&quot;citation&quot;</span><span class="p">)</span></pre></div>
     </div>
   </div>
   <div class='clearall'></div>
@@ -273,6 +281,108 @@
     <div class='docs'>
       <div class='octowrap'>
         <a class='octothorpe' href='#section-16'>#</a>
+      </div>
+      <hr />
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-17'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-17'>#</a>
+      </div>
+      <p><strong> Get the title of the Paper </strong></p>
+<p>As the Informations appear multiple times on the webpage we need to split the complete soup into sub-soups
+   This should also improve the performance - at least by a little :)</p>
+<p><strong> Args: </strong></p>
+<ul>
+<li>facts_soup (BeautifulSoup soup): <ul>
+<li>sub soup of the complete page</li>
+</ul>
+</li>
+</ul>
+<p><strong> Returns: </strong></p>
+<ul>
+<li>String: <ul>
+<li>title of the page</li>
+</ul>
+</li>
+</ul>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre><span class="k">def</span> <span class="nf">get_title</span><span class="p">(</span><span class="n">facts_soup</span><span class="p">):</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-18'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-18'>#</a>
+      </div>
+      
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>    <span class="n">title</span> <span class="o">=</span> <span class="n">facts_soup</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="s2">&quot;h1&quot;</span><span class="p">,</span> <span class="n">class_</span><span class="o">=</span><span class="s2">&quot;citation__title&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">text</span>
+    <span class="k">return</span> <span class="n">title</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-19'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-19'>#</a>
+      </div>
+      <hr />
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-20'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-20'>#</a>
+      </div>
+      <p><strong> Returns a list of the links to the authors profiles </strong></p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre><span class="k">def</span> <span class="nf">get_authors</span><span class="p">(</span><span class="n">facts_soup</span><span class="p">):</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-21'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-21'>#</a>
+      </div>
+      <p><strong> Args: </strong></p>
+<ul>
+<li>facts_soup (BeautifulSoup soup): <ul>
+<li>sub soup</li>
+</ul>
+</li>
+</ul>
+<p><strong> Returns: </strong></p>
+<ul>
+<li>list: <ul>
+<li>list of links to authors profiles, better to track as names can be doubled</li>
+</ul>
+</li>
+</ul>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>    <span class="n">authors_info</span> <span class="o">=</span> <span class="n">facts_soup</span><span class="o">.</span><span class="n">find_all</span><span class="p">(</span><span class="n">class_</span><span class="o">=</span><span class="s2">&quot;loa__item&quot;</span><span class="p">)</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-22'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-22'>#</a>
       </div>
       <p>finds all classes which contain the authors information</p>
     </div>
@@ -282,10 +392,10 @@
     </div>
   </div>
   <div class='clearall'></div>
-  <div class='section' id='section-17'>
+  <div class='section' id='section-23'>
     <div class='docs'>
       <div class='octowrap'>
-        <a class='octothorpe' href='#section-17'>#</a>
+        <a class='octothorpe' href='#section-23'>#</a>
       </div>
       <p>Institute he/she is working at</p>
     </div>
@@ -303,31 +413,50 @@
     </div>
   </div>
   <div class='clearall'></div>
-  <div class='section' id='section-18'>
+  <div class='section' id='section-24'>
     <div class='docs'>
       <div class='octowrap'>
-        <a class='octothorpe' href='#section-18'>#</a>
+        <a class='octothorpe' href='#section-24'>#</a>
+      </div>
+      <hr />
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-25'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-25'>#</a>
       </div>
       <p><strong> Get the Authors name from his/her profile </strong></p>
+<p><strong> Args: </strong></p>
+<ul>
+<li>link (string): <ul>
+<li>link to the authors profile</li>
+</ul>
+</li>
+</ul>
+<p><strong> Returns: </strong></p>
+<ul>
+<li>String: <ul>
+<li>name of the Author</li>
+</ul>
+</li>
+</ul>
     </div>
     <div class='code'>
       <div class="highlight"><pre><span class="k">def</span> <span class="nf">name_from_profile</span><span class="p">(</span><span class="n">link</span><span class="p">):</span></pre></div>
     </div>
   </div>
   <div class='clearall'></div>
-  <div class='section' id='section-19'>
+  <div class='section' id='section-26'>
     <div class='docs'>
       <div class='octowrap'>
-        <a class='octothorpe' href='#section-19'>#</a>
+        <a class='octothorpe' href='#section-26'>#</a>
       </div>
-      <p><strong> Args: </strong></p>
-<ul>
-<li>link (string): link to the authors profile</li>
-</ul>
-<p><strong> Returns: </strong></p>
-<ul>
-<li>string: name of the Author</li>
-</ul>
+      
     </div>
     <div class='code'>
       <div class="highlight"><pre>    <span class="k">if</span> <span class="s2">&quot;dl.acm.org&quot;</span> <span class="ow">in</span> <span class="n">link</span><span class="p">:</span>
@@ -346,10 +475,10 @@
     </div>
   </div>
   <div class='clearall'></div>
-  <div class='section' id='section-20'>
+  <div class='section' id='section-27'>
     <div class='docs'>
       <div class='octowrap'>
-        <a class='octothorpe' href='#section-20'>#</a>
+        <a class='octothorpe' href='#section-27'>#</a>
       </div>
       <p>at recently published papers it may happen that the profile of the author is not yet linked to the paper</p>
     </div>
@@ -362,31 +491,48 @@
     </div>
   </div>
   <div class='clearall'></div>
-  <div class='section' id='section-21'>
+  <div class='section' id='section-28'>
     <div class='docs'>
       <div class='octowrap'>
-        <a class='octothorpe' href='#section-21'>#</a>
+        <a class='octothorpe' href='#section-28'>#</a>
+      </div>
+      <hr />
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-29'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-29'>#</a>
       </div>
       <p><strong>Paper Id and conference Id - probably unnecessary</strong></p>
+<p><strong>Args:</strong></p>
+<ul>
+<li>link (string): 
+       *link to the paper</li>
+</ul>
+<p><strong>Returns:</strong></p>
+<ul>
+<li>String: <ul>
+<li>conferenceId.paperId</li>
+</ul>
+</li>
+</ul>
     </div>
     <div class='code'>
       <div class="highlight"><pre><span class="k">def</span> <span class="nf">get_paper_id</span><span class="p">(</span><span class="n">link</span><span class="p">):</span></pre></div>
     </div>
   </div>
   <div class='clearall'></div>
-  <div class='section' id='section-22'>
+  <div class='section' id='section-30'>
     <div class='docs'>
       <div class='octowrap'>
-        <a class='octothorpe' href='#section-22'>#</a>
+        <a class='octothorpe' href='#section-30'>#</a>
       </div>
-      <p><strong>Args:</strong></p>
-<ul>
-<li>link (string): link to the paper</li>
-</ul>
-<p><strong>Returns:</strong></p>
-<ul>
-<li>string: conferenceId.paperId</li>
-</ul>
+      
     </div>
     <div class='code'>
       <div class="highlight"><pre>    <span class="nb">id</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">sub</span><span class="p">(</span><span class="sa">r</span><span class="s2">&quot;https:\/\/dl\.acm\.org\/doi\/[\d*\.\d*]+\/&quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">link</span><span class="p">)</span>
@@ -394,41 +540,60 @@
     </div>
   </div>
   <div class='clearall'></div>
-  <div class='section' id='section-23'>
+  <div class='section' id='section-31'>
     <div class='docs'>
       <div class='octowrap'>
-        <a class='octothorpe' href='#section-23'>#</a>
+        <a class='octothorpe' href='#section-31'>#</a>
       </div>
-      <p><strong>Get the name of the conference by the link of the paper</strong></p>
-    </div>
-    <div class='code'>
-      <div class="highlight"><pre><span class="k">def</span> <span class="nf">get_conference</span><span class="p">(</span><span class="n">link</span><span class="p">):</span></pre></div>
-    </div>
-  </div>
-  <div class='clearall'></div>
-  <div class='section' id='section-24'>
-    <div class='docs'>
-      <div class='octowrap'>
-        <a class='octothorpe' href='#section-24'>#</a>
-      </div>
-      <p><strong>Args:</strong></p>
-<ul>
-<li>link (string): link of the paper    </li>
-</ul>
-<p><strong>Returns:</strong></p>
-<ul>
-<li>string : name of the conference the paper was published under</li>
-</ul>
+      <hr />
     </div>
     <div class='code'>
       <div class="highlight"><pre></pre></div>
     </div>
   </div>
   <div class='clearall'></div>
-  <div class='section' id='section-25'>
+  <div class='section' id='section-32'>
     <div class='docs'>
       <div class='octowrap'>
-        <a class='octothorpe' href='#section-25'>#</a>
+        <a class='octothorpe' href='#section-32'>#</a>
+      </div>
+      <p><strong>Get the name of the conference by the link of the paper</strong></p>
+<p><strong>Args:</strong></p>
+<ul>
+<li>link (string): <ul>
+<li>link of the paper    </li>
+</ul>
+</li>
+</ul>
+<p><strong>Returns:</strong></p>
+<ul>
+<li>String: <ul>
+<li>name of the conference the paper was published under</li>
+</ul>
+</li>
+</ul>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre><span class="k">def</span> <span class="nf">get_conference</span><span class="p">(</span><span class="n">link</span><span class="p">):</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-33'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-33'>#</a>
+      </div>
+      
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-34'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-34'>#</a>
       </div>
       <p>first you have to remove the paperid from the link to get the conference link</p>
     </div>
@@ -445,33 +610,53 @@
     </div>
   </div>
   <div class='clearall'></div>
-  <div class='section' id='section-26'>
+  <div class='section' id='section-35'>
     <div class='docs'>
       <div class='octowrap'>
-        <a class='octothorpe' href='#section-26'>#</a>
+        <a class='octothorpe' href='#section-35'>#</a>
+      </div>
+      <hr />
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-36'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-36'>#</a>
       </div>
       <p><strong>Get a list of the leaf Categories</strong></p>
+<ul>
+<li>for an explanation how the children categories are identified have a look at the comments for get_infos_of_cat_link(link) there is a more in-depth explanation of how the links to the categories are build</li>
+</ul>
+<p><strong>Args:</strong></p>
+<ul>
+<li>soup (BeautifulSoup): <ul>
+<li>the soup of the complete website</li>
+</ul>
+</li>
+</ul>
+<p><strong>Returns:</strong></p>
+<ul>
+<li>list (String): <ul>
+<li>list of the names of the leaf categories</li>
+</ul>
+</li>
+</ul>
     </div>
     <div class='code'>
       <div class="highlight"><pre><span class="k">def</span> <span class="nf">get_categories</span><span class="p">(</span><span class="n">soup</span><span class="p">):</span></pre></div>
     </div>
   </div>
   <div class='clearall'></div>
-  <div class='section' id='section-27'>
+  <div class='section' id='section-37'>
     <div class='docs'>
       <div class='octowrap'>
-        <a class='octothorpe' href='#section-27'>#</a>
+        <a class='octothorpe' href='#section-37'>#</a>
       </div>
-      <p>for an explanation how the children categories are identified have a look at the comments for 
-   get_infos_of_cat_link(link) there is a more in-depth explanation of how the links to the categories are build</p>
-<p><strong>Args:</strong></p>
-<ul>
-<li>soup (BeautifulSoup): the soup of the complete website</li>
-</ul>
-<p><strong>Returns:</strong></p>
-<ul>
-<li>list (String): List of the names of the leaf categories</li>
-</ul>
+      
     </div>
     <div class='code'>
       <div class="highlight"><pre>    <span class="n">organizational_chart</span> <span class="o">=</span> <span class="n">soup</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="s2">&quot;ol&quot;</span><span class="p">,</span> <span class="n">class_</span><span class="o">=</span><span class="s2">&quot;rlist organizational-chart&quot;</span><span class="p">)</span>     
@@ -482,10 +667,10 @@
     </div>
   </div>
   <div class='clearall'></div>
-  <div class='section' id='section-28'>
+  <div class='section' id='section-38'>
     <div class='docs'>
       <div class='octowrap'>
-        <a class='octothorpe' href='#section-28'>#</a>
+        <a class='octothorpe' href='#section-38'>#</a>
       </div>
       <p>creates Categorie objects and appends them to a list</p>
     </div>
@@ -502,10 +687,10 @@
     </div>
   </div>
   <div class='clearall'></div>
-  <div class='section' id='section-29'>
+  <div class='section' id='section-39'>
     <div class='docs'>
       <div class='octowrap'>
-        <a class='octothorpe' href='#section-29'>#</a>
+        <a class='octothorpe' href='#section-39'>#</a>
       </div>
       <p>checks if the categorie has children or not</p>
     </div>
@@ -516,10 +701,10 @@
     </div>
   </div>
   <div class='clearall'></div>
-  <div class='section' id='section-30'>
+  <div class='section' id='section-40'>
     <div class='docs'>
       <div class='octowrap'>
-        <a class='octothorpe' href='#section-30'>#</a>
+        <a class='octothorpe' href='#section-40'>#</a>
       </div>
       <p>rest_cats is a list of the remaining categories</p>
     </div>
@@ -528,10 +713,10 @@
     </div>
   </div>
   <div class='clearall'></div>
-  <div class='section' id='section-31'>
+  <div class='section' id='section-41'>
     <div class='docs'>
       <div class='octowrap'>
-        <a class='octothorpe' href='#section-31'>#</a>
+        <a class='octothorpe' href='#section-41'>#</a>
       </div>
       <p>list comprehension puts all numbers in one list</p>
     </div>
@@ -543,10 +728,10 @@
     </div>
   </div>
   <div class='clearall'></div>
-  <div class='section' id='section-32'>
+  <div class='section' id='section-42'>
     <div class='docs'>
       <div class='octowrap'>
-        <a class='octothorpe' href='#section-32'>#</a>
+        <a class='octothorpe' href='#section-42'>#</a>
       </div>
       <p>appends leaf categories to a list</p>
     </div>
@@ -560,24 +745,25 @@
     </div>
   </div>
   <div class='clearall'></div>
-  <div class='section' id='section-33'>
+  <div class='section' id='section-43'>
     <div class='docs'>
       <div class='octowrap'>
-        <a class='octothorpe' href='#section-33'>#</a>
+        <a class='octothorpe' href='#section-43'>#</a>
       </div>
-      <p><strong>get all category numbers from a given link</strong></p>
+      <hr />
     </div>
     <div class='code'>
-      <div class="highlight"><pre><span class="k">def</span> <span class="nf">get_infos_of_cat_link</span><span class="p">(</span><span class="n">link</span><span class="p">):</span></pre></div>
+      <div class="highlight"><pre></pre></div>
     </div>
   </div>
   <div class='clearall'></div>
-  <div class='section' id='section-34'>
+  <div class='section' id='section-44'>
     <div class='docs'>
       <div class='octowrap'>
-        <a class='octothorpe' href='#section-34'>#</a>
+        <a class='octothorpe' href='#section-44'>#</a>
       </div>
-      <p>a link to a category is build up like this:
+      <p><strong>get all category numbers from a given link</strong></p>
+<p>a link to a category is build up like this:
    https://dl.acm.org/topic/ccs2012/10003120.10003138.10003141?SeriesKey=imwut&amp;expand=all</p>
 <p>first we remove everything after the ?</p>
 <p>https://dl.acm.org/topic/ccs2012/10003120.10003138.10003141</p>
@@ -590,12 +776,30 @@
 <p>https://dl.acm.org/topic/ccs2012/10003120.10003138</p>
 <p><strong>Args:</strong></p>
 <ul>
-<li>link (link to a (sub-) category): this link contains all parent categories numbers</li>
+<li>link (link to a (sub-) category): <ul>
+<li>this link contains all parent categories numbers</li>
+</ul>
+</li>
 </ul>
 <p><strong>Returns:</strong></p>
 <ul>
-<li>list(int): List of Integers to all the parent categories</li>
+<li>list(int): <ul>
+<li>SList of Integers to all the parent categories</li>
 </ul>
+</li>
+</ul>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre><span class="k">def</span> <span class="nf">get_infos_of_cat_link</span><span class="p">(</span><span class="n">link</span><span class="p">):</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-45'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-45'>#</a>
+      </div>
+      
     </div>
     <div class='code'>
       <div class="highlight"><pre>    <span class="n">categories_numbers</span> <span class="o">=</span> <span class="p">[]</span>

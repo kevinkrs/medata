@@ -7,6 +7,8 @@
 4. [[app.py]]
 5. [[create_init_data.py]]
 6. [[models.py]]
+
+------
 """
 
 """ 
@@ -16,6 +18,8 @@
 """
 from models import db, Insights, Information, Answers, Categories
 
+# ---------------------------------------------------------
+ 
 def create_init_data():
     insight_names1 = ["Number of participants", "Location of experiment", "Language of participants", "Percentage male participants","Average age of participants"]
     categories_names1 = ["Laboratory experiments"]

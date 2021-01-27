@@ -7,6 +7,8 @@
 4. [[app.py]]
 5. [[create_init_data.py]]
 6. [[models.py]]
+
+------
 """
 
 """
@@ -14,10 +16,11 @@
 
 * this module contains the model for our database
 * variables like insight, categories etc. are always refered to with: ' '
-* e.g. we have one 'insight' called "accuracy" 
-* this 'insight' supports the 'category' "supervised learning by classification"
-* on all acm papers in the 'category' "supervised learning by classification" exists one 'information' related to the 'insight'
-* all those 'information' can have multiple answers (because the value for accuracy is not the same in all papers)
+* e.g.:
+    * we have one 'insight' called "accuracy" 
+    * this 'insight' supports the 'category' "supervised learning by classification"
+    * on all acm papers in the 'category' "supervised learning by classification" exists one 'information' related to the 'insight'
+    * all those 'information' can have multiple answers (because the value for accuracy is not the same in all papers)
 
 ** Classes: **
 
@@ -26,7 +29,7 @@
 3. Information
 4. Answers
 
-----------------------------------------------------
+------
 
 """
 
@@ -38,6 +41,7 @@ from sqlalchemy import ForeignKey
 from sqlalchemy.orm import backref
 
 db = SQLAlchemy()
+
 
 # === Insights ===
 class Insights(db.Model):
@@ -76,6 +80,10 @@ class Insights(db.Model):
     def __repr__(self):
         return f'id: {self.id}, name: {self.name}'
 
+
+
+# ---------------------------------------------------------
+ 
 # === Categories ===
 class Categories(db.Model):
     """ 
@@ -103,6 +111,9 @@ class Categories(db.Model):
     def __repr__(self):
          return f'category_id: {self.category_id}, insight_id: {self.insight_id}, name: {self.name}, downvote_category: {self.downvote_category}, timestamp: {self.timestamp} '
 
+
+# ---------------------------------------------------------
+ 
 # === Information ===
 class Information(db.Model):
     """ 
@@ -172,11 +183,14 @@ class Information(db.Model):
     def __repr__(self):
         return f'insight_id: {self.insight_id}, information_id: {self.information_id}, paper_id: {self.paper_id}, authors: {self.authors}'
 
+
+# ---------------------------------------------------------
+ 
 # === Answers ===
 class Answers(db.Model):
     """ 
 
-        *Explanation:
+        **Explanation:**
 
         * information_id links the 'answer' to one 'information'
         * 'answer' is the actual answer to the 'insight'/'information' asked for in the paper, stored as a string

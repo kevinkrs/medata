@@ -7,15 +7,22 @@
 4. [[app.py]]
 5. [[create_init_data.py]]
 6. [[models.py]]
+
+------
 """
 
 """ 
 ** acm_scraper.py **
+
+* this module scrapes data from an ACM-DL page 
 """
 import requests
 from bs4 import BeautifulSoup
 import re
 
+
+# ---------------------------------------------------------
+ 
 # === Category ===
 class Category():
     """  
@@ -23,7 +30,8 @@ class Category():
 
         ** Returns: **
 
-        * None: simply there to store more information 
+        * None: 
+            * simply there to store more information 
     """
     numbers = []
     name = ""
@@ -39,80 +47,102 @@ class Category():
             "name": this.name,
             "numbers": this.numbers
         }
-
+# ---------------------------------------------------------
+ 
 def get_leaf_categories(url):
-    """ ** Get all leaf Categories as a list of Strings **
+    """ 
+        ** Get all leaf Categories as a list of Strings **
 
         ** Args: **
 
-        * url (str): url of the paper on ACM. Url is not checked
+        * url (str): 
+            * url of the paper on ACM. Url is not checked
 
         ** Returns: **
 
-        * leaf_list (list of str): List of Strings with the names of all Leaf categories
+        * leaf_list (list of str): 
+            * List of Strings with the names of all Leaf categories
     """
     soup = get_soup(url)
     leaf_list = get_categories(soup)
     return leaf_list
 
-
+# ---------------------------------------------------------
+ 
 def get_soup(url):
-    """ Return a soup object
-
+    """ 
         ** Args: **
 
-        * url (String): URL of the page as String
+        * url (String): 
+            * URL of the page as String
 
         ** Returns: **
 
-        * BeautifulSoup: soup object
+        * BeautifulSoup: 
+            *soup object
     """
     html_string = requests.get(url).text
     soup = BeautifulSoup(html_string, "lxml")
     return soup
 
 
+
+# ---------------------------------------------------------
+ 
 def get_facts_soup(soup:BeautifulSoup):
-    """ ** Creates a sub-soup object **
+    """ 
+        ** Creates a sub-soup object **
 
         ** Args: **
 
-        * soup (BeautifulSoup): Beautifulsoup soup Object of the complete page
+        * soup (BeautifulSoup): 
+            * Beautifulsoup soup Object of the complete page
 
         ** Returns: **
 
-        * Beautifulsoup: a sub-soup element of the complete page
+        * Beautifulsoup: 
+            * a sub-soup element of the complete page
     """
     return soup.find(class_="citation")
 
+
+# ---------------------------------------------------------
+ 
 def get_title(facts_soup):
-    """ ** Get the title of the Paper **
+    """ 
+        ** Get the title of the Paper **
 
         As the Informations appear multiple times on the webpage we need to split the complete soup into sub-soups
         This should also improve the performance - at least by a little :)
 
         ** Args: **
 
-        * facts_soup (BeautifulSoup soup): sub soup of the complete page
+        * facts_soup (BeautifulSoup soup): 
+            * sub soup of the complete page
 
         ** Returns: **
 
-        * String: title of the page
+        * String: 
+            * title of the page
     """
     title = facts_soup.find("h1", class_="citation__title").text
     return title
 
-   
+
+ # --------------------------------------------------------- 
+
 def get_authors(facts_soup):
     """ ** Returns a list of the links to the authors profiles **
 
         ** Args: **
 
-        * facts_soup (BeautifulSoup soup): sub soup
+        * facts_soup (BeautifulSoup soup): 
+            * sub soup
 
         ** Returns: **
 
-        * list: list of links to authors profiles, better to track as names can be doubled
+        * list: 
+            * list of links to authors profiles, better to track as names can be doubled
     """
     authors_info = facts_soup.find_all(class_="loa__item")
     #finds all classes which contain the authors information
@@ -129,18 +159,23 @@ def get_authors(facts_soup):
             print(f"AttributeError: {ae}")
         
     return authors_profile_list
-    
 
+
+# ---------------------------------------------------------
+ 
 def name_from_profile(link):
-    """ ** Get the Authors name from his/her profile **
+    """ 
+        ** Get the Authors name from his/her profile **
 
         ** Args: **
 
-        * link (string): link to the authors profile
+        * link (string): 
+            * link to the authors profile
 
         ** Returns: **
 
-        * string: name of the Author
+        * String: 
+            * name of the Author
     """
     if "dl.acm.org" in link:
         url = link
@@ -163,31 +198,41 @@ def name_from_profile(link):
     return name
     
 
+# ---------------------------------------------------------
+ 
 def get_paper_id(link):
-    """ **Paper Id and conference Id - probably unnecessary**
+    """ 
+        **Paper Id and conference Id - probably unnecessary**
 
         **Args:**
 
-        * link (string): link to the paper
+        * link (string): 
+            *link to the paper
 
         **Returns:**
 
-        * string: conferenceId.paperId
+        * String: 
+            * conferenceId.paperId
     """
     id = re.sub(r"https:\/\/dl\.acm\.org\/doi\/[\d*\.\d*]+\/", "", link)
     return id
 
 
+# ---------------------------------------------------------
+ 
 def get_conference(link):
-    """ **Get the name of the conference by the link of the paper**
+    """ 
+        **Get the name of the conference by the link of the paper**
 
         **Args:**
 
-        * link (string): link of the paper    
+        * link (string): 
+            * link of the paper    
 
         **Returns:**
 
-        * string : name of the conference the paper was published under
+        * String: 
+            * name of the conference the paper was published under
     """
 
 
@@ -203,20 +248,24 @@ def get_conference(link):
     return conference
 
 
+# ---------------------------------------------------------
+ 
 def get_categories(soup):
-    """ **Get a list of the leaf Categories**
+    """ 
+        **Get a list of the leaf Categories**
 
 
-        for an explanation how the children categories are identified have a look at the comments for 
-        get_infos_of_cat_link(link) there is a more in-depth explanation of how the links to the categories are build
+        * for an explanation how the children categories are identified have a look at the comments for get_infos_of_cat_link(link) there is a more in-depth explanation of how the links to the categories are build
 
         **Args:**
 
-        * soup (BeautifulSoup): the soup of the complete website
+        * soup (BeautifulSoup): 
+            * the soup of the complete website
 
         **Returns:**
 
-        * list (String): List of the names of the leaf categories
+        * list (String): 
+            * list of the names of the leaf categories
     """
     organizational_chart = soup.find("ol", class_="rlist organizational-chart")     
     categories_container = organizational_chart.find_all("a")
@@ -256,8 +305,11 @@ def get_categories(soup):
     return leaf_categories_list
 
 
+# ---------------------------------------------------------
+ 
 def get_infos_of_cat_link(link):
-    """ **get all category numbers from a given link**
+    """ 
+        **get all category numbers from a given link**
 
         a link to a category is build up like this:
         https://dl.acm.org/topic/ccs2012/10003120.10003138.10003141?SeriesKey=imwut&expand=all
@@ -280,11 +332,13 @@ def get_infos_of_cat_link(link):
 
         **Args:**
 
-        * link (link to a (sub-) category): this link contains all parent categories numbers
+        * link (link to a (sub-) category): 
+            * this link contains all parent categories numbers
 
         **Returns:**
         
-        * list(int): List of Integers to all the parent categories
+        * list(int): 
+            * SList of Integers to all the parent categories
     """
 
     categories_numbers = []
