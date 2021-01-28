@@ -3,6 +3,9 @@ import { fetchMetadata, postInsight, postAnswer, postRateAnswer, postRateRelevan
 
 
 export default createStore({
+  /**
+   * @class
+   */
   state: {
     metadata: [],
     query: '', //query = paperID
@@ -18,6 +21,9 @@ export default createStore({
     autocomplete: [],
     binder: []
   },
+  /**
+   * @class
+   */
   mutations: {
     // Saving the data from backend to the "metadata array"
     setMetadata (state, payload) {
@@ -52,6 +58,9 @@ export default createStore({
       state.binder = payload.binder
     }
   },
+  /**
+   * @class
+   */
   actions: {
     loadQuery({commit}, payload){
       // Important: You have to define what variable the payload should be added to! {query: payload}
