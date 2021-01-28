@@ -1,3 +1,4 @@
+
 <template>
 <div class ="extension">
   <div class="main-column">
@@ -5,14 +6,14 @@
     <!--Picture of the MEDATA logo-->
     <div class="headline">
       <button v-show="!legendVisible" style="display:inline" class="button-legend" @click="legendVisible = !legendVisible">
-        <div><img class="img-button-legend" src="../assets/info.png" ></div>
+        <div><img class="img-button-legend" src="../assets/info.png" /></div>
       </button>
       <button v-show="legendVisible" style="display:none" class="button-legend2" @click="legendVisible = !legendVisible">
-        <div><img class="img-button-legend" src="../assets/arrow-up.png" ></div>      
+        <div><img class="img-button-legend" src="../assets/arrow-up.png" /></div>      
       </button>
-      <img class="logo" src="../assets/medata_black.png" width="200"> 
+      <img class="logo" src="../assets/medata_black.png" width="200"/> 
       <button class="insight-button-yellow">
-        <img class="img-button" src="../assets/github.png" @click = "openGit">
+        <img class="img-button" src="../assets/github.png" @click = "openGit"/>
       </button>
     </div>
 
@@ -35,46 +36,51 @@ export default {
    mounted () {
     browser.runtime.sendMessage({})
   },
+  /**
+   * Users can access a collapsable information box as on the other components. It is triggered inside the html with the boolean _legendVisible_. 
+   */
     data () {
-
       return {
           legendVisible: false,
       }
     },
 
       methods: {
+        /**
+         * chrome extension call to _background.js_ for opening a new 
+         */
         openGit () {
         chrome.tabs.create({url: "https://github.com"});
         },
-      //if this takes too long, loading symbol may be easy to implement
+      /**
+         * To get all available data the backend needs all the paper urls from the binder. In order to get this information 
+         * the _content-script.js_ of the chrome extension is triggered with _setBinder()_. There a counterpart awaiting the call to provide the requested DOM elements. 
+         * After sending the request the function awaits a response which is handled with the function bellow.
+         *@class
+         */
         setBinder() {
           var vm = this
-          //1. Chrome takes curreant tab
             chrome.tabs.query({
-            //2. Function that orders the current tab to send a message with...
+            /**
+             * Sends message to the _content-script.js_ to activate scraping for particular DOM elements
+             */
               active: true, currentWindow: true}, function(tabs){
                 chrome.tabs.sendMessage(
-                          tabs[0].id, // the tab ID
-                          {from: 'binder', subject:'getLinks'}, // the strings expected from the content-script function
-                          vm.sendBinder) // a callback to handle the response 
+                          tabs[0].id, 
+                          {from: 'binder', subject:'getLinks'}, 
+                          vm.sendBinder) 
                         }
               )},
-          
+            
+         /**
+          * The repsonse from the _content-script.js_ is handled inside here and first commited to a state object inside vuex store and aftewards 
+          * dispatcht to the backend where the available data is bundled and sent back as direct download.
+          */ 
         sendBinder(responseDom) {
           this.$store.dispatch('fetchBinder', responseDom)
           this.$store.dispatch('sendBinder')
           },
 
-
-        checkBinder(){
-          alert(this.binder)
-        }
-      },
-
-    computed: {
-        ...mapState([
-            'binder'
-    ]),
     }
 }
 
