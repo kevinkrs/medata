@@ -378,6 +378,7 @@ export default {
     /**
      * Submitt-controll: After user selects answer (yellow-status) or confirms an insight (green-status) further interaction won't be possible anymore. 
      * Function changes displayed div. Button elements with _onclick_ functions beeing replaced with non-interactable lables 
+     * ONLY ACTIVE IN DELIVERING VERSION
     */
     visible3: function (divId) {
         document.getElementById(divId+100000).style.display = 'none';
