@@ -11,9 +11,6 @@
       <div v-else-if = "status == 3">
          <p class ="info"> Please select a certain Binder to continue </p>
       </div>
-      <div v-else-if = "status == 3">
-         <p class ="info"> Please select a certain Binder to continue </p>
-      </div>
       <div v-else>
        <div class="lds-roller"><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div></div>
       <div>
