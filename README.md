@@ -25,5 +25,9 @@ In order to get the download function working you have to navigate to the backen
 ## set up a server at Microsoft Azure
 1. create a Linux vm with Ubuntu
 2. establish a connection to the server - ssh is the easiest
-3. "sudo apt update" und "sudo apt upgrade" machen
+3. "sudo apt update" and "sudo apt upgrade" 
 4. follow this instruction: https://docs.microsoft.com/en-us/azure-stack/user/azure-stack-dev-start-howto-vm-python?view=azs-2008
+1. change the security network ports
+5. instead of starting the server with "flask run -h 0.0.0.0" you should change in app.py in the last line app.run() to app.run(host = "0.0.0.0")
+6. Then excecute "pyhton3.8 app.py". The Server runs now in a developement enviroment
+7. for a Production enviroment you should set up your server differently
