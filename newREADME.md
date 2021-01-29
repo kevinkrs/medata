@@ -39,6 +39,13 @@ Detailed documentation:
   * [create_real_data.py](medata_backend/docs/create_real_data.html)
   * [models.py](medata_backend/docs/models.html)
 * [Frontend](medata_plugin/documentation_frontend.md)
+  * [About.vue](medata_plugin/src/docs/About.md)
+  * [Home.vue](medata_plugin/src/docs/Home.md)
+  * [Binder.vue](medata_plugin/src/docs/Binder.md)
+  * [Vuex_Store](medata_plugin/src/docs/Store.md)
+  * [API](medata_plugin/src/docs/Api.md)
+  * [Background-Script](medata_plugin/src/docs/Background.md)
+  * [Content-Script](medata_plugin/src/docs/Content-Script.md)
 
 
 ## Usage
