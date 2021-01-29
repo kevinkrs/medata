@@ -166,23 +166,26 @@
             <button class="error-button" @click="visible2(entry.id+1000)">report error</button>
               <div class="insight-answers">
                 <p>Please select <br/> the correct Answer</p>
-
-               <div class="row">
+              <div :id=entry.id+100000 style ="display:inline">
+                 <div class="row">
                     <div v-for="answer in entry.answer" :key ="answer">
-                     <div :id=entry.id+100000 style ="display:inline">
                       <button type="button"  class="answer-button" @click="saveAnswerSelection(answer.answer), sendAnswerSelection(), visible3(entry.id)">
                         {{answer.answer}}
                       </button>
                      </div>
-                      <div :id=entry.id+200000 style ="display:none">
+                  </div>
+              </div>
+              <div :id=entry.id+200000 style ="display:none">
+                 <div class="row">
+                    <div v-for="answer in entry.answer" :key ="answer">
                       <button type="button"  class="main-button-clicked">
                         {{answer.answer}}
                       </button>
                      </div>
-                    </div>
+                 </div>   
                 </div>
-
               </div>
+              
               <div class="insight-add">
                 <p>Add value:</p>
                 <input class="inputfield" v-model='userInput' @keyup.enter='saveUserInput(), sendUserAnswer()'/><br/>
