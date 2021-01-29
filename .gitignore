@@ -3,4 +3,5 @@ medata_backend/venv
 .vscode
 .idea
 medata_backend/__pycache__
+medata_backend/python_package/__pycache__
 medata_frontend/node_modules

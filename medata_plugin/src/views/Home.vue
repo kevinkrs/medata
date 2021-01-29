@@ -5,14 +5,14 @@
     <!--Picture of the MEDATA logo-->
     <div class="headline">
       <button v-show="!legendVisible" style="display:inline" class="button-legend" @click="legendVisible = !legendVisible">
-        <div><img class="img-button-legend" src="../assets/info.png" ></div>
+        <div><img class="img-button-legend" src="../assets/info.png" /></div>
       </button>
       <button v-show="legendVisible" style="display:none" class="button-legend2" @click="legendVisible = !legendVisible">
-        <div><img class="img-button-legend" src="../assets/arrow-up.png" ></div>      
+        <div><img class="img-button-legend" src="../assets/arrow-up.png" /></div>      
       </button>
-      <img class="logo" src="../assets/medata_black.png" width="200"> 
+      <img class="logo" src="../assets/medata_black.png" width="200"/> 
       <button class="insight-button-yellow">
-        <img class="img-button" src="../assets/github.png" @click = "openGit">
+        <img class="img-button" src="../assets/github.png" @click = "openGit"/>
       </button>
     </div>
     
@@ -24,14 +24,14 @@
         <!--The div "grey-insight-button" contains the green/yellow or red button and the corresponding fold-out toggle box-->
         <div class="grey-insight-button">
           <button class="insight-button-green" @click="visible(-1)">
-            <div id=-1001 style="display:inline"><img class="img-button" src="../assets/info-green.png" ></div>
-            <div id=-2001 style="display:none"><img class="img-button" src="../assets/arrow-up-green.png" ></div>      
+            <div id=-1001 style="display:inline"><img class="img-button" src="../assets/info-green.png" /></div>
+            <div id=-2001 style="display:none"><img class="img-button" src="../assets/arrow-up-green.png" /></div>      
           </button>
 
 
           <div id=-1 style="display:none">
             <div class="grey-toggleBox">
-              <p>The insights with a <b> green arrow </b> on the right are confirmed by <br> at <b> least 5 other </b> users. </p>
+              <p>The insights with a <b> green arrow </b> on the right are confirmed by <br/> at <b> least 5 other </b> users. </p>
               <p> The confirmed value can be upvoted further to strengthen it's correctness as well as downvoted via an error reporting </p>
             </div>
           </div>
@@ -41,8 +41,8 @@
         <div class="grey-insight-name" @click="visible(-2)">validation needed</div>
         <div class="grey-insight-button">
           <button class="insight-button-yellow" @click="visible(-2)">
-            <div id=-1002 style="display:inline"><img class="img-button" src="../assets/info-yellow.png" ></div>
-            <div id=-2002 style="display:none"><img class="img-button" src="../assets/arrow-up-yellow.png" ></div>      
+            <div id=-1002 style="display:inline"><img class="img-button" src="../assets/info-yellow.png" /></div>
+            <div id=-2002 style="display:none"><img class="img-button" src="../assets/arrow-up-yellow.png" /></div>      
           </button>
 
           <div id=-2 style="display:none">
@@ -60,13 +60,13 @@
         </div>
         <div class="grey-insight-button">
           <button class="insight-button-red" @click="visible(-3)">
-          <div id=-1003 style="display:inline"><img class="img-button" src="../assets/info-red.png" ></div>
-          <div id=-2003 style="display:none"><img class="img-button" src="../assets/arrow-up-red.png" ></div>      
+          <div id=-1003 style="display:inline"><img class="img-button" src="../assets/info-red.png" /></div>
+          <div id=-2003 style="display:none"><img class="img-button" src="../assets/arrow-up-red.png" /></div>      
           </button>
           <div id=-3 style="display:none">
             <div class="grey-toggleBox">
               <p> The insights with a <b> red arrow </b> on the right contain no values yet. </p>
-              <p> User can add values with the input field. After adding a value the insight is switching instantly from red status to yellow status. <br> 
+              <p> User can add values with the input field. After adding a value the insight is switching instantly from red status to yellow status. <br/> 
               Now users can vote for an answer or add new answers. </p>
             </div>
           </div>
@@ -99,8 +99,8 @@
           <!--With a click on the colored button the function visable is called and the id of the insight
           is passed. This ensures that the corresponding toggle box becomes visible.-->
           <button class="insight-button-red" @click="visible(entry.id), saveInName(entry.name), sendInsightRelevance()">
-            <div :id=entry.id-1000 style="display:inline"><img class="img-button" src="../assets/arrow-down-red.png" ></div>
-            <div :id=entry.id-2000 style="display:none"><img class="img-button" src="../assets/arrow-up-red.png" ></div>      
+            <div :id=entry.id-1000 style="display:inline"><img class="img-button" src="../assets/arrow-down-red.png" /></div>
+            <div :id=entry.id-2000 style="display:none"><img class="img-button" src="../assets/arrow-up-red.png" /></div>      
           </button>
 
             <div :id=entry.id+1000 style="display:none">
@@ -112,7 +112,7 @@
 
               <div class="insight-toggleBox">
                 <button class="error-button" @click="visible2(entry.id+1000)">back</button>
-                <button id ="error1" class="error-button-2" @click='sendTypoError(),visible4()'>Report typo </button> <br> 
+                <button id ="error1" class="error-button-2" @click='sendTypoError(),visible4()'>Report typo </button> <br/> 
                 <button id ="error2" class="error-button-2" @click='sendInsightNotRelevantError(),visible4()'>Report insignificance of this insight </button>
               </div>
             </div> 
@@ -128,7 +128,7 @@
               <button class="error-button" @click="visible2(entry.id+1000)">report error</button>
               <div class="insight-add">
                 <p>Please enter information:</p>
-                <input class="inputfield" v-model='userInput' @keyup.enter='saveUserInput(), sendUserAnswer()'><br>
+                <input class="inputfield" v-model='userInput' @keyup.enter='saveUserInput(), sendUserAnswer()'/><br/>
                 <button class="main-button" @click="saveUserInput(), sendUserAnswer()">Submit</button>
               </div>
             </div>
@@ -136,8 +136,8 @@
         </div>
         <div div v-else-if="entry.answer[0].answer_score < 4" class="insight-button">
           <button class="insight-button-yellow" @click="visible(entry.id), saveInName(entry.name), sendInsightRelevance()">
-            <div :id=entry.id-1000 style="display:inline"><img class="img-button" src="../assets/arrow-down-yellow.png" ></div>
-            <div :id=entry.id-2000 style="display:none"><img class="img-button" src="../assets/arrow-up-yellow.png" ></div>
+            <div :id=entry.id-1000 style="display:inline"><img class="img-button" src="../assets/arrow-down-yellow.png" /></div>
+            <div :id=entry.id-2000 style="display:none"><img class="img-button" src="../assets/arrow-up-yellow.png" /></div>
           </button>
 
             <div :id=entry.id+1000 style="display:none">
@@ -149,7 +149,7 @@
 
               <div class="insight-toggleBox">
                 <button class="error-button" @click="visible2(entry.id+1000)">back</button>
-                <button id ="error1" class="error-button-2" @click='sendTypoError(),visible4()'>Report typo </button> <br> 
+                <button id ="error1" class="error-button-2" @click='sendTypoError(),visible4()'>Report typo </button> <br/> 
                 <button id ="error2" class="error-button-2" @click='sendInsightNotRelevantError(),visible4()'>Report insignificance of this insight </button>
               </div>
             </div> 
@@ -165,7 +165,7 @@
           
             <button class="error-button" @click="visible2(entry.id+1000)">report error</button>
               <div class="insight-answers">
-                <p>Please select <br> the correct Answer</p>
+                <p>Please select <br/> the correct Answer</p>
 
                <div class="row">
                     <div v-for="answer in entry.answer" :key ="answer">
@@ -185,7 +185,7 @@
               </div>
               <div class="insight-add">
                 <p>Add value:</p>
-                <input class="inputfield" v-model='userInput' @keyup.enter='saveUserInput(), sendUserAnswer()'><br>
+                <input class="inputfield" v-model='userInput' @keyup.enter='saveUserInput(), sendUserAnswer()'/><br/>
                 <button class="main-button" @click="saveUserInput(), sendUserAnswer()">Submit</button>
               </div>
             </div>
@@ -193,8 +193,8 @@
         </div>
         <div v-else class="insight-button">
           <button class="insight-button-green" @click="visible(entry.id), saveInName(entry.name), sendInsightRelevance(), saveAnswerSelection(entry.answer[0].answer)">
-            <div :id=entry.id-1000 style="display:inline"><img class="img-button" src="../assets/arrow-down-green.png" ></div>
-            <div :id=entry.id-2000 style="display:none"><img class="img-button" src="../assets/arrow-up-green.png" ></div>
+            <div :id=entry.id-1000 style="display:inline"><img class="img-button" src="../assets/arrow-down-green.png" /></div>
+            <div :id=entry.id-2000 style="display:none"><img class="img-button" src="../assets/arrow-up-green.png" /></div>
           </button>
 
             <div :id=entry.id+1000 style="display:none">
@@ -203,10 +203,9 @@
               <div class="insight-name2">
                 {{entry.name}}
               </div>
-
               <div class="insight-toggleBox">
                 <button class="error-button" @click="visible2(entry.id+1000)">back</button>
-                 <button id ="error1" class="error-button-2" @click='sendTypoError(),visible4()'>Report typo </button> <br> 
+                 <button id ="error1" class="error-button-2" @click='sendTypoError(),visible4()'>Report typo </button> <br/> 
                 <button id ="error2" class="error-button-2" @click='sendValueError(),visible4()'>Report incorrect value </button>
               </div>
             </div> 
@@ -221,10 +220,10 @@
             <div class="insight-toggleBox">
             <button class="error-button" @click="visible2(entry.id+1000)">report error</button>
             
-                <p class="insight-green-answer">{{entry.answer[0].answer}} <br></p>
+                <p class="insight-green-answer">{{entry.answer[0].answer}} <br/></p>
                 <div class="insight-green">
                   <div class="insight-green-text">
-                    <p> Number of<br> confirmations </p>
+                    <p> Number of<br/> confirmations </p>
                   </div>
                   <div class="insight-green-line"></div>
                   <div class="insight-green-number">
@@ -242,7 +241,7 @@
         </div>
       </div>
 
-      <div><br></div>
+      <div><br/></div>
 
       <!--This fieldset element "grey-box" contains everything reagardin the "more-functions"-->
       <fieldset class="grey-box">
@@ -253,7 +252,7 @@
             download insights
           </div>
           <div class="grey-insight-button">
-            <button class="insight-button-yellow" @click="sendDownloadRequest()"><img class="img-button" src="../assets/direct-download.png" ></button>
+            <button class="insight-button-yellow" @click="sendDownloadRequest()"><img class="img-button" src="../assets/direct-download.png" /></button>
           </div>
         </div>
         <div class="grey-insight">
@@ -262,8 +261,8 @@
           </div>
           <div class="grey-insight-button">
             <button class="insight-button-yellow" @click="visible(-5)">
-            <div id=-1005 style="display:inline"><img class="img-button" src="../assets/add.png" ></div>
-            <div id=-2005 style="display:none"><img class="img-button" src="../assets/arrow-up.png" ></div>      
+            <div id=-1005 style="display:inline"><img class="img-button" src="../assets/add.png" /></div>
+            <div id=-2005 style="display:none"><img class="img-button" src="../assets/arrow-up.png" /></div>      
             </button>
             <div id=-5 style="display:none">
               <div class="new-insight-toggleBox">
@@ -290,28 +289,44 @@
 </template>
 
 <script>
-// mapState is a function, that maintains a reference to a specific property of the "state" object (state.metadata)
-// if the property is mutated, a component using mapState will react to that change and refresh the UI that is tied to this data
 import {mapState} from 'vuex'
-
+/**
+ * The core component of the plugin. All the interaction between user an programm happens here. 
+ */
 export default {
   name: 'main',
   data () {
     return {
-    // Empty String for possible user input
+    /**
+     * Empty strings for saving user input inside given input fields
+     */
       userInput: '',
+      /**
+       * Trigger for collapsing information box
+       */
       legendVisible: false,
-      // TODO: Backend has to send an array with common words for certain category 
+      /**
+       * Saves recieved array of topic related words from backend. 
+       * Required for the _add insight_ autocomplete option
+       */
       filtered: [],
+      /**
+       * Property for the autocomplete option 
+       */
       modal: false
     }
   },
   methods: {
-    // Function only for testing
+   /**
+    * Click function for top right git icon to open github repository
+    */
     openGit () {
       chrome.tabs.create({url: "https://github.com"});
     },
 
+    /**
+     * Autocomplete function using the _filtered_ property from _data_ which is fed with topic related words trough a backend call. 
+     */
     filterParameters() {
       if (this.userInput.length == 0){
         this.filtered = []
@@ -322,11 +337,17 @@ export default {
         })
       }
     },
+    /**
+     * Allows user to click on one of the autocomplete proposals to fill the input field with the selected one
+     */
     setParam(param) {
       this.userInput = param
       this.modal = false
     },
-    // TODO commments
+    
+    /**
+     * For collapsing an insight in order to interact with it. 
+     */
     visible: function (divId) {
       /*The for loop closes all divs to ensure that only one div is open at a time*/
       for (var i = -10000; i <= 10000; i++) {
@@ -351,6 +372,10 @@ export default {
       }
     },
 
+    /**
+     * Collapsing _report an error_ interface: After an user has submitted any kind of error the error interface collapses and the user is
+     * back at the unfolded insight
+     */
     visible2: function (divId) {
       if (document.getElementById(divId).style.display === 'none') {
         document.getElementById(divId).style.display = 'inline';
@@ -361,11 +386,19 @@ export default {
       }
     },
 
+    /**
+     * Submitt-controll: After user selects answer (yellow-status) or confirms an insight (green-status) further interaction won't be possible anymore. 
+     * Function changes displayed div. Button elements with _onclick_ functions beeing replaced with non-interactable lables 
+     * ONLY ACTIVE IN DELIVERING VERSION
+    */
     visible3: function (divId) {
         document.getElementById(divId+100000).style.display = 'none';
         document.getElementById(divId+200000).style.display = 'inline';    
     },
-
+    /**
+     * This function assures that there is always only one insight unfolded. 
+     * Unfolding another insight automatically collapses the old one
+     */
     visible4: function () {
       /*The for loop closes all divs to ensure that only one div is open at a time*/
       for (var i = -10000; i <= 10000; i++) {
@@ -379,14 +412,22 @@ export default {
         }                
       }
     },    
-    // All the following methods are merely for saving data as state objects
+    /**
+     * Saving current insight user has interacted with and commiting it to a state object in vuex store
+     */
     saveInName(name) {
       this.$store.dispatch('fetchInName', name)
     },
+     /**
+     * Saving selected answer option (yellow-status) and commiting it to a state object in vuex store
+     */
     saveAnswerSelection(answer) {
       this.$store.dispatch('fetchUserAnswer', answer) 
     },
-    // TODO: This method saves & sends user Input 
+    /**
+     * Saving any input user has made and commiting it to a state object in vuex store.
+     * Differentiation between wether it is a new insight answer or a new insight is handled by calling either _sendUserAnswer_ or _sendUserInsight_ for the given case.
+     */
     saveUserInput() {
       if (this.userInput == ''){
         alert('Please enter some data before submitting!')
@@ -395,13 +436,19 @@ export default {
          this.$store.dispatch('fetchUserInput', this.userInput)
       }
     },
-    // Yellow status for rating answers
+    /**
+     * Triggered right after _saveAnswerSelection(answer)_ to send the selected answer via api call to the database in the backend.
+     * Afterwards the data gets reloaded to check if an insight has enough upvotes to change its status to _green status_. 
+     * We always store user interaction temporarly into vuex store rather than directly dispatching it to our backend code. 
+     */
     sendAnswerSelection() {
       this.$store.dispatch('sendRateAnswer')
       alert('Thanks for rating!')
       this.$store.dispatch('loadMetadata')
     },
-    // For new answers by user
+    /**
+     * Sending new user _insight answers_ to the database and reloading data to give the user a direct feedback that his/her new insight is available now. 
+     */
     sendUserAnswer() {
       if (this.currentUserInput == ''){
         console.log('empty userInput')
@@ -413,7 +460,9 @@ export default {
         this.$store.dispatch('loadMetadata')
         }
     },
-    // For new insights by user
+     /**
+     * Sending new user _insight_ to the database and reloading data to give the user a direct feedback that his/her new insight is available now. 
+     */
     sendUserInsight() {
       if(this.currentUserInput == ''){
         console.log('empty userInput')
@@ -426,37 +475,55 @@ export default {
       }
     },
   
+  /**
+   * Triggering direct download 
+   */
     sendDownloadRequest() {
       this.$store.dispatch("loadDownload")
     },
   
-    // User sends relevance of insight (upvote) on insight click
+    /**
+     * On collapsing any insight this function is triggered to upvote the clicked-on insight. 
+     */
     sendInsightRelevance(){
       this.$store.dispatch('sendRateRelevanceInsight')
     },
-
+    /**
+     * Dispatching insight-not-relevant-error to the backend, where it is handled
+     */
     sendInsightNotRelevantError() {
       this.$store.dispatch('sendInsightNotRelevantError')
       this.$store.dispatch('loadMetadata')
       alert('Thank you for reporting! If more user report this insight as insignificant it will be deleted.')
     },
+    /**
+     * Dispatching value-error to the backend, where it is handled
+     */
     sendValueError() {
       this.$store.dispatch('sendValueError')
       this.$store.dispatch('loadMetadata')
       alert("Thank you for reporting! The value is going to be checked.")
     },
+    /**
+     * Dispatching typo-error to the backend, where it is handled
+     */
      sendTypoError() {
         this.$store.dispatch('sendTypoError')
         this.$store.dispatch('loadMetadata')
         alert('Thank you for reporting typo. Our team is going to check your reported typo.')
      },
+     /**
+      * Triggers backend scraper to scrape further informations for the direct-download file e.g. Autors, Title etc. 
+      * Function is beeing called directly when the component has been _created_ to guarantee an instant download experience to the users
+      */
      sendScraper() {
        this.$store.dispatch('loadFurtherInformation')
      }
 
   },
-  // mapstate is a Vuex component (using computed) summarizing the command of this.$store.state.metadata
-  // we can easily load all our state objects inside our Home-Component and access it by calling this."propertyname"
+  /**
+   * Accessing the vuex store propertys for further modification inside this component
+   */
   computed: {
     ...mapState([
         'metadata', 

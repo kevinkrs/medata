@@ -1,6 +1,26 @@
+""" 
+** backend documentation: **
+
+1. [[__init__.py]]
+2. [[acm_scraper.py]]
+3. [[api.py]]
+4. [[app.py]]
+5. [[create_init_data.py]]
+6. [[models.py]]
+
+------
+"""
+
+""" 
+** create_init_data.py **
+
+* this module creates/created the first entrys for our db 
+"""
 from models import db, Insights, Information, Answers, Categories
 
-def create_mock_data():
+# ---------------------------------------------------------
+ 
+def create_init_data():
     insight_names1 = ["Number of participants", "Location of experiment", "Language of participants", "Percentage male participants","Average age of participants"]
     categories_names1 = ["Laboratory experiments"]
     

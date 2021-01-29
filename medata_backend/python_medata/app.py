@@ -1,9 +1,27 @@
+""" 
+** backend documentation: **
+
+1. [[__init__.py]]
+2. [[acm_scraper.py]]
+3. [[api.py]]
+4. [[app.py]]
+5. [[create_init_data.py]]
+6. [[models.py]]
+
+------
+"""
+
+""" 
+** app.py ** 
+"""
 from flask import Flask, jsonify, request
 from flask_cors import CORS
 from flask_sqlalchemy import SQLAlchemy
 from models import db
 from api import api
-from create_real_data import create_mock_data
+from create_init_data import create_init_data
+
+
 
 #configuration
 DEBUG = True
@@ -24,12 +42,12 @@ CORS(app, resources={r'/*': {'origins': '*'}})
 
 
 #create real data
-# try:
-#     with app.app_context():
-#         db.create_all()
-#         create_mock_data()
-# except Exception as e:
-#     print(e)
+#try:
+#    with app.app_context():
+#        db.create_all()
+#        create_init_data()
+#except Exception as e:
+#    print(e)
 
 
 

@@ -1,3 +1,21 @@
+""" 
+** backend documentation: **
+
+1. [[__init__.py]]
+2. [[acm_scraper.py]]
+3. [[api.py]]
+4. [[app.py]]
+5. [[create_init_data.py]]
+6. [[models.py]]
+
+------
+"""
+
+""" 
+** api.py **
+
+* this module handels the api-calls
+"""
 from flask import Blueprint, jsonify, request, send_file, safe_join
 from sqlalchemy import or_, exists, and_, not_
 from datetime import datetime
@@ -11,14 +29,21 @@ import multiprocessing
 
 api = Blueprint('api', __name__)
 
+# ---------------------------------------------------------
+ 
+# === url_checker ===
 def url_checker(url):
-    """Modifies the url from a pdf or epdf view to a regular url
+    """ 
+        **Modifies the url from a pdf or epdf view to a regular url**
 
-    Args:
-        url (String): url of a pdf or edpf view or regular url
+        **Args:**
 
-    Returns:
-        url: regularised url as a paper id
+        * String: url of a pdf or edpf view or regular url
+
+        **Returns:**
+
+        * url:
+            * regularised url as a paper id
     """
     if "epdf/" in url:
         return url.replace("epdf/","")
@@ -30,44 +55,65 @@ def url_checker(url):
         return url
 
 
+
+
+# ---------------------------------------------------------
+ 
+# === ping ===
 @api.route('/ping', methods=['GET'])
 def ping_pong():
-    """Check if Server is running
+    """ 
+        **Check if Server is running**
 
-    Returns:
-        [json]: [just return a string "pong" in json format]
+        **Returns:**
+
+        * json:
+            * just return a string "pong" in json format
     """
     return jsonify('pong!')
 
+
+
+# ---------------------------------------------------------
+ 
+# === get_all ===
 @api.route('/get_all', methods=['GET'])
 def get_all():
-    """Testing Method to return whole database
+    """ 
+        **Testing Method to return whole database**
 
-    Returns:
-        [json]: [complete database sorted by insights]
+        **Returns:**
+
+        * json:
+            * complete database sorted by insights
     """
-    response_object = {'status':     'success'}
-    print(Insights.query.count())
+    response_object = {'status': 'success'}
     for x in range(1,Insights.query.count()):
         response_object[f'insight {x}'] = Insights.query.get(x).to_dict()
     
     return jsonify(response_object)
 
 
+
+# ---------------------------------------------------------
+ 
+# === get_specific ===
 @api.route('/get_specific', methods=['POST'])
 def get_specific():
-    """Get all 'information' for a specific url (=paper_id)
+    """ 
+        **Get all 'information' for a specific url (=paper_id)**
 
-    Returns:
-        [json]: [if no 'informatin' is listed for this paper, an Array with the leaf 'categories' is returned, otherwise a json object with all relevant 'information'
-        and the leaf 'categories' are returned]
+        **Returns:**
+
+        * json:
+            * if no 'informatin' is listed for this paper, an Array with the leaf 'categories' is returned, otherwise a json object with all relevant 'information' and the leaf 'categories' are returned
     """
     #fetch data from request
     url = request.get_json().get('url')
     url = url_checker(url)
 
     #a max of 'number_information' is returned
-    number_information = 7
+    number_information = 9
 
     #'information' linked to 'insights' which have been downvoted for relevant_categories is not added
     max_downvote_category = 2
@@ -89,7 +135,6 @@ def get_specific():
     db.session.commit()
 
     #query 'information' with and without 'answers'
-    #TODO limit filtered_information_answers
     filtered_information_answers = Information.query.join(Information.answers).filter(or_(Information.insight_id==int(x.id) for x in matching_insight)).filter(Information.paper_id==paper_id).order_by(Answers.answer_score.desc()).all()
     number_information = number_information - len(filtered_information_answers)
     filtered_information_without_answers = Information.query.filter(or_(Information.insight_id==int(x.id) for x in matching_insight)).filter(Information.paper_id==paper_id).filter(Information.answers == None).order_by((Information.insight_upvotes-Information.insight_downvotes).desc()).limit(number_information).all()
@@ -108,15 +153,22 @@ def get_specific():
 
 
 
+# ---------------------------------------------------------
+ 
+# === get_further_information ===
 @api.route('/get_further_information', methods=['POST'])
 def get_further_information():
-    """Get scraper to look up more specific information about the url which is posted via POST method
-    this includes the title, authors, link to authors profile and the conference. The scraped information is then added
-    to the correct 'information'
+    """ 
+        **add further information, like author to 'information' linked to the 'paper_id' (=url)**
+
+        * json: 
+            * {"paper_id" : String with the paper_id which is in our case the completet link to the paper}
 
 
-    Returns:
-        [{'status': 'success'}]: [returns 'success' if the call went successful]
+        **Returns:**
+
+        * json:
+            * {'status': 'success'}
     """
     response_object = {'status': 'success'}
     #url is send from the FE
@@ -178,8 +230,6 @@ def get_further_information():
         authors = pool.map_async(scraper.name_from_profile,[profile_link for profile_link in authors_profile_link]).get()
         #authors = [scraper.name_from_profile(profile_link) for profile_link in authors_profile_link]
 
-        print(f"runtime for {len(authors)} authors: {datetime.now()-start} on {multiprocessing.cpu_count()} cores")
-
         title = scraper.get_title(facts_soup)
         conference = scraper.get_conference(paper_id)
         authors_profile_link = "--".join(authors_profile_link)
@@ -199,30 +249,30 @@ def get_further_information():
                 current_information.conference = conference
                 db.session.commit()
 
-    
     return jsonify(response_object)
 
 
 
-
-
-
-
+# ---------------------------------------------------------
+ 
+# === add_insight ===
 @api.route('/add_insight', methods =["POST"])
 def add_insight():
-    """Add an insight to a specific category
+    """ 
+        **Add an insight to a specific category**
 
-    Args:
-        json: 
-            { 
-            "insight" : String with the name of the Insight
-            "categories" : List of Strings with category names
-            "paper_id" : String with the paper_id which is in our case the completet link to the paper
-            }
+        **Args:**
+
+        * json: 
+            * {"insight" : String with the name of the Insight
+            * "categories" : List of Strings with category names
+            * "paper_id" : String with the paper_id which is in our case the completet link to the paper}
 
 
-    Returns:       
-        json: {"status": "success"}
+        **Returns:**
+
+        * json: 
+            * {'status': 'success'}
     """     
     response_object = {'status': 'success'}
     #fetch data from request
@@ -273,21 +323,26 @@ def add_insight():
 
 
 
+# ---------------------------------------------------------
+ 
+# === add_answer ===
 @api.route('/add_answer', methods = ["POST"])
 def add_answer():
-    """Add a new answer to an existing 'information'  
+    """ 
+        **Add a new answer to an existing 'information'**
 
-    Args:
-        json: 
-            { 
-            "paper_id" : String with the paper_id which is in our case the completet link to the paper
-            "insight" : String with the name of the Insight
-            "answer" : String with the Answer
-            }
+        **Args:**
+
+        * json:  
+            * {"paper_id" : String with the paper_id which is in our case the completet link to the paper
+            * "insight" : String with the name of the Insight
+            * "answer" : String with the Answer}
 
 
-    Returns:       
-        json: {"status": "success"}
+        **Returns:**
+
+        * json:
+            * {'status': 'success'}
     """
     response_object = {'status': 'success'}
     #fetch data from request
@@ -323,22 +378,28 @@ def add_answer():
     return jsonify(response_object)
 
 
+
+# ---------------------------------------------------------
+ 
+# === rate_answer ===
 @api.route('/rate_answer', methods = ["POST"])
 def rate_answer():
-    """Rates an already given answer
+    """ 
+        **Rates an already given answer**
 
-      Args:
-        json: 
-            { 
-            "insight" : String with the name of the Insight
-            "paper_id" : String with the paper_id which is in our case the completet link to the paper
-            "upvote" : Boolean if the answer was upvoted(= true) or downvoted (= false)
-            "answer" : String with the Answer
-            }
+        **Args:**
+
+        * json: 
+            * {"insight" : String with the name of the Insight
+            * "paper_id" : String with the paper_id which is in our case the completet link to the paper
+            * "upvote" : Boolean if the answer was upvoted(= true) or downvoted (= false)
+            * "answer" : String with the Answer}
 
 
-    Returns:
-        json: {"status": "success"}
+        **Returns:**
+
+        * json:
+            * {'status': 'success'}
     """
     response_object = {'status': 'success'}
     #fetch data from request
@@ -372,21 +433,26 @@ def rate_answer():
     return jsonify(response_object)
 
 
+# ---------------------------------------------------------
+ 
+# === rate_relevance_insight ===
 @api.route('/rate_relevance_insight', methods = ["POST"])
 def rate_relevance_insight():
-    """Rate the relevance of an already given Insight for a specific paper
+    """ 
+        **Rate the relevance of an already given Insight for a specific paper**
 
-      Args:
-        json: 
-            { 
-            "insight" : String with the name of the Insight
-            "paper_id" : String with the paper_id which is in our case the completet link to the paper
-            "upvote" : Boolean if the insight was upvoted(= true) or downvoted (= false)
-            }
+        **Args:**
+        
+        * json: 
+            * {"insight" : String with the name of the Insight
+            * "paper_id" : String with the paper_id which is in our case the completet link to the paper
+            * "upvote" : Boolean if the insight was upvoted(= true) or downvoted (= false)}
 
 
-    Returns:
-        json: {"status": "success"}
+        **Returns:**
+
+        * json: 
+            * {'status': 'success'}
     """
     response_object = {'status': 'success'}
     #fetch data from request
@@ -410,40 +476,35 @@ def rate_relevance_insight():
     return jsonify(response_object)
 
 
+
+# ---------------------------------------------------------
+ 
+# === download ===
 @api.route('/download', methods = ["POST"])
 def download():
-    """download the information of a single or mutitple paper as a csv file
+    """ 
+        **Download the information of a single or mutitple paper as a csv file**
 
-    answer_score_threshold defines the minimum Answer score for the answer to appear in the results. 
-    A score of 1 should be the absolute minimum. This score should be set equal to the threshold in the frontend 
-    for Insights to be ranked as green.
-
-    FE can either send one url in the json response or a list of urls.
+        * answer_score_threshold defines the minimum Answer score for the answer to appear in the results 
+        * a score of 1 should be the absolute minimum
+        * this score should be set equal to the threshold in the frontend for Insights to be ranked as green
+        * FE can either send one url in the json response or a list of urls.
     
-    Args:
-        json: 
-            { 
-            "url" : Single url of the page. Does not matter if on epdf, pdf, html or other version of the paper, all work
-            "urls_from_binder": List of urls from the binder
-            }
+        **Args:**
 
-    Returns:
-         csv file: includes title, authors names, link to the paper, all Insights and answer with answer_score above the threshold. 
+        * json: 
+            * {"url" : Single url of the page. Does not matter if on epdf, pdf, html or other version of the paper, all work
+            * "urls_from_binder": List of urls from the binder }
+
+        **Returns:**
+
+        * csv file:
+            * includes title, authors names, link to the paper, all Insights and answer with answer_score above the threshold. 
     """
-    answer_score_threshold = 3
-    #fetch data from request
-    url = request.get_json().get('url')
-    if url is not None:
-        url = url_checker(url)
-
-    urls_from_binder = request.get_json().get("urls_from_binder")
-    print(urls_from_binder)
-
-    #TODO lets put this somewhere else
     def df_from_url(url):
         url = url
         inf = Information.query.join(Information.answers).filter(Information.paper_id==url).filter(Answers.answer_score > answer_score_threshold).order_by(Answers.answer_score.desc()).all()
-        #catch aioor  
+
         #makes a list of authors splitted by a ','
         authors = inf[0].authors.replace("--", ",").strip()
 
@@ -459,10 +520,15 @@ def download():
         df = pd.DataFrame(data=data)
         return df
 
-    answer_score_threshold = 4
+
+
+
+    answer_score_threshold = 3
     #fetch data from request
     url = request.get_json().get('url')
-    url = url_checker(url)
+    if url is not None:
+        url = url_checker(url)
+
     urls_from_binder = request.get_json().get("urls_from_binder")
 
     if urls_from_binder is not None:
@@ -471,8 +537,6 @@ def download():
             temp_url = re.search(r"\/doi\/\d*\.\d+\/\d*(\.\d+)*", binder_url)
             temp_url = "https://dl.acm.org"+temp_url.group()
             urls_from_binder_list.append(temp_url)
-
-        print(urls_from_binder_list)
 
         urls = list(set([u.strip() for u in urls_from_binder_list]))
         #removes duplicates
@@ -511,23 +575,28 @@ def download():
     df.to_csv(pathlib.Path(path_to_csv))
     
     return send_file(safe_join(pathlib.Path(path_to_csv)), as_attachment=True )
+
     
 
 
-
+# ---------------------------------------------------------
+ 
+# === insight_not_relevant_for_category ===
 @api.route('/insight_not_relevant_for_category', methods = ["POST"])
 def insight_not_relevant_for_category():
-    """Downvotes the relevance of an 'insight' for a set of 'categories'
+    """ 
+        **Downvotes the relevance of an 'insight' for a set of 'categories'**
 
-      Args:
-        json: 
-            { 
-            "insight" : String with the name of the Insight
-            "categories" : Array with a set of categories
-            }
+        **Args:**
 
-    Returns:
-        json: {"status": "success"}
+        * json: { 
+            * "insight" : String with the name of the Insight
+            * "categories" : Array with a set of categories }
+
+        **Returns:**
+
+        * json: 
+            * {'status': 'success'}
     """
     response_object = {'status': 'success'}
     #fetch data from request
@@ -547,20 +616,26 @@ def insight_not_relevant_for_category():
 
     return jsonify(response_object)
 
-    
+
+
+# ---------------------------------------------------------
+ 
+# === typo_error ===
 @api.route('/typo_error', methods = ['POST'])
 def typ_error():
-    """Increments type_error linked to a specific 'insight'
+    """ 
+        **Increments typo_error linked to a specific 'insight'**
 
-      Args:
-        json: 
-            { 
-            "insight" : String with the name of the Insight
-            }
+        **Args:**
+
+        * json: 
+            * {"insight" : String with the name of the Insight}
 
 
-    Returns:
-        json: {"status": "success"}
+        **Returns:**
+
+        * json: 
+            * {'status': 'success'}
     """
     response_object = {'status': 'success'}
     #fetch data from request
@@ -569,26 +644,31 @@ def typ_error():
 
     #query 'insight'
     i = Insights.query.filter(Insights.name==in_insight_name).first()
-    #increment type_error
-    i.type_error = i.type_error + 1
+    #increment typo_error
+    i.typo_error = i.typo_error + 1
     db.session.commit()
 
     return jsonify(response_object)
 
 
 
+# ---------------------------------------------------------
+ 
+# === autocomplete ===
 @api.route('/autocomplete', methods = ['POST'])
 def autocomplete():
-    """Creates an Array of Strings used for autocomplete in the FE based on all 'insights' and a set of 'categories'
+    """ 
+        **Creates an Array of Strings used for autocomplete in the FE based on all 'insights' and a set of 'categories'**
 
-      Args:
-        json: 
-            { 
-            "categories" : Array with a set of categories
-            }
+        **Args:**
 
-    Returns:
-        Array of Strings
+        * json: 
+            * {"categories" : Array with a set of categories}
+
+        **Returns:**
+
+        * Array: 
+            * Strings with word suggestions
     """
     #fetch data from request
     post_data = request.get_json()
@@ -622,14 +702,11 @@ def autocomplete():
                     #words have the form: "research_laboratory"
                     response_object.append(x.capitalize().replace('_', ' '))
         except LookupError:
-            """Wordnet only has to be installed once
-            """
             try:
                 import nltk
                 nltk.download("wordnet")
             except:
                 pass
-            #TODO Unbeding fixen und try/ except rauslöschen
 
     #remove duplicates           
     response_object = list(set(response_object))
