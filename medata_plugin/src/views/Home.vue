@@ -332,7 +332,7 @@ export default {
     },
     
     /**
-     * For unfold an insight in order to interact with it. 
+     * For unfolding an insight and other elements in order to interact with it. 
      * Guarantees that always only one insight is unfolded. Clicking on another one will automatically collapse the old one.
      */
     visible: function (divId) {

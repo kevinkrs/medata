@@ -42,7 +42,7 @@ Detailed documentation:
   * [About.vue](medata_plugin/src/docs/About.md)
   * [Home.vue](medata_plugin/src/docs/Home.md)
   * [Binder.vue](medata_plugin/src/docs/Binder.md)
-  * [Vuex_Store](medata_plugin/src/docs/Store.md)
+  * [Store(Vuex)](medata_plugin/src/docs/Store.md)
   * [API](medata_plugin/src/docs/Api.md)
   * [Background-Script](medata_plugin/src/docs/Background.md)
   * [Content-Script](medata_plugin/src/docs/Content-Script.md)
