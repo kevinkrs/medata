@@ -30,7 +30,7 @@ export default {
   data()  {
     return{
       /**
-       * Checking if user is on any dl.acm.org page
+       * Checking if user is on any dl.acm.org page.
        */
         substr: /dl\.acm\.org\//,
       /**
@@ -38,15 +38,15 @@ export default {
        */
         regex: /dl\.acm\.org\/doi\/((fullHtml\/)|(epdf\/)|(pdf\/)){0,1}\d+\.\d{3,}\//,
         /**
-         * Checking for specific Binder page 
+         * Checking for specific Binder page.
          */
         regexBinder: /dl\.acm\.org\/action\/showBinder\?/,
         /**
-         * Checking for Binder overview page
+         * Checking for Binder overview page.
          */
         readingList: /dl\.acm\.org\/action\/showMyBinders/,
         /**
-         * Purpose is to load the right vue component depending on the current user url
+         * Purpose is to load the right vue component depending on the current user url.
          */
         status: 0
     }
@@ -71,11 +71,10 @@ export default {
           function (tabs){
             if (tabs[0].url.match(vm.regex)) { 
               vm.status = 0
-              // alert('Valid URL found')
-              // if URL is a dl.acm.org URl we save it to our state 
+              // if URL is a dl.acm.org URl we save it to our state.
               vm.$store.dispatch('loadQuery', tabs[0].url)
               .then(vm.loadData())
-              // With router.push we can route to another url automatically 
+              // With router.push we can route to another url automatically.
           }
             else if(tabs[0].url.match(vm.regexBinder)){
               vm.$store.dispatch('loadQuery', tabs[0].url)
@@ -97,7 +96,7 @@ export default {
     /**
      * This function is called by _checkURL()_. If the user is on a valid page the function 
      * responsible for fetching backend data is going do be dispatched and only if resolved the route is going to push the user to our main page 
-     * with all the data already available
+     * with all the data already available.
      *  */ 
     async loadData(){
       await this.$store.dispatch('loadMetadata')
@@ -108,10 +107,10 @@ export default {
   /**
    * @property
    */
-    created:  //Krieg diese Funktion nicht rein
+    created:  
     /**
    * The property _created_ is automatically triggerd when the html components have been loaded. Here we use this Vue feature to automatically 
-   * activate the _checkURL_ Function
+   * activate the _checkURL_ Function.
    */
       function() {
         this.checkURL()

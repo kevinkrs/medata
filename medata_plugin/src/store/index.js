@@ -8,27 +8,27 @@ export default createStore({
  */
   state: {
     /**
-     * Array for saving recieved backend data and access it in every other vue component
+     * Array for saving recieved backend data and access it in every other vue component.
      */
     metadata: [],
     /**
-     * Current user URL
+     * Current user URL.
      */
     query: '', 
     /**
-     * Current selected insight name
+     * Current selected insight name.
      */
     currentIn: '', 
     /**
-     * Current selected insight ID
+     * Current selected insight ID.
      */
     currentInID: '', 
     /**
-     * Current CSS categories of visited article 
+     * Current CSS categories of visited article.
      */
     currentCategories: [], 
     /**
-     * Selected answer by user (yellow-status)
+     * Selected answer by user (yellow-status).
      */
     currentAnswer: '', 
     /**
@@ -209,7 +209,7 @@ export default createStore({
     
 
     /**
-     * Sends api call to backend for posting a new insight answer (yellow or red-status).
+     * Calls function that sends api call to backend for posting a new insight answer (yellow or red-status).
      */
     sendAnswer () {   
       return postAnswer(this.state.query, this.state.currentIn, this.state.currentUserInput)
@@ -217,7 +217,7 @@ export default createStore({
         .catch((error) => {console.error(error)})
     },
    /**
-     * Sends api call to backend for rating an insight answer (green or yellow-status).
+     * Calls function that sends api call to backend for rating an insight answer (green or yellow-status).
      */
     sendRateAnswer () { 
       return postRateAnswer(this.state.query, this.state.currentIn, this.state.currentAnswer, this.state.answerUpvoteBool)
@@ -225,7 +225,7 @@ export default createStore({
         .catch((error) => {console.error(error)})
     },
     /**
-     * Sends api call to backend for posting a new insight.
+     * Calls function that sends api call to backend for posting a new insight.
      */
     sendInsight () { 
       return postInsight(this.state.query, this.state.currentUserInput, this.state.currentCategories)
@@ -234,7 +234,7 @@ export default createStore({
     },
 
     /**
-     * Sends api call to backend to upvote insight relevance when unfolding any insight.
+     * Calls function that sends api call to backend to upvote insight relevance when unfolding any insight.
      */
     sendRateRelevanceInsight () {
       return postRateRelevanceInsight(this.state.query, this.state.currentIn, this.state.insightVoteBool)
@@ -242,7 +242,7 @@ export default createStore({
         .catch((error) => {console.error(error)})
     }, 
     /**
-     * Sends api call to backend for posting an insight-not-relevant-error (equals double downvote).
+     * Calls function that sends api call to backend for posting an insight-not-relevant-error (equals double downvote).
      */
     sendInsightNotRelevantError() {
       return postInsightNotRelevant(this.state.currentIn, this.state.currentCategories)
@@ -250,7 +250,7 @@ export default createStore({
         .catch((error) => {console.error(error)})
     },
     /**
-     * Sends api call to backend for posting a value-error.
+     * Calls function that sends api call to backend for posting a value-error.
      */
     sendValueError() {
       return postRateAnswer(this.state.query, this.state.currentIn, this.state.currentAnswer, false)
@@ -258,7 +258,7 @@ export default createStore({
         .catch((error) => {console.error(error)})
     },
     /**
-     * Sends api call to backend for posting a type-error.
+     * Calls function that sends api call to backend for posting a type-error.
      */
     sendTypoError() {
       return postTypoError(this.state.currentIn)
@@ -266,7 +266,7 @@ export default createStore({
         .catch((error) => {console.error(error)})
     },
     /**
-     * Sends api call to backend forwarding the state.binder array with all Binder URL's and starts direct-downlaod of the csv file after recieving data.
+     * Calls function that sends api call to backend forwarding the state.binder array with all Binder URL's and starts direct-downlaod of the csv file after recieving data.
      */
     sendBinder() {
       return postBinder(this.state.binder) 
