@@ -2,9 +2,9 @@
 
 ## Data
 
-| Name            | Type      | Description | Initial value |
-| --------------- | --------- | ----------- | ------------- |
-| `legendVisible` | `boolean` |             | `false`       |
+| Name            | Type      | Description                                                  | Initial value |
+| --------------- | --------- | ------------------------------------------------------------ | ------------- |
+| `legendVisible` | `boolean` | Triggers the unfolding or collapsing of the information box. | `false`       |
 
 ## Methods
 
@@ -23,7 +23,7 @@ openGit(): void
 To get all available data the backend needs all the paper urls from the binder.
 In order to get this information
 the _content-script.js_ of the chrome extension is triggered with _setBinder()_.
-There a counterpart awaiting the call to provide the requested DOM elements.
+There is a counterpart awaiting the call to provide the requested DOM elements.
 After sending the request the function awaits a response which is handled with
 the function bellow.
 

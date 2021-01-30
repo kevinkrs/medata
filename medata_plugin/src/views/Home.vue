@@ -203,7 +203,6 @@
           </div>
         </div>
       </div>
-
       <div><br/></div>
 
       <!--This fieldset contains "download options" and "add insight"-->
@@ -272,27 +271,27 @@ export default {
   data () {
     return {
     /**
-     * Empty strings for saving user input inside given input fields
+     * Empty strings for saving user input inside given input fields.
      */
       userInput: '',
       /**
-       * Trigger for collapsing information box
+       * Trigger for collapsing information box.
        */
       legendVisible: false,
       /**
        * Saves recieved array of topic related words from backend. 
-       * Required for the _add insight_ autocomplete option
+       * Required for the _add insight_ autocomplete option.
        */
       filtered: [],
       /**
-       * Property for the autocomplete option 
+       * Property for the autocomplete option.
        */
       modal: false
     }
   },
   methods: {
    /**
-    * Click function for top right git icon to open github repository
+    * Click function for top right git icon to open github repository.
     */
     openGit () {
       chrome.tabs.create({url: "https://github.com"});
@@ -320,7 +319,8 @@ export default {
     },
     
     /**
-     * For collapsing an insight in order to interact with it. 
+     * For unfold an insight in order to interact with it. 
+     * Guarantees that always only one insight is unfolded. Clicking on another one will automatically collapse the old one.
      */
     visible: function (divId) {
       /*The for loop closes all divs to ensure that only one div is open at a time*/
@@ -347,7 +347,7 @@ export default {
     },
 
     /**
-     * Collapsing _report an error_ interface: After an user has submitted any kind of error the error interface collapses and the user is
+     * Collapsing _report an error_ interface: After an user has submitted any kind of error the error interface collapses trough _visible4()_ function and the user is
      * back at the unfolded insight.
      */
     visible2: function (divId) {
@@ -362,16 +362,15 @@ export default {
 
     /**
      * Submitt-controll: After user selects answer (yellow-status) or confirms an insight (green-status) further interaction won't be possible anymore. 
-     * Function changes displayed div. Button elements with _onclick_ functions beeing replaced with non-interactable lables 
-     * ONLY ACTIVE IN DELIVERING VERSION
+     * Function changes displayed div. Button elements with _onclick_ functions beeing replaced with non-interactable lables.
+     * ONLY ACTIVE IN DELIVERING VERSION [submit_control branch]
     */
-    visible3: function (divId) {
+    submitControll: function (divId) {
         document.getElementById(divId+100000).style.display = 'none';
         document.getElementById(divId+200000).style.display = 'inline';    
     },
     /**
-     * This function assures that there is always only one insight unfolded. 
-     * Unfolding another insight automatically collapses the old one.
+    * Collapses _report error_ interface so user viewing the unfolded inisght. 
      */
     visible4: function () {
       /*The for loop closes all divs to ensure that only one div is open at a time*/
@@ -393,7 +392,7 @@ export default {
       this.$store.dispatch('fetchInName', name)
     },
      /**
-     * Saving selected answer option (yellow-status) and commiting it to a state object in vuex store
+     * Saving selected answer option (yellow-status) and commiting it to a state object in vuex store.
      */
     saveAnswerSelection(answer) {
       this.$store.dispatch('fetchUserAnswer', answer) 
@@ -457,13 +456,13 @@ export default {
     },
   
     /**
-     * On collapsing any insight this function is triggered to upvote the clicked-on insight. 
+     * On unfolding any insight this function is triggered to upvote the clicked-on insight. 
      */
     sendInsightRelevance(){
       this.$store.dispatch('sendRateRelevanceInsight')
     },
     /**
-     * Dispatching insight-not-relevant-error to the backend, where it is handled
+     * Dispatching insight-not-relevant-error to the backend, where it is handled.
      */
     sendInsightNotRelevantError() {
       this.$store.dispatch('sendInsightNotRelevantError')
@@ -471,7 +470,7 @@ export default {
       alert('Thank you for reporting! If more user report this insight as insignificant it will be deleted.')
     },
     /**
-     * Dispatching value-error to the backend, where it is handled
+     * Dispatching value-error to the backend, where it is handled.
      */
     sendValueError() {
       this.$store.dispatch('sendValueError')
@@ -503,7 +502,7 @@ export default {
 
   },
   /**
-   * Accessing the vuex store propertys for further modification inside this component
+   * Accessing the vuex store propertys for further modification inside this component.
    */
   computed: {
     ...mapState([
