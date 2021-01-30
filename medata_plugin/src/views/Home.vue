@@ -169,7 +169,7 @@
               <div :id=entry.id+100000 style ="display:inline">
                  <div class="row">
                     <div v-for="answer in entry.answer" :key ="answer">
-                      <button type="button"  class="answer-button" @click="saveAnswerSelection(answer.answer), sendAnswerSelection(), visible3(entry.id)">
+                      <button type="button"  class="answer-button" @click="saveAnswerSelection(answer.answer), sendAnswerSelection(), submitControl(entry.id)">
                         {{answer.answer}}
                       </button>
                      </div>
@@ -234,7 +234,7 @@
                   </div>
                 </div>
                 <div :id=entry.id+100000 style ="display:inline">
-                <button class="green-button" @click='sendAnswerSelection(),visible3(entry.id)'>Confirm</button>
+                <button class="green-button" @click='sendAnswerSelection(),submitControl(entry.id)'>Confirm</button>
                 </div>
                 <div :id=entry.id+200000 style ="display:none">
                 <button class="green-button-clicked">Confirm</button>
@@ -394,7 +394,7 @@ export default {
      * Function changes displayed div. Button elements with _onclick_ functions beeing replaced with non-interactable lables 
      * ONLY ACTIVE IN DELIVERING VERSION
     */
-    visible3: function (divId) {
+    submitControl: function (divId) {
         document.getElementById(divId+100000).style.display = 'none';
         document.getElementById(divId+200000).style.display = 'inline';    
     },
