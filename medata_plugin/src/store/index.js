@@ -3,72 +3,157 @@ import { fetchMetadata, postInsight, postAnswer, postRateAnswer, postRateRelevan
 
 
 export default createStore({
+/**
+ * @Class 
+ */
   state: {
+    /**
+     * Array for saving recieved backend data and access it in every other vue component.
+     */
     metadata: [],
-    query: '', //query = paperID
+    /**
+     * Current user URL.
+     */
+    query: '', 
+    /**
+     * Current selected insight name.
+     */
     currentIn: '', 
+    /**
+     * Current selected insight ID.
+     */
     currentInID: '', 
+    /**
+     * Current CSS categories of visited article.
+     */
     currentCategories: [], 
-    currentIn: '', 
+    /**
+     * Selected answer by user (yellow-status).
+     */
     currentAnswer: '', 
+    /**
+     * Parameter for backend api request.
+     */
     answerUpvoteBool: true,
+    /** 
+     * Current user input (new insight answer or new insigt).
+     */
     currentUserInput: '',
-    selectedError: '', // User can report an error and select on of three possibilites
-    insightVoteBool: true, //This boolean is for up- or downvoting insights by the user, default is true, insight is upvoted @click and only set to false for downvoting via InsightNotRelevantForCategory
+    /**
+     * Parameter for backend api request.
+     */
+    insightVoteBool: true, //This boolean is for up- or downvoting insights by the user, default is true, insight is upvoted @click and only set to false for downvoting via InsightNotRelevantForCategory.
+    /**
+     * Array for saving recieved topic related keywords for autocomplete feature in the _Home.vue_ component.
+     */
     autocomplete: [],
+    /**
+     * Array of URL's from binder to request data from backend and trigger direct-download with all the available insight data.
+     */
     binder: []
   },
+  /**
+   * @class
+   */
   mutations: {
-    // Saving the data from backend to the "metadata array"
+    /**
+     * Sets the data recieved from the backend into a state.metadata property in order to be able to access it in other components.
+     * @param {array} state 
+     * @param {array} payload 
+     */
     setMetadata (state, payload) {
         state.metadata = payload.metadata
         state.currentCategories = payload.categories
       },
-      // This method saves url on acm that user is visiting while using the plugin. The url is submitted to the backend in order to provide the right data
+      /**
+       * Sets current URL from dl.acm.org that user is visiting when opening the plugin to the state.query property.
+       * @param {String} state 
+       * @param {String} payload 
+       */
     setQuery (state, payload) {
-        // ALWAYS use . operator saving data to the state
         state.query = payload.query
       },
-      // 
+      /**
+       * Sets by user selected (unfolded) insight name to the state.currentIn property.
+       * @param {String} state 
+       * @param {String} payload 
+       */
     setCurrentInName (state, payload){
       state.currentIn = payload.currentIn
     },
+    /**
+       * Sets by user selected (unfolded) insight ID to the state.currentInID property.
+       * @param {String} state 
+       * @param {String} payload 
+       */
     setcurrentInID (state, payload){
       state.currentIn = payload.currentIn
     },
+    /**
+       * Sets user selected insight answer (yellow-status) to the state.currentAnswer property.
+       * @param {String} payload 
+       */
     setCurrentAnswer (state, payload){
       state.currentAnswer = payload.currentAnswer
     },
+    /**
+       * Sets user input for submitting either a new insight answer or a completely new insight to the state.currentUserInput property.
+       * @param {String} state 
+       * @param {String} payload 
+       */
     setUserInput(state, payload) {
         state.currentUserInput = payload.currentUserInput
     },
-    setSelectedError(state,payload) {
-        state.selectedError = payload
-    },
+    /**
+       * Saves the recieved keyword array for the autocomplete feature into a stat.autocomplete property.
+       * @param {Array} state 
+       * @param {Array} payload 
+       */
     setAutocomplete(state,payload) {
         state.autocomplete = payload.autocomplete
     },
+    /**
+       * Saves scraped URL's of users Binder entries to a state.binder property.
+       * @param {Array} state 
+       * @param {Array} payload 
+       */
     setBinder(state,payload){
       state.binder = payload.binder
     }
   },
+  /**
+   * @class
+   */
   actions: {
+    /**
+     * Triggers _mutation_ to save current tab URL if it is valid.
+     * @param {String} payload 
+     */
     loadQuery({commit}, payload){
-      // Important: You have to define what variable the payload should be added to! {query: payload}
-      // You can either do this in the $store call or inside the action
+      // Important: You have to define what variable the payload should be added to! {query: payload}.
+      // You can either do this in the $store call or inside the action.
       commit('setQuery', {query: payload})
     },
-    // Loads methadata and submits acm URL from site user is visiting at the moment to check if data is available
+    /**
+     * Sends api call to backend in order to recieve available metadata and then passing it to the the fitting _mutation_.
+     */
     loadMetadata ({commit}) {
       return fetchMetadata(this.state.query)
         .then((response) => commit('setMetadata', {metadata: response.data.metadata, categories: response.data.categories})) 
         .catch((error) => {console.error(error)}) 
     },
+    /**
+     * Sends a request to the backend for further information. Backend starts scraper on the forwarded current user URL. 
+     */
     loadFurtherInformation () {
       return fetchFurtherInformation(this.state.query)
         .then((response) => {console.log(response)})
         .catch((error) => {console.error(error)}) 
     },
+    /**
+     * Sends api call to backend to recieve topic related keywords for the autocomplete function and passing it then to the fitting _mutation_.
+     *  
+     */
     loadAutocomplete({commit}) {
       return fetchAutocomplete(this.state.currentCategories)
         .then((response) => commit('setAutocomplete', {autocomplete: response.data})) 
@@ -77,7 +162,9 @@ export default createStore({
 
 
 
-    // Triggers function to get a csv file with the current insights and send it to the FE. User gets possibility to download data
+   /**
+    * Requests data for the current article or paper and starts a direct download once recieved.
+    */
     loadDownload () {
       return fetchDownload(this.state.query)
         .then((response) => {
@@ -90,73 +177,97 @@ export default createStore({
         })
         .catch((error) => {console.error(error)})
     },
-
-    saveUserInput ({commit}, payload) {
-  
-      commit('setUserInput', {userInput: payload})
-    },
-    // Saves user input for an answer or an insight (yellow and red-status)
-    // The difference is that the after commiting the input to the state property, we call slightly different methods "sendAnswer" or "sendInsight"
+    /**
+     * Payload is forwarded to _mutation_ to save it into the state.currentUserInput property.
+     * @param {String} payload 
+     */
     fetchUserInput ({commit}, payload) {
       commit('setUserInput', {currentUserInput: payload})
     },
-    // Saves user answer (green and yellow-status) that is choosen from the 4 answer posibilites in the Home-Component
-    // Not to be confused with the "userInput" that is explaint above 
-    // Afterwards "sendRateAnswer" is beeing called with an additional boolean parameter "currentBool"
+    /**
+     * Selected user answer is forwarded to _mutation_ to save it into the state.currentAnswer property.
+     * @param {String} payload 
+     */
     fetchUserAnswer ({commit}, payload) {
       commit('setCurrentAnswer', {currentAnswer: payload})
     },
-    // Saves current insight name passed from Home-Component
+    /**
+     * Current unfolded insight name is forwarder to _mutation_ to save it into the state.currentInName property.
+     * @param {String} payload 
+     */
     fetchInName ({commit}, payload) {
       commit('setCurrentInName', {currentIn: payload})
     },
-    // DEPRICATED -> Error name not relevant, click on error button dispatches the right call to backend
-
+   
+    /**
+     * Scraped Binder URL's are forwarded to _mutation_ to save them into the state.binder property.
+     * @param {Array} payload 
+     */
     fetchBinder({commit}, payload){
       commit('setBinder', {binder: payload})
     },
     
 
-
-    sendAnswer () {   // DONE
+    /**
+     * Calls function that sends api call to backend for posting a new insight answer (yellow or red-status).
+     */
+    sendAnswer () {   
       return postAnswer(this.state.query, this.state.currentIn, this.state.currentUserInput)
         .then((response) => {console.log(response)})
         .catch((error) => {console.error(error)})
     },
-    // User can rate answer by clicking on it -> green & yellow
-    sendRateAnswer () { // DONE
+   /**
+     * Calls function that sends api call to backend for rating an insight answer (green or yellow-status).
+     */
+    sendRateAnswer () { 
       return postRateAnswer(this.state.query, this.state.currentIn, this.state.currentAnswer, this.state.answerUpvoteBool)
         .then((response) => {console.log(response)})
         .catch((error) => {console.error(error)})
     },
-  
-    sendInsight () { // NOT TESTED YET
+    /**
+     * Calls function that sends api call to backend for posting a new insight.
+     */
+    sendInsight () { 
       return postInsight(this.state.query, this.state.currentUserInput, this.state.currentCategories)
         .then((response) => {console.log(response)})
         .catch((error) => {console.error(error)})
     },
 
+    /**
+     * Calls function that sends api call to backend to upvote insight relevance when unfolding any insight.
+     */
     sendRateRelevanceInsight () {
       return postRateRelevanceInsight(this.state.query, this.state.currentIn, this.state.insightVoteBool)
         .then((response) => {console.log(response)})
         .catch((error) => {console.error(error)})
     }, 
+    /**
+     * Calls function that sends api call to backend for posting an insight-not-relevant-error (equals double downvote).
+     */
     sendInsightNotRelevantError() {
       return postInsightNotRelevant(this.state.currentIn, this.state.currentCategories)
         .then((response) => {console.log(response)})
         .catch((error) => {console.error(error)})
     },
+    /**
+     * Calls function that sends api call to backend for posting a value-error.
+     */
     sendValueError() {
       return postRateAnswer(this.state.query, this.state.currentIn, this.state.currentAnswer, false)
         .then((response) => {console.log(response)})
         .catch((error) => {console.error(error)})
     },
+    /**
+     * Calls function that sends api call to backend for posting a type-error.
+     */
     sendTypoError() {
       return postTypoError(this.state.currentIn)
         .then((response) => {console.log(response)})
         .catch((error) => {console.error(error)})
     },
-    //TODO
+    /**
+     * Calls function that sends api call to backend forwarding the state.binder array with all Binder URL's and starts direct-downlaod of the csv file after recieving data.
+     */
     sendBinder() {
       return postBinder(this.state.binder) 
       .then((response) => {
