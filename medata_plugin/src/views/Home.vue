@@ -134,6 +134,7 @@
             </div>
           </div>
         </div>
+
         <div div v-else-if="entry.answer[0].answer_score < 4" class="insight-button">
           <button class="insight-button-yellow" @click="visible(entry.id), saveInName(entry.name), sendInsightRelevance()">
             <div :id=entry.id-1000 style="display:inline"><img class="img-button" src="../assets/arrow-down-yellow.png" /></div>
@@ -167,14 +168,13 @@
               <div class="insight-answers">
                 <p>Please select <br/> the correct Answer</p>
 
-               <div class="row">
+                  <div class="row">
                     <div v-for="answer in entry.answer" :key ="answer">
-                     
                       <button type="button"  class="answer-button" @click="saveAnswerSelection(answer.answer), sendAnswerSelection()">
                         {{answer.answer}}
                       </button>
                     </div>
-                </div>
+                  </div>
 
               </div>
               <div class="insight-add">
@@ -185,15 +185,13 @@
             </div>
           </div>
         </div>
+        
         <div v-else class="insight-button">
           <button class="insight-button-green" @click="visible(entry.id), saveInName(entry.name), sendInsightRelevance(), saveAnswerSelection(entry.answer[0].answer)">
             <div :id=entry.id-1000 style="display:inline"><img class="img-button" src="../assets/arrow-down-green.png" /></div>
             <div :id=entry.id-2000 style="display:none"><img class="img-button" src="../assets/arrow-up-green.png" /></div>
           </button>
-
             <div :id=entry.id+1000 style="display:none">
-
-              <!--The div "insight-name2" is only used so that the div "insight-toggleBox" has the right distance to the top depending on whether the name of the insight goes over one, two, three,... lines. In css the div "insight-name2" is made invisible again.-->
               <div class="insight-name2">
                 {{entry.name}}
               </div>
@@ -204,21 +202,21 @@
               </div>
             </div> 
 
-          <div :id=entry.id style="display:none">
+            <div :id=entry.id style="display:none">
 
             <!--The div "insight-name2" is only used so that the div "insight-toggleBox" has the right distance to the top depending on whether the name of the insight goes over one, two, three,... lines. In css the div "insight-name2" is made invisible again.-->
-            <div class="insight-name2">
-              {{entry.name}}
-            </div>
+              <div class="insight-name2">
+                {{entry.name}}
+              </div>
 
-            <div class="insight-toggleBox">
-            <button class="error-button" @click="visible2(entry.id+1000)">report error</button>
+              <div class="insight-toggleBox">
+              <button class="error-button" @click="visible2(entry.id+1000)">report error</button>
             
                 <p class="insight-green-answer">{{entry.answer[0].answer}} <br/></p>
-                <div class="insight-green">
-                  <div class="insight-green-text">
+                  <div class="insight-green">
+                   <div class="insight-green-text">
                     <p> Number of<br/> confirmations </p>
-                  </div>
+                    </div>
                   <div class="insight-green-line"></div>
                   <div class="insight-green-number">
                     <p>{{entry.answer[0].answer_score}}</p>                   
@@ -229,7 +227,6 @@
           </div>
         </div>
       </div>
-
       <div><br/></div>
 
       <!--This fieldset element "grey-box" contains everything reagardin the "more-functions"-->
@@ -287,27 +284,27 @@ export default {
   data () {
     return {
     /**
-     * Empty strings for saving user input inside given input fields
+     * Empty strings for saving user input inside given input fields.
      */
       userInput: '',
       /**
-       * Trigger for collapsing information box
+       * Trigger for collapsing information box.
        */
       legendVisible: false,
       /**
        * Saves recieved array of topic related words from backend. 
-       * Required for the _add insight_ autocomplete option
+       * Required for the _add insight_ autocomplete option.
        */
       filtered: [],
       /**
-       * Property for the autocomplete option 
+       * Property for the autocomplete option.
        */
       modal: false
     }
   },
   methods: {
    /**
-    * Click function for top right git icon to open github repository
+    * Click function for top right git icon to open github repository.
     */
     openGit () {
       chrome.tabs.create({url: "https://github.com"});
@@ -335,7 +332,8 @@ export default {
     },
     
     /**
-     * For collapsing an insight in order to interact with it. 
+     * For unfold an insight in order to interact with it. 
+     * Guarantees that always only one insight is unfolded. Clicking on another one will automatically collapse the old one.
      */
     visible: function (divId) {
       /*The for loop closes all divs to ensure that only one div is open at a time*/
@@ -362,7 +360,7 @@ export default {
     },
 
     /**
-     * Collapsing _report an error_ interface: After an user has submitted any kind of error the error interface collapses and the user is
+     * Collapsing _report an error_ interface: After an user has submitted any kind of error the error interface collapses trough _visible4()_ function and the user is
      * back at the unfolded insight.
      */
     visible2: function (divId) {
@@ -377,16 +375,15 @@ export default {
 
     /**
      * Submitt-controll: After user selects answer (yellow-status) or confirms an insight (green-status) further interaction won't be possible anymore. 
-     * Function changes displayed div. Button elements with _onclick_ functions beeing replaced with non-interactable lables 
-     * ONLY ACTIVE IN DELIVERING VERSION
+     * Function changes displayed div. Button elements with _onclick_ functions beeing replaced with non-interactable lables.
+     * ONLY ACTIVE IN DELIVERING VERSION [submit_control branch]
     */
-    visible3: function (divId) {
+    submitControll: function (divId) {
         document.getElementById(divId+100000).style.display = 'none';
         document.getElementById(divId+200000).style.display = 'inline';    
     },
     /**
-     * This function assures that there is always only one insight unfolded. 
-     * Unfolding another insight automatically collapses the old one.
+    * Collapses _report error_ interface so user viewing the unfolded inisght. 
      */
     visible4: function () {
       /*The for loop closes all divs to ensure that only one div is open at a time*/
@@ -408,7 +405,7 @@ export default {
       this.$store.dispatch('fetchInName', name)
     },
      /**
-     * Saving selected answer option (yellow-status) and commiting it to a state object in vuex store
+     * Saving selected answer option (yellow-status) and commiting it to a state object in vuex store.
      */
     saveAnswerSelection(answer) {
       this.$store.dispatch('fetchUserAnswer', answer) 
@@ -472,13 +469,13 @@ export default {
     },
   
     /**
-     * On collapsing any insight this function is triggered to upvote the clicked-on insight. 
+     * On unfolding any insight this function is triggered to upvote the clicked-on insight. 
      */
     sendInsightRelevance(){
       this.$store.dispatch('sendRateRelevanceInsight')
     },
     /**
-     * Dispatching insight-not-relevant-error to the backend, where it is handled
+     * Dispatching insight-not-relevant-error to the backend, where it is handled.
      */
     sendInsightNotRelevantError() {
       this.$store.dispatch('sendInsightNotRelevantError')
@@ -486,7 +483,7 @@ export default {
       alert('Thank you for reporting! If more user report this insight as insignificant it will be deleted.')
     },
     /**
-     * Dispatching value-error to the backend, where it is handled
+     * Dispatching value-error to the backend, where it is handled.
      */
     sendValueError() {
       this.$store.dispatch('sendValueError')
@@ -511,7 +508,7 @@ export default {
 
   },
   /**
-   * Accessing the vuex store propertys for further modification inside this component
+   * Accessing the vuex store propertys for further modification inside this component.
    */
   computed: {
     ...mapState([

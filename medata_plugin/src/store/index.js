@@ -32,23 +32,23 @@ export default createStore({
      */
     currentAnswer: '', 
     /**
-     * Parameter for backend api request 
+     * Parameter for backend api request.
      */
     answerUpvoteBool: true,
     /** 
-     * Current user input (new insight answer or new insigt)
+     * Current user input (new insight answer or new insigt).
      */
     currentUserInput: '',
     /**
-     * Parameter for backend api request 
+     * Parameter for backend api request.
      */
-    insightVoteBool: true, //This boolean is for up- or downvoting insights by the user, default is true, insight is upvoted @click and only set to false for downvoting via InsightNotRelevantForCategory
+    insightVoteBool: true, //This boolean is for up- or downvoting insights by the user, default is true, insight is upvoted @click and only set to false for downvoting via InsightNotRelevantForCategory.
     /**
-     * Array for saving recieved topic related keywords for autocomplete feature in the _Home.vue_ component
+     * Array for saving recieved topic related keywords for autocomplete feature in the _Home.vue_ component.
      */
     autocomplete: [],
     /**
-     * Array of URL's from binder to request data from backend and trigger direct-download with all the available insight data
+     * Array of URL's from binder to request data from backend and trigger direct-download with all the available insight data.
      */
     binder: []
   },
@@ -57,7 +57,7 @@ export default createStore({
    */
   mutations: {
     /**
-     * Sets the data recieved from the backend into a state.metadata property in order to be able to access it in other components
+     * Sets the data recieved from the backend into a state.metadata property in order to be able to access it in other components.
      * @param {array} state 
      * @param {array} payload 
      */
@@ -82,7 +82,7 @@ export default createStore({
       state.currentIn = payload.currentIn
     },
     /**
-       * Sets by user selected (unfolded) insight ID to the state.currentInID property
+       * Sets by user selected (unfolded) insight ID to the state.currentInID property.
        * @param {String} state 
        * @param {String} payload 
        */
@@ -90,14 +90,14 @@ export default createStore({
       state.currentIn = payload.currentIn
     },
     /**
-       * Sets user selected insight answer (yellow-status) to the state.currentAnswer property
+       * Sets user selected insight answer (yellow-status) to the state.currentAnswer property.
        * @param {String} payload 
        */
     setCurrentAnswer (state, payload){
       state.currentAnswer = payload.currentAnswer
     },
     /**
-       * Sets user input for submitting either a new insight answer or a completely new insight to the state.currentUserInput property
+       * Sets user input for submitting either a new insight answer or a completely new insight to the state.currentUserInput property.
        * @param {String} state 
        * @param {String} payload 
        */
@@ -105,7 +105,7 @@ export default createStore({
         state.currentUserInput = payload.currentUserInput
     },
     /**
-       * Saves the recieved keyword array for the autocomplete feature into a stat.autocomplete property
+       * Saves the recieved keyword array for the autocomplete feature into a stat.autocomplete property.
        * @param {Array} state 
        * @param {Array} payload 
        */
@@ -113,7 +113,7 @@ export default createStore({
         state.autocomplete = payload.autocomplete
     },
     /**
-       * Saves scraped URL's of users Binder entries to a state.binder property
+       * Saves scraped URL's of users Binder entries to a state.binder property.
        * @param {Array} state 
        * @param {Array} payload 
        */
@@ -126,12 +126,12 @@ export default createStore({
    */
   actions: {
     /**
-     * Triggers _mutation_ to save current tab URL if it's valid 
+     * Triggers _mutation_ to save current tab URL if it is valid.
      * @param {String} payload 
      */
     loadQuery({commit}, payload){
-      // Important: You have to define what variable the payload should be added to! {query: payload}
-      // You can either do this in the $store call or inside the action
+      // Important: You have to define what variable the payload should be added to! {query: payload}.
+      // You can either do this in the $store call or inside the action.
       commit('setQuery', {query: payload})
     },
     /**
@@ -163,7 +163,7 @@ export default createStore({
 
 
    /**
-    * Requests data for the current article or paper and starts a direct download once recieved 
+    * Requests data for the current article or paper and starts a direct download once recieved.
     */
     loadDownload () {
       return fetchDownload(this.state.query)
@@ -178,21 +178,21 @@ export default createStore({
         .catch((error) => {console.error(error)})
     },
     /**
-     * Payload is forwarded to _mutation_ to save it into the state.currentUserInput property
+     * Payload is forwarded to _mutation_ to save it into the state.currentUserInput property.
      * @param {String} payload 
      */
     fetchUserInput ({commit}, payload) {
       commit('setUserInput', {currentUserInput: payload})
     },
     /**
-     * Selected user answer is forwarded to _mutation_ to save it into the state.currentAnswer property 
+     * Selected user answer is forwarded to _mutation_ to save it into the state.currentAnswer property.
      * @param {String} payload 
      */
     fetchUserAnswer ({commit}, payload) {
       commit('setCurrentAnswer', {currentAnswer: payload})
     },
     /**
-     * Current unfolded insight name is forwarder to _mutation_ to save it into the state.currentInName property
+     * Current unfolded insight name is forwarder to _mutation_ to save it into the state.currentInName property.
      * @param {String} payload 
      */
     fetchInName ({commit}, payload) {
@@ -200,7 +200,7 @@ export default createStore({
     },
    
     /**
-     * Scraped Binder URL's are forwarded to _mutation_ to save them into the state.binder property
+     * Scraped Binder URL's are forwarded to _mutation_ to save them into the state.binder property.
      * @param {Array} payload 
      */
     fetchBinder({commit}, payload){
@@ -209,7 +209,7 @@ export default createStore({
     
 
     /**
-     * Sends api call to backend for posting a new insight answer (yellow or red-status)
+     * Sends api call to backend for posting a new insight answer (yellow or red-status).
      */
     sendAnswer () {   
       return postAnswer(this.state.query, this.state.currentIn, this.state.currentUserInput)
@@ -217,7 +217,7 @@ export default createStore({
         .catch((error) => {console.error(error)})
     },
    /**
-     * Sends api call to backend for rating an insight answer (green or yellow-status)
+     * Sends api call to backend for rating an insight answer (green or yellow-status).
      */
     sendRateAnswer () { 
       return postRateAnswer(this.state.query, this.state.currentIn, this.state.currentAnswer, this.state.answerUpvoteBool)
@@ -225,7 +225,7 @@ export default createStore({
         .catch((error) => {console.error(error)})
     },
     /**
-     * Sends api call to backend for posting a new insight
+     * Sends api call to backend for posting a new insight.
      */
     sendInsight () { 
       return postInsight(this.state.query, this.state.currentUserInput, this.state.currentCategories)
@@ -234,7 +234,7 @@ export default createStore({
     },
 
     /**
-     * Sends api call to backend to upvote insight relevance when unfolding any insight
+     * Sends api call to backend to upvote insight relevance when unfolding any insight.
      */
     sendRateRelevanceInsight () {
       return postRateRelevanceInsight(this.state.query, this.state.currentIn, this.state.insightVoteBool)
@@ -242,7 +242,7 @@ export default createStore({
         .catch((error) => {console.error(error)})
     }, 
     /**
-     * Sends api call to backend for posting an insight-not-relevant-error (equals double downvote)
+     * Sends api call to backend for posting an insight-not-relevant-error (equals double downvote).
      */
     sendInsightNotRelevantError() {
       return postInsightNotRelevant(this.state.currentIn, this.state.currentCategories)
@@ -250,7 +250,7 @@ export default createStore({
         .catch((error) => {console.error(error)})
     },
     /**
-     * Sends api call to backend for posting a value-error
+     * Sends api call to backend for posting a value-error.
      */
     sendValueError() {
       return postRateAnswer(this.state.query, this.state.currentIn, this.state.currentAnswer, false)
@@ -258,7 +258,7 @@ export default createStore({
         .catch((error) => {console.error(error)})
     },
     /**
-     * Sends api call to backend for posting a type-error
+     * Sends api call to backend for posting a type-error.
      */
     sendTypoError() {
       return postTypoError(this.state.currentIn)
@@ -266,7 +266,7 @@ export default createStore({
         .catch((error) => {console.error(error)})
     },
     /**
-     * Sends api call to backend forwarding the state.binder array with all Binder URL's and starts direct-downlaod of the csv file after recieving data 
+     * Sends api call to backend forwarding the state.binder array with all Binder URL's and starts direct-downlaod of the csv file after recieving data.
      */
     sendBinder() {
       return postBinder(this.state.binder) 

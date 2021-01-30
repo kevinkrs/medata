@@ -25,7 +25,6 @@ console.log(links)
 browser.runtime.onMessage.addListener(function(msg, sender, response){
     if ((msg.from === "binder")&&(msg.subject === "getLinks")) {
         response(links)
-    
     }
     else{
         response ({}) 
