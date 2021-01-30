@@ -105,9 +105,9 @@
           <div :id=entry.id+1000 style="display:none">
             <div class="insight-name-transparent">{{entry.name}}</div>
             <div class="insight-toggleBox">
-              <button class="error-button" @click="visible2(entry.id+1000)">back</button>
-              <button id ="error1" class="error-button-2" @click='sendTypoError(),visible4()'>Report typo </button> <br/> 
-              <button id ="error2" class="error-button-2" @click='sendInsightNotRelevantError(),visible4()'>Report insignificance of this insight </button>
+              <button class="error-button" @click="visibleError(entry.id+1000)">back</button>
+              <button id ="error1" class="error-button-2" @click='sendTypoError(),visibleErrorCollapse()'>Report typo </button> <br/> 
+              <button id ="error2" class="error-button-2" @click='sendInsightNotRelevantError(),visibleErrorCollapse()'>Report insignificance of this insight </button>
             </div>
           </div> 
 
@@ -115,7 +115,7 @@
           <div :id=entry.id style="display:none">
             <div class="insight-name-transparent">{{entry.name}}</div>
             <div class="insight-toggleBox">
-              <button class="error-button" @click="visible2(entry.id+1000)">report error</button>
+              <button class="error-button" @click="visibleError(entry.id+1000)">report error</button>
               <div class="insight-add">
                 <p>Please enter information:</p>
                 <input class="inputfield" v-model='userInput' @keyup.enter='saveUserInput(), sendUserAnswer()'/><br/>
@@ -136,9 +136,9 @@
           <div :id=entry.id+1000 style="display:none">
             <div class="insight-name-transparent">{{entry.name}}</div>
             <div class="insight-toggleBox">
-              <button class="error-button" @click="visible2(entry.id+1000)">back</button>
-              <button id ="error1" class="error-button-2" @click='sendTypoError(),visible4()'>Report typo </button> <br/> 
-              <button id ="error2" class="error-button-2" @click='sendInsightNotRelevantError(),visible4()'>Report insignificance of this insight </button>
+              <button class="error-button" @click="visibleError(entry.id+1000)">back</button>
+              <button id ="error1" class="error-button-2" @click='sendTypoError(),visibleErrorCollapse()'>Report typo </button> <br/> 
+              <button id ="error2" class="error-button-2" @click='sendInsightNotRelevantError(),visibleErrorCollapse()'>Report insignificance of this insight </button>
             </div>
           </div> 
 
@@ -146,7 +146,7 @@
           <div :id=entry.id style="display:none">
             <div class="insight-name-transparent">{{entry.name}}</div>
             <div class="insight-toggleBox">    
-              <button class="error-button" @click="visible2(entry.id+1000)">report error</button>
+              <button class="error-button" @click="visibleError(entry.id+1000)">report error</button>
               <div class="insight-answers">
                 <p>Please select <br/> the correct Answer</p>
                 <div class="row">
@@ -177,9 +177,9 @@
           <div :id=entry.id+1000 style="display:none">
             <div class="insight-name-transparent">{{entry.name}}</div>
             <div class="insight-toggleBox">
-              <button class="error-button" @click="visible2(entry.id+1000)">back</button>
-                <button id ="error1" class="error-button-2" @click='sendTypoError(),visible4()'>Report typo </button> <br/> 
-              <button id ="error2" class="error-button-2" @click='sendValueError(),visible4()'>Report incorrect value </button>
+              <button class="error-button" @click="visibleError(entry.id+1000)">back</button>
+                <button id ="error1" class="error-button-2" @click='sendTypoError(),visibleErrorCollapse()'>Report typo </button> <br/> 
+              <button id ="error2" class="error-button-2" @click='sendValueError(),visibleErrorCollapse()'>Report incorrect value </button>
             </div>
           </div> 
 
@@ -187,7 +187,7 @@
           <div :id=entry.id style="display:none">
             <div class="insight-name-transparent">{{entry.name}}</div>
             <div class="insight-toggleBox">
-              <button class="error-button" @click="visible2(entry.id+1000)">report error</button>
+              <button class="error-button" @click="visibleError(entry.id+1000)">report error</button>
               <p class="insight-green-answer">{{entry.answer[0].answer}} <br/></p>
               <div class="insight-green">
                 <div class="insight-green-text">
@@ -347,10 +347,10 @@ export default {
     },
 
     /**
-     * Collapsing _report an error_ interface: After an user has submitted any kind of error the error interface collapses trough _visible4()_ function and the user is
+     * Collapsing _report an error_ interface: After an user has submitted any kind of error the error interface collapses trough _visibleErrorCollapse()_ function and the user is
      * back at the unfolded insight.
      */
-    visible2: function (divId) {
+    visibleError: function (divId) {
       if (document.getElementById(divId).style.display === 'none') {
         document.getElementById(divId).style.display = 'inline';
         document.getElementById(divId-1000).style.display = 'none';
@@ -372,7 +372,7 @@ export default {
     /**
     * Collapses _report error_ interface so user viewing the unfolded inisght. 
      */
-    visible4: function () {
+    visibleErrorCollapse: function () {
       /*The for loop closes all divs to ensure that only one div is open at a time*/
       for (var i = -10000; i <= 10000; i++) {
         if (document.getElementById(i) != null && i != -6){
