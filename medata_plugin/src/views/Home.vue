@@ -365,7 +365,7 @@ export default {
      * Function changes displayed div. Button elements with _onclick_ functions beeing replaced with non-interactable lables.
      * ONLY ACTIVE IN DELIVERING VERSION [submit_control branch]
     */
-    submitControll: function (divId) {
+    submitControl: function (divId) {
         document.getElementById(divId+100000).style.display = 'none';
         document.getElementById(divId+200000).style.display = 'inline';    
     },
