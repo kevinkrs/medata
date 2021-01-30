@@ -327,7 +327,7 @@ export default {
       }
     },
     /**
-     * Allows user to click on one of the autocomplete proposals to fill the input field with the selected one
+     * Allows user to click on one of the autocomplete proposals to fill the input field with the selected one.
      */
     setParam(param) {
       this.userInput = param
@@ -363,7 +363,7 @@ export default {
 
     /**
      * Collapsing _report an error_ interface: After an user has submitted any kind of error the error interface collapses and the user is
-     * back at the unfolded insight
+     * back at the unfolded insight.
      */
     visible2: function (divId) {
       if (document.getElementById(divId).style.display === 'none') {
@@ -386,7 +386,7 @@ export default {
     },
     /**
      * This function assures that there is always only one insight unfolded. 
-     * Unfolding another insight automatically collapses the old one
+     * Unfolding another insight automatically collapses the old one.
      */
     visible4: function () {
       /*The for loop closes all divs to ensure that only one div is open at a time*/
@@ -402,7 +402,7 @@ export default {
       }
     },    
     /**
-     * Saving current insight user has interacted with and commiting it to a state object in vuex store
+     * Saving current insight user has interacted with and commiting it to a state object in vuex store.
      */
     saveInName(name) {
       this.$store.dispatch('fetchInName', name)
@@ -494,7 +494,7 @@ export default {
       alert("Thank you for reporting! The value is going to be checked.")
     },
     /**
-     * Dispatching typo-error to the backend, where it is handled
+     * Dispatching typo-error to the backend, where it is handled.
      */
      sendTypoError() {
         this.$store.dispatch('sendTypoError')
@@ -503,7 +503,7 @@ export default {
      },
      /**
       * Triggers backend scraper to scrape further informations for the direct-download file e.g. Autors, Title etc. 
-      * Function is beeing called directly when the component has been _created_ to guarantee an instant download experience to the users
+      * Function is beeing called directly when the component has been _created_ to guarantee an instant download experience to the users.
       */
      sendScraper() {
        this.$store.dispatch('loadFurtherInformation')
