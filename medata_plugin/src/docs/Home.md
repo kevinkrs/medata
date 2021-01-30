@@ -5,18 +5,18 @@ happens here.
 
 ## Data
 
-| Name            | Type      | Description                                                                                                  | Initial value |
-| --------------- | --------- | ------------------------------------------------------------------------------------------------------------ | ------------- |
-| `userInput`     | `string`  | Empty strings for saving user input inside given input fields                                                | `""`          |
-| `legendVisible` | `boolean` | Trigger for collapsing information box                                                                       | `false`       |
-| `filtered`      | `array`   | Saves recieved array of topic related words from backend. Required for the _add insight_ autocomplete option | `[]`          |
-| `modal`         | `boolean` | Property for the autocomplete option                                                                         | `false`       |
+| Name            | Type      | Description                                                                                                   | Initial value |
+| --------------- | --------- | ------------------------------------------------------------------------------------------------------------- | ------------- |
+| `userInput`     | `string`  | Empty strings for saving user input inside given input fields.                                                | `""`          |
+| `legendVisible` | `boolean` | Trigger for collapsing information box.                                                                       | `false`       |
+| `filtered`      | `array`   | Saves recieved array of topic related words from backend. Required for the _add insight_ autocomplete option. | `[]`          |
+| `modal`         | `boolean` | Property for the autocomplete option.                                                                         | `false`       |
 
 ## Methods
 
 ### openGit()
 
-Click function for top right git icon to open github repository
+Click function for top right git icon to open github repository.
 
 **Syntax**
 
@@ -38,7 +38,7 @@ filterParameters(): void
 ### setParam()
 
 Allows user to click on one of the autocomplete proposals to fill the input
-field with the selected one
+field with the selected one.
 
 **Syntax**
 
@@ -48,7 +48,9 @@ setParam(param: unknown): void
 
 ### visible()
 
-For collapsing an insight in order to interact with it.
+For unfolding an insight and other elements in order to interact with it.
+Guarantees that always only one insight is unfolded. Clicking on another one
+will automatically collapse the old one.
 
 **Syntax**
 
@@ -56,46 +58,47 @@ For collapsing an insight in order to interact with it.
 visible(divId: unknown): void
 ```
 
-### visible2()
+### visibleError()
 
 Collapsing _report an error_ interface: After an user has submitted any kind of
-error the error interface collapses and the user is
-back at the unfolded insight
+error the error interface collapses trough _visibleErrorCollapse()_ function and
+the user is
+back at the unfolded insight.
 
 **Syntax**
 
 ```typescript
-visible2(divId: unknown): void
+visibleError(divId: unknown): void
 ```
 
-### visible3()
+### submitControl()
 
 Submitt-controll: After user selects answer (yellow-status) or confirms an
 insight (green-status) further interaction won't be possible anymore.
 Function changes displayed div. Button elements with _onclick_ functions beeing
-replaced with non-interactable lables
+replaced with non-interactable lables.
+ONLY ACTIVE IN DELIVERING VERSION [submit_control branch]
 
 **Syntax**
 
 ```typescript
-visible3(divId: unknown): void
+submitControl(divId: unknown): void
 ```
 
-### visible4()
+### visibleErrorCollapse()
 
-This function assures that there is always only one insight unfolded.
-Unfolding another insight automatically collapses the old one
+Collapses _report error_ interface so user viewing the unfolded inisght.
 
 **Syntax**
 
 ```typescript
-visible4(): void
+visibleErrorCollapse(): void
 ```
 
 ### saveInName()
 
 Saving current insight user has interacted with and commiting it to a state
-object in vuex store
+object in vuex store.
 
 **Syntax**
 
@@ -106,7 +109,7 @@ saveInName(name: unknown): void
 ### saveAnswerSelection()
 
 Saving selected answer option (yellow-status) and commiting it to a state object
-in vuex store
+in vuex store.
 
 **Syntax**
 
@@ -176,7 +179,7 @@ sendDownloadRequest(): void
 
 ### sendInsightRelevance()
 
-On collapsing any insight this function is triggered to upvote the clicked-on
+On unfolding any insight this function is triggered to upvote the clicked-on
 insight.
 
 **Syntax**
@@ -187,7 +190,7 @@ sendInsightRelevance(): void
 
 ### sendInsightNotRelevantError()
 
-Dispatching insight-not-relevant-error to the backend, where it is handled
+Dispatching insight-not-relevant-error to the backend, where it is handled.
 
 **Syntax**
 
@@ -197,7 +200,7 @@ sendInsightNotRelevantError(): void
 
 ### sendValueError()
 
-Dispatching value-error to the backend, where it is handled
+Dispatching value-error to the backend, where it is handled.
 
 **Syntax**
 
@@ -207,7 +210,7 @@ sendValueError(): void
 
 ### sendTypoError()
 
-Dispatching typo-error to the backend, where it is handled
+Dispatching typo-error to the backend, where it is handled.
 
 **Syntax**
 
@@ -220,11 +223,22 @@ sendTypoError(): void
 Triggers backend scraper to scrape further informations for the direct-download
 file e.g. Autors, Title etc.
 Function is beeing called directly when the component has been _created_ to
-guarantee an instant download experience to the users
+guarantee an instant download experience to the users.
 
 **Syntax**
 
 ```typescript
 sendScraper(): void
+```
+
+### alertBinder()
+
+This alert is triggered when the user tries to download the insights of all
+papers in his binder but is not in his binder.
+
+**Syntax**
+
+```typescript
+alertBinder(): void
 ```
 

@@ -4,13 +4,13 @@ Main logic of the plugin opening page.
 
 ## Data
 
-| Name          | Type     | Description                                                                  | Initial value                                                            |
-| ------------- | -------- | ---------------------------------------------------------------------------- | ------------------------------------------------------------------------ |
-| `substr`      | `regexp` | Checking if user is on any dl.acm.org page                                   | `/dl\.acm\.org\//`                                                       |
-| `regex`       | `regexp` | Checking for specific paper. Available in pdf and epdf view as well.         | `/dl\.acm\.org\/doi\/((fullHtml\/)|(epdf\/)|(pdf\/)){0,1}\d+\.\d{3,}\//` |
-| `regexBinder` | `regexp` | Checking for specific Binder page                                            | `/dl\.acm\.org\/action\/showBinder\?/`                                   |
-| `readingList` | `regexp` | Checking for Binder overview page                                            | `/dl\.acm\.org\/action\/showMyBinders/`                                  |
-| `status`      | `number` | Purpose is to load the right vue component depending on the current user url | `0`                                                                      |
+| Name          | Type     | Description                                                                   | Initial value                                                            |
+| ------------- | -------- | ----------------------------------------------------------------------------- | ------------------------------------------------------------------------ |
+| `substr`      | `regexp` | Checking if user is on any dl.acm.org page.                                   | `/dl\.acm\.org\//`                                                       |
+| `regex`       | `regexp` | Checking for specific paper. Available in pdf and epdf view as well.          | `/dl\.acm\.org\/doi\/((fullHtml\/)|(epdf\/)|(pdf\/)){0,1}\d+\.\d{3,}\//` |
+| `regexBinder` | `regexp` | Checking for specific Binder page.                                            | `/dl\.acm\.org\/action\/showBinder\?/`                                   |
+| `readingList` | `regexp` | Checking for Binder overview page.                                            | `/dl\.acm\.org\/action\/showMyBinders/`                                  |
+| `status`      | `number` | Purpose is to load the right vue component depending on the current user url. | `0`                                                                      |
 
 ## Methods
 
@@ -38,7 +38,7 @@ This function is called by _checkURL()_. If the user is on a valid page the
 function
 responsible for fetching backend data is going do be dispatched and only if
 resolved the route is going to push the user to our main page
-with all the data already available
+with all the data already available.
 
 **Syntax**
 

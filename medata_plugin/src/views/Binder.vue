@@ -53,7 +53,8 @@ export default {
         },
       /**
          * To get all available data the backend needs all the paper urls from the binder. In order to get this information 
-         * the _content-script.js_ of the chrome extension is triggered with _setBinder()_. There a counterpart awaiting the call to provide the requested DOM elements. 
+         * the _content-script.js_ of the chrome extension is triggered with _setBinder()_. 
+         * There is a counterpart awaiting the call to provide the requested DOM elements. 
          * After sending the request the function awaits a response which is handled with the function bellow.
          *@class
          */
@@ -61,7 +62,7 @@ export default {
           var vm = this
             chrome.tabs.query({
             /**
-             * Sends message to the _content-script.js_ to activate scraping for particular DOM elements
+             * Sends message to the _content-script.js_ to activate scraping for particular DOM elements.
              */
               active: true, currentWindow: true}, function(tabs){
                 chrome.tabs.sendMessage(
