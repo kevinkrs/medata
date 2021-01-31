@@ -1,7 +1,6 @@
 {
   "manifest_version": 2,
   "name": "Medata",
-  "homepage_url": "",
   "description": "Medata Plugin for dl.acm.org",
   "version": "1.0.1",
   "author": "Jan Effenberge, Jan Bode, Max Heydenmann, Kevin Kraus",
