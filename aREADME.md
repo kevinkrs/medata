@@ -69,6 +69,25 @@ Our plugin relys on a supportive community so please add answers and new insight
   * [sqlite](https://www.sqlite.org/index.html)  - Database
 * [vue.js](https://vuejs.org/) - Frontend
 
+## Set up the server
+You can either decide if you want to run the backend server locally - recommended for testing purposes or if you want to host it online.
+### set up local server
+Follow the instructions for the installation of the backend. 
+1. You have to change in [app.py](medata_backend/python_medata/app.py) the `app.run(host="0.0.0.0")` method to simply `app.run()`
+2. In the frontend you have to go to [medata_plugin/src/api/index.js](medata_plugin/src/api/index.js) and change the "`axios.defaults.baseURL = http://127.0.0.1:5000`" 
+3. run "`npm run build`" 
+4. navigate to the [medata_backend/python_medata](medata_backend/python_medata) folder and run the app.py from there. Otherwise you will run into problems with the download function
+
+### set up webserver
+In this part you will find a description how to run your developement server online.
+1. Decide which provider you want to go with. We ran our first server on a free tier on the [bw-cloud](https://www.bw-cloud.org). 
+2. create a VM with a linux system. We used Ubuntu
+3. change the allowed ports so http and https are allowed as well as ssh
+3. establish a connection to the server. SSH is the easiest. You can either go with putty or after downloading the private key with this command: "`ssh -i yourKey.ppk user @ip.adress.of.server`"
+4. Once the connection is done you can follow this [instruction](https://docs.microsoft.com/en-us/azure-stack/user/azure-stack-dev-start-howto-vm-python?view=azs-2008)
+5. instead of cloning the given repo, clone this one
+6. the requirements.txt is in the the [medata_backend](medata_backend) folder
+7. instead of exporting the FLASK_APP variable you can simply run app.py with "`python3.8 app.py`" when you have navigated to the [python_medata](medata_backend/python_medata) folder
 
 ## Contributing
 Pull requests are welcome. For major changes, please open an issue first to discuss what you would like to change.
