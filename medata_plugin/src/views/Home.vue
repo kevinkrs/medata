@@ -229,7 +229,7 @@
           <div class="grey-insight-name" @click="visible(-4)">
             download options
           </div>
-          <div class="grey-insight-button" @click="visible(-4)">
+          <div class="grey-insight-button">
             <button class="insight-button-icon" @click="visible(-4)">
               <div id=-1004 style="display:inline"><img class="img-button" src="../assets/direct-download.png" /></div>
               <div id=-2004 style="display:none"><img class="img-button" src="../assets/arrow-up.png" /></div>      
@@ -248,7 +248,7 @@
           <div class="grey-insight-name" @click="visible(-5)">
             add relevant insight
           </div>
-          <div class="grey-insight-button" @click="visible(-5)">
+          <div class="grey-insight-button">
             <button class="insight-button-icon" @click="visible(-5)">
               <div id=-1005 style="display:inline"><img class="img-button" src="../assets/add.png" /></div>
               <div id=-2005 style="display:none"><img class="img-button" src="../assets/arrow-up.png" /></div>      
