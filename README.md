@@ -50,6 +50,8 @@ Detailed documentation:
 
 ## Usage
 Go on a [ACM Digital Library](https://dl.acm.org/) website, and click on the plugin to load the available data for the selected paper.
+
+
 ![main](medata_backend/example_pictures/main.png)
 
 Green insights hold confirmed answers, while answers in a yellow insight still need to be validated by other users. Red insights are without answers - so feel free to add one!
