@@ -1,10 +1,11 @@
-pages: 
- artifacts: 
- paths: 
- — public
- only: 
- — master
- script: 
- — “mkdir .public”
- — “cp -r * .public”
- — “mv .public public”
+image: alpine:latest
+
+pages:
+  stage: deploy
+  script:
+  - echo 'Nothing to do...'
+  artifacts:
+    paths:
+    - medata_backend/docs
+  only:
+  - master
