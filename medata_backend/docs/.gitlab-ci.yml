@@ -1,10 +1,10 @@
-pages:
- script:
- — mkdir .public
- — cp -r * .public
- — mv .public public
- artifacts:
-    paths:
-    — public
- only:
+pages: 
+ artifacts: 
+ paths: 
+ — public
+ only: 
  — master
+ script: 
+ — “mkdir .public”
+ — “cp -r * .public”
+ — “mv .public public”
