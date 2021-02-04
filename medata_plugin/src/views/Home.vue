@@ -126,7 +126,7 @@
         </div>
 
         <!--yellow insight-->
-        <div div v-else-if="entry.answer[0].answer_score < 4" class="insight-button">
+        <div div v-else-if="entry.answer[0].answer_score < 5" class="insight-button">
           <button class="insight-button-icon" @click="visible(entry.id), saveInName(entry.name), sendInsightRelevance()">
             <div :id=entry.id-1000 style="display:inline"><img class="img-button" src="../assets/arrow-down-yellow.png" /></div>
             <div :id=entry.id-2000 style="display:none"><img class="img-button" src="../assets/arrow-up-yellow.png" /></div>
