@@ -466,7 +466,6 @@ export default {
      */
     sendInsightNotRelevantError() {
       this.$store.dispatch('sendInsightNotRelevantError')
-      this.$store.dispatch('loadMetadata')
       alert('Thank you for reporting! If more user report this insight as insignificant it will be deleted.')
     },
     /**
@@ -474,7 +473,6 @@ export default {
      */
     sendValueError() {
       this.$store.dispatch('sendValueError')
-      this.$store.dispatch('loadMetadata')
       alert("Thank you for reporting! The value is going to be checked.")
     },
     /**
@@ -482,7 +480,6 @@ export default {
      */
      sendTypoError() {
         this.$store.dispatch('sendTypoError')
-        this.$store.dispatch('loadMetadata')
         alert('Thank you for reporting typo. Our team is going to check your reported typo.')
      },
      /**
