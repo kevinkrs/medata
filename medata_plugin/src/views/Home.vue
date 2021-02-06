@@ -2,49 +2,47 @@
 <div class = "extension">
   <div class="main-column">
 
-    <!--Picture of the MEDATA logo-->
+    <!--The div "headline" conatins the info box, the MEDATA logo and the github logo-->
     <div class="headline">
       <button v-show="!legendVisible" style="display:inline" class="button-legend" @click="legendVisible = !legendVisible">
-        <div><img class="img-button-legend" src="../assets/info.png" ></div>
+        <div><img class="img-button-legend" src="../assets/info.png" /></div>
       </button>
       <button v-show="legendVisible" style="display:none" class="button-legend2" @click="legendVisible = !legendVisible">
-        <div><img class="img-button-legend" src="../assets/arrow-up.png" ></div>      
+        <div><img class="img-button-legend" src="../assets/arrow-up.png" /></div>      
       </button>
-      <img class="logo" src="../assets/medata_black.png" width="200"> 
-      <button class="insight-button-yellow">
-        <img class="img-button" src="../assets/github.png" @click = "openGit">
+      <img class="logo" src="../assets/medata_black.png" width="200"/> 
+      <button class="insight-button-icon">
+        <img class="img-button" src="../assets/github.png" @click = "openGit"/>
       </button>
     </div>
     
-    <!--This fieldset element "grey-box" contains everything reagardin the legend-->
+    <!--This fieldset element "grey-box-legend" contains everything reagardin the legend-->
     <fieldset v-show="legendVisible" style="display:none" class="grey-box-legend">
+
       <!--The three div elements "grey-insight" represent the the three boxes/insights inside the legend-->
       <div class="grey-insight">
         <div class="grey-insight-name" @click="visible(-1)">confirmed insigth</div>
-        <!--The div "grey-insight-button" contains the green/yellow or red button and the corresponding fold-out toggle box-->
         <div class="grey-insight-button">
-          <button class="insight-button-green" @click="visible(-1)">
-            <div id=-1001 style="display:inline"><img class="img-button" src="../assets/info-green.png" ></div>
-            <div id=-2001 style="display:none"><img class="img-button" src="../assets/arrow-up-green.png" ></div>      
+          <button class="insight-button-icon" @click="visible(-1)">
+            <div id=-1001 style="display:inline"><img class="img-button" src="../assets/info-green.png" /></div>
+            <div id=-2001 style="display:none"><img class="img-button" src="../assets/arrow-up-green.png" /></div>      
           </button>
-
-
           <div id=-1 style="display:none">
             <div class="grey-toggleBox">
-              <p>The insights with a <b> green arrow </b> on the right are confirmed by <br> at <b> least 5 other </b> users. </p>
+              <p>The insights with a <b> green arrow </b> on the right are confirmed by <br/> at <b> least 5 other </b> users. </p>
               <p> The confirmed value can be upvoted further to strengthen it's correctness as well as downvoted via an error reporting </p>
             </div>
           </div>
         </div>
       </div>
+
       <div class="grey-insight">
         <div class="grey-insight-name" @click="visible(-2)">validation needed</div>
         <div class="grey-insight-button">
-          <button class="insight-button-yellow" @click="visible(-2)">
-            <div id=-1002 style="display:inline"><img class="img-button" src="../assets/info-yellow.png" ></div>
-            <div id=-2002 style="display:none"><img class="img-button" src="../assets/arrow-up-yellow.png" ></div>      
+          <button class="insight-button-icon" @click="visible(-2)">
+            <div id=-1002 style="display:inline"><img class="img-button" src="../assets/info-yellow.png" /></div>
+            <div id=-2002 style="display:none"><img class="img-button" src="../assets/arrow-up-yellow.png" /></div>      
           </button>
-
           <div id=-2 style="display:none">
             <div class="grey-toggleBox">
               <p>The insights with a <b> yellow arrow </b> on the right contain values submitted by users that have to be confirmed by others. </p>
@@ -54,19 +52,20 @@
           </div>
         </div>
       </div>
+
       <div class="grey-insight">
         <div class="grey-insight-name" @click="visible(-3)">
           enter information
         </div>
         <div class="grey-insight-button">
-          <button class="insight-button-red" @click="visible(-3)">
-          <div id=-1003 style="display:inline"><img class="img-button" src="../assets/info-red.png" ></div>
-          <div id=-2003 style="display:none"><img class="img-button" src="../assets/arrow-up-red.png" ></div>      
+          <button class="insight-button-icon" @click="visible(-3)">
+          <div id=-1003 style="display:inline"><img class="img-button" src="../assets/info-red.png" /></div>
+          <div id=-2003 style="display:none"><img class="img-button" src="../assets/arrow-up-red.png" /></div>      
           </button>
           <div id=-3 style="display:none">
             <div class="grey-toggleBox">
               <p> The insights with a <b> red arrow </b> on the right contain no values yet. </p>
-              <p> User can add values with the input field. After adding a value the insight is switching instantly from red status to yellow status. <br> 
+              <p> User can add values with the input field. After adding a value the insight is switching instantly from red status to yellow status. <br/> 
               Now users can vote for an answer or add new answers. </p>
             </div>
           </div>
@@ -83,8 +82,7 @@
     </div>
       
     <div v-else>
-      <!--The div element "box 2" represents one insight listed under the legend and also consists of
-      a short text and a colored box.-->
+      <!--The div element "insight" represents one insight listed under the legend and consists of a short text and a colored box.-->
       <div class="insight" v-for="entry in metadata" :key="entry.id">
         <div class="insight-name">
           {{entry.name}}
@@ -94,168 +92,153 @@
         depending on whether the passed numerical value "confirmed" inside the "metadaata" array
         (recieved inside script from the store file)is 0,1 or something else.-->
         
-      
+        <!--red insight-->
         <div v-if='entry.answer.length == 0' class= "insight-button">
           <!--With a click on the colored button the function visable is called and the id of the insight
           is passed. This ensures that the corresponding toggle box becomes visible.-->
-          <button class="insight-button-red" @click="visible(entry.id), saveInName(entry.name), sendInsightRelevance()">
-            <div :id=entry.id-1000 style="display:inline"><img class="img-button" src="../assets/arrow-down-red.png" ></div>
-            <div :id=entry.id-2000 style="display:none"><img class="img-button" src="../assets/arrow-up-red.png" ></div>      
+          <button class="insight-button-icon" @click="visible(entry.id), saveInName(entry.name), sendInsightRelevance()">
+            <div :id=entry.id-1000 style="display:inline"><img class="img-button" src="../assets/arrow-down-red.png" /></div>
+            <div :id=entry.id-2000 style="display:none"><img class="img-button" src="../assets/arrow-up-red.png" /></div>      
           </button>
 
-            <div :id=entry.id+1000 style="display:none">
-
-              <!--The div "insight-name2" is only used so that the div "insight-toggleBox" has the right distance to the top depending on whether the name of the insight goes over one, two, three,... lines. In css the div "insight-name2" is made invisible again.-->
-              <div class="insight-name2">
-                {{entry.name}}
-              </div>
-
-              <div class="insight-toggleBox">
-                <button class="error-button" @click="visible2(entry.id+1000)">back</button>
-                <button id ="error1" class="error-button-2" @click='sendTypoError(),visible4()'>Report typo </button> <br> 
-                <button id ="error2" class="error-button-2" @click='sendInsightNotRelevantError(),visible4()'>Report insignificance of this insight </button>
-              </div>
-            </div> 
-
-          <div :id=entry.id style="display:none">
-
-            <!--The div "insight-name2" is only used so that the div "insight-toggleBox" has the right distance to the top depending on whether the name of the insight goes over one, two, three,... lines. In css the div "insight-name2" is made invisible again.-->
-            <div class="insight-name2">
-              {{entry.name}}
-            </div>
-
+          <!--red-insight: error box-->
+          <div :id=entry.id+1000 style="display:none">
+            <div class="insight-name-transparent">{{entry.name}}</div>
             <div class="insight-toggleBox">
-              <button class="error-button" @click="visible2(entry.id+1000)">report error</button>
+              <button class="error-button" @click="visibleError(entry.id+1000)">back</button>
+              <button id ="error1" class="error-button-2" @click='sendTypoError(),visibleErrorCollapse()'>Report typo </button> <br/> 
+              <button id ="error2" class="error-button-2" @click='sendInsightNotRelevantError(),visibleErrorCollapse()'>Report insignificance of this insight </button>
+            </div>
+          </div> 
+
+          <!--red insight: foldout box--> 
+          <div :id=entry.id style="display:none">
+            <div class="insight-name-transparent">{{entry.name}}</div>
+            <div class="insight-toggleBox">
+              <button class="error-button" @click="visibleError(entry.id+1000)">report error</button>
               <div class="insight-add">
                 <p>Please enter information:</p>
-                <input class="inputfield" v-model='userInput' @keyup.enter='saveUserInput(), sendUserAnswer()'><br>
+                <input class="inputfield" v-model='userInput' @keyup.enter='saveUserInput(), sendUserAnswer()'/><br/>
                 <button class="main-button" @click="saveUserInput(), sendUserAnswer()">Submit</button>
               </div>
             </div>
           </div>
         </div>
-        <div div v-else-if="entry.answer[0].answer_score < 4" class="insight-button">
-          <button class="insight-button-yellow" @click="visible(entry.id), saveInName(entry.name), sendInsightRelevance()">
-            <div :id=entry.id-1000 style="display:inline"><img class="img-button" src="../assets/arrow-down-yellow.png" ></div>
-            <div :id=entry.id-2000 style="display:none"><img class="img-button" src="../assets/arrow-up-yellow.png" ></div>
+
+        <!--yellow insight-->
+        <div div v-else-if="entry.answer[0].answer_score < 5" class="insight-button">
+          <button class="insight-button-icon" @click="visible(entry.id), saveInName(entry.name), sendInsightRelevance()">
+            <div :id=entry.id-1000 style="display:inline"><img class="img-button" src="../assets/arrow-down-yellow.png" /></div>
+            <div :id=entry.id-2000 style="display:none"><img class="img-button" src="../assets/arrow-up-yellow.png" /></div>
           </button>
 
-            <div :id=entry.id+1000 style="display:none">
-
-              <!--The div "insight-name2" is only used so that the div "insight-toggleBox" has the right distance to the top depending on whether the name of the insight goes over one, two, three,... lines. In css the div "insight-name2" is made invisible again.-->
-              <div class="insight-name2">
-                {{entry.name}}
-              </div>
-
-              <div class="insight-toggleBox">
-                <button class="error-button" @click="visible2(entry.id+1000)">back</button>
-                <button id ="error1" class="error-button-2" @click='sendTypoError(),visible4()'>Report typo </button> <br> 
-                <button id ="error2" class="error-button-2" @click='sendInsightNotRelevantError(),visible4()'>Report insignificance of this insight </button>
-              </div>
-            </div> 
-
-          <div :id=entry.id style="display:none">
-
-            <!--The div "insight-name2" is only used so that the div "insight-toggleBox" has the right distance to the top depending on whether the name of the insight goes over one, two, three,... lines. In css the div "insight-name2" is made invisible again.-->
-            <div class="insight-name2">
-              {{entry.name}}
-            </div>
-
+          <!--yellow insight: error box-->
+          <div :id=entry.id+1000 style="display:none">
+            <div class="insight-name-transparent">{{entry.name}}</div>
             <div class="insight-toggleBox">
-          
-            <button class="error-button" @click="visible2(entry.id+1000)">report error</button>
+              <button class="error-button" @click="visibleError(entry.id+1000)">back</button>
+              <button id ="error1" class="error-button-2" @click='sendTypoError(),visibleErrorCollapse()'>Report typo </button> <br/> 
+              <button id ="error2" class="error-button-2" @click='sendInsightNotRelevantError(),visibleErrorCollapse()'>Report insignificance of this insight </button>
+            </div>
+          </div> 
+
+          <!--yellow insight: foldout box-->
+          <div :id=entry.id style="display:none">
+            <div class="insight-name-transparent">{{entry.name}}</div>
+            <div class="insight-toggleBox">    
+              <button class="error-button" @click="visibleError(entry.id+1000)">report error</button>
               <div class="insight-answers">
-                <p>Please select <br> the correct Answer</p>
-
-               <div class="row">
-                    <div v-for="answer in entry.answer" :key ="answer">
-                     
-                      <button type="button"  class="answer-button" @click="saveAnswerSelection(answer.answer), sendAnswerSelection()">
-                        {{answer.answer}}
-                      </button>
-                    </div>
+                <p>Please select <br/> the correct Answer</p>
+                <div class="row">
+                  <div v-for="answer in entry.answer" :key ="answer">                    
+                    <button type="button"  class="answer-button" @click="saveAnswerSelection(answer.answer), sendAnswerSelection()">
+                      {{answer.answer}}
+                    </button>
+                  </div>
                 </div>
-
               </div>
               <div class="insight-add">
                 <p>Add value:</p>
-                <input class="inputfield" v-model='userInput' @keyup.enter='saveUserInput(), sendUserAnswer()'><br>
+                <input class="inputfield" v-model='userInput' @keyup.enter='saveUserInput(), sendUserAnswer()'/><br/>
                 <button class="main-button" @click="saveUserInput(), sendUserAnswer()">Submit</button>
               </div>
             </div>
           </div>
         </div>
+
+        <!--green insight-->
         <div v-else class="insight-button">
-          <button class="insight-button-green" @click="visible(entry.id), saveInName(entry.name), sendInsightRelevance(), saveAnswerSelection(entry.answer[0].answer)">
-            <div :id=entry.id-1000 style="display:inline"><img class="img-button" src="../assets/arrow-down-green.png" ></div>
-            <div :id=entry.id-2000 style="display:none"><img class="img-button" src="../assets/arrow-up-green.png" ></div>
+          <button class="insight-button-icon" @click="visible(entry.id), saveInName(entry.name), sendInsightRelevance(), saveAnswerSelection(entry.answer[0].answer)">
+            <div :id=entry.id-1000 style="display:inline"><img class="img-button" src="../assets/arrow-down-green.png" /></div>
+            <div :id=entry.id-2000 style="display:none"><img class="img-button" src="../assets/arrow-up-green.png" /></div>
           </button>
 
-            <div :id=entry.id+1000 style="display:none">
-
-              <!--The div "insight-name2" is only used so that the div "insight-toggleBox" has the right distance to the top depending on whether the name of the insight goes over one, two, three,... lines. In css the div "insight-name2" is made invisible again.-->
-              <div class="insight-name2">
-                {{entry.name}}
-              </div>
-
-              <div class="insight-toggleBox">
-                <button class="error-button" @click="visible2(entry.id+1000)">back</button>
-                 <button id ="error1" class="error-button-2" @click='sendTypoError(),visible4()'>Report typo </button> <br> 
-                <button id ="error2" class="error-button-2" @click='sendValueError(),visible4()'>Report incorrect value </button>
-              </div>
-            </div> 
-
-          <div :id=entry.id style="display:none">
-
-            <!--The div "insight-name2" is only used so that the div "insight-toggleBox" has the right distance to the top depending on whether the name of the insight goes over one, two, three,... lines. In css the div "insight-name2" is made invisible again.-->
-            <div class="insight-name2">
-              {{entry.name}}
-            </div>
-
+          <!--green-insight: error box-->
+          <div :id=entry.id+1000 style="display:none">
+            <div class="insight-name-transparent">{{entry.name}}</div>
             <div class="insight-toggleBox">
-            <button class="error-button" @click="visible2(entry.id+1000)">report error</button>
-            
-                <p class="insight-green-answer">{{entry.answer[0].answer}} <br></p>
-                <div class="insight-green">
-                  <div class="insight-green-text">
-                    <p> Number of<br> confirmations </p>
-                  </div>
-                  <div class="insight-green-line"></div>
-                  <div class="insight-green-number">
-                    <p>{{entry.answer[0].answer_score}}</p>                   
-                  </div>
+              <button class="error-button" @click="visibleError(entry.id+1000)">back</button>
+                <button id ="error1" class="error-button-2" @click='sendTypoError(),visibleErrorCollapse()'>Report typo </button> <br/> 
+              <button id ="error2" class="error-button-2" @click='sendValueError(),visibleErrorCollapse()'>Report incorrect value </button>
+            </div>
+          </div> 
+
+          <!--green-insight: foldout box-->
+          <div :id=entry.id style="display:none">
+            <div class="insight-name-transparent">{{entry.name}}</div>
+            <div class="insight-toggleBox">
+              <button class="error-button" @click="visibleError(entry.id+1000)">report error</button>
+              <p class="insight-green-answer">{{entry.answer[0].answer}} <br/></p>
+              <div class="insight-green">
+                <div class="insight-green-text">
+                  <p> Number of<br/> confirmations </p>
                 </div>
-                <button class="green-button" @click='sendAnswerSelection()'>Confirm</button>
+                <div class="insight-green-line"></div>
+                <div class="insight-green-number">
+                  <p>{{entry.answer[0].answer_score}}</p>                   
+                </div>
+              </div>
+              <button class="green-button" @click='sendAnswerSelection()'>Confirm</button>
             </div>
           </div>
         </div>
       </div>
+      <div><br/></div>
 
-      <div><br></div>
-
-      <!--This fieldset element "grey-box" contains everything reagardin the "more-functions"-->
+      <!--This fieldset contains "download options" and "add insight"-->
       <fieldset class="grey-box">
-        <!--The three div elements "box-1-content" represent the the three elements inside the legend.
-        Each element consists of a short text and a colored box-->
+
+        <!--download options-->
         <div class="grey-insight">
-          <div class="grey-insight-name">
-            download insights
+          <div class="grey-insight-name" @click="visible(-4)">
+            download options
           </div>
           <div class="grey-insight-button">
-            <button class="insight-button-yellow" @click="sendDownloadRequest()"><img class="img-button" src="../assets/direct-download.png" ></button>
+            <button class="insight-button-icon" @click="visible(-4)">
+              <div id=-1004 style="display:inline"><img class="img-button" src="../assets/direct-download.png" /></div>
+              <div id=-2004 style="display:none"><img class="img-button" src="../assets/arrow-up.png" /></div>      
+            </button>
+            <div id=-4 style="display:none">
+              <div class="grey-toggleBox-download">
+                <button class="download-button" @click="sendDownloadRequest()">download current paper insights</button>
+                <button class="download-button" @click="alertBinder()">download all binder insights</button>
+              </div>
+            </div>
           </div>
         </div>
+
+        <!--add insight-->
         <div class="grey-insight">
-          <div class="grey-insight-name">
+          <div class="grey-insight-name" @click="visible(-5)">
             add relevant insight
           </div>
           <div class="grey-insight-button">
-            <button class="insight-button-yellow" @click="visible(-5)">
-            <div id=-1005 style="display:inline"><img class="img-button" src="../assets/add.png" ></div>
-            <div id=-2005 style="display:none"><img class="img-button" src="../assets/arrow-up.png" ></div>      
+            <button class="insight-button-icon" @click="visible(-5)">
+              <div id=-1005 style="display:inline"><img class="img-button" src="../assets/add.png" /></div>
+              <div id=-2005 style="display:none"><img class="img-button" src="../assets/arrow-up.png" /></div>      
             </button>
             <div id=-5 style="display:none">
-              <div class="new-insight-toggleBox">
+              <div class="grey-toggleBox-add">
                 <input class="inputfield2" type="text" autocomplete="off" @keyup.enter='saveUserInput(), sendUserInsight()' @input = "filterParameters" v-model="userInput" @focus = "modal = true"/>
                 <div v-if="filtered && modal">
                   <ul>
@@ -279,28 +262,44 @@
 </template>
 
 <script>
-// mapState is a function, that maintains a reference to a specific property of the "state" object (state.metadata)
-// if the property is mutated, a component using mapState will react to that change and refresh the UI that is tied to this data
 import {mapState} from 'vuex'
-
+/**
+ * The core component of the plugin. All the interaction between user an programm happens here. 
+ */
 export default {
   name: 'main',
   data () {
     return {
-    // Empty String for possible user input
+    /**
+     * Empty strings for saving user input inside given input fields.
+     */
       userInput: '',
+      /**
+       * Trigger for collapsing information box.
+       */
       legendVisible: false,
-      // TODO: Backend has to send an array with common words for certain category 
+      /**
+       * Saves recieved array of topic related words from backend. 
+       * Required for the _add insight_ autocomplete option.
+       */
       filtered: [],
+      /**
+       * Property for the autocomplete option.
+       */
       modal: false
     }
   },
   methods: {
-    // Function only for testing
+   /**
+    * Click function for top right git icon to open github repository.
+    */
     openGit () {
       chrome.tabs.create({url: "https://github.com"});
     },
 
+    /**
+     * Autocomplete function using the _filtered_ property from _data_ which is fed with topic related words trough a backend call. 
+     */
     filterParameters() {
       if (this.userInput.length == 0){
         this.filtered = []
@@ -311,11 +310,18 @@ export default {
         })
       }
     },
+    /**
+     * Allows user to click on one of the autocomplete proposals to fill the input field with the selected one.
+     */
     setParam(param) {
       this.userInput = param
       this.modal = false
     },
-    // TODO commments
+    
+    /**
+     * For unfolding an insight and other elements in order to interact with it. 
+     * Guarantees that always only one insight is unfolded. Clicking on another one will automatically collapse the old one.
+     */
     visible: function (divId) {
       /*The for loop closes all divs to ensure that only one div is open at a time*/
       for (var i = -10000; i <= 10000; i++) {
@@ -340,7 +346,11 @@ export default {
       }
     },
 
-    visible2: function (divId) {
+    /**
+     * Collapsing _report an error_ interface: After an user has submitted any kind of error the error interface collapses trough _visibleErrorCollapse()_ function and the user is
+     * back at the unfolded insight.
+     */
+    visibleError: function (divId) {
       if (document.getElementById(divId).style.display === 'none') {
         document.getElementById(divId).style.display = 'inline';
         document.getElementById(divId-1000).style.display = 'none';
@@ -350,12 +360,19 @@ export default {
       }
     },
 
-    visible3: function (divId) {
+    /**
+     * Submitt-controll: After user selects answer (yellow-status) or confirms an insight (green-status) further interaction won't be possible anymore. 
+     * Function changes displayed div. Button elements with _onclick_ functions beeing replaced with non-interactable lables.
+     * ONLY ACTIVE IN DELIVERING VERSION [submit_control branch]
+    */
+    submitControl: function (divId) {
         document.getElementById(divId+100000).style.display = 'none';
         document.getElementById(divId+200000).style.display = 'inline';    
     },
-
-    visible4: function () {
+    /**
+    * Collapses _report error_ interface so user viewing the unfolded inisght. 
+     */
+    visibleErrorCollapse: function () {
       /*The for loop closes all divs to ensure that only one div is open at a time*/
       for (var i = -10000; i <= 10000; i++) {
         if (document.getElementById(i) != null && i != -6){
@@ -368,14 +385,22 @@ export default {
         }                
       }
     },    
-    // All the following methods are merely for saving data as state objects
+    /**
+     * Saving current insight user has interacted with and commiting it to a state object in vuex store.
+     */
     saveInName(name) {
       this.$store.dispatch('fetchInName', name)
     },
+     /**
+     * Saving selected answer option (yellow-status) and commiting it to a state object in vuex store.
+     */
     saveAnswerSelection(answer) {
       this.$store.dispatch('fetchUserAnswer', answer) 
     },
-    // TODO: This method saves & sends user Input 
+    /**
+     * Saving any input user has made and commiting it to a state object in vuex store.
+     * Differentiation between wether it is a new insight answer or a new insight is handled by calling either _sendUserAnswer_ or _sendUserInsight_ for the given case.
+     */
     saveUserInput() {
       if (this.userInput == ''){
         alert('Please enter some data before submitting!')
@@ -384,13 +409,19 @@ export default {
          this.$store.dispatch('fetchUserInput', this.userInput)
       }
     },
-    // Yellow status for rating answers
+    /**
+     * Triggered right after _saveAnswerSelection(answer)_ to send the selected answer via api call to the database in the backend.
+     * Afterwards the data gets reloaded to check if an insight has enough upvotes to change its status to _green status_. 
+     * We always store user interaction temporarly into vuex store rather than directly dispatching it to our backend code. 
+     */
     sendAnswerSelection() {
       this.$store.dispatch('sendRateAnswer')
       alert('Thanks for rating!')
       this.$store.dispatch('loadMetadata')
     },
-    // For new answers by user
+    /**
+     * Sending new user _insight answers_ to the database and reloading data to give the user a direct feedback that his/her new insight is available now. 
+     */
     sendUserAnswer() {
       if (this.currentUserInput == ''){
         console.log('empty userInput')
@@ -402,7 +433,9 @@ export default {
         this.$store.dispatch('loadMetadata')
         }
     },
-    // For new insights by user
+     /**
+     * Sending new user _insight_ to the database and reloading data to give the user a direct feedback that his/her new insight is available now. 
+     */
     sendUserInsight() {
       if(this.currentUserInput == ''){
         console.log('empty userInput')
@@ -415,38 +448,59 @@ export default {
       }
     },
   
+  /**
+   * Triggering direct download 
+   */
     sendDownloadRequest() {
       this.$store.dispatch("loadDownload")
     },
   
-    // User sends relevance of insight (upvote) on insight click
+    /**
+     * On unfolding any insight this function is triggered to upvote the clicked-on insight. 
+     */
     sendInsightRelevance(){
       this.$store.dispatch('sendRateRelevanceInsight')
-      //this.$store.dispatch('loadMetadata')
     },
-
+    /**
+     * Dispatching insight-not-relevant-error to the backend, where it is handled.
+     */
     sendInsightNotRelevantError() {
       this.$store.dispatch('sendInsightNotRelevantError')
-      this.$store.dispatch('loadMetadata')
       alert('Thank you for reporting! If more user report this insight as insignificant it will be deleted.')
     },
+    /**
+     * Dispatching value-error to the backend, where it is handled.
+     */
     sendValueError() {
       this.$store.dispatch('sendValueError')
-      this.$store.dispatch('loadMetadata')
       alert("Thank you for reporting! The value is going to be checked.")
     },
+    /**
+     * Dispatching typo-error to the backend, where it is handled.
+     */
      sendTypoError() {
         this.$store.dispatch('sendTypoError')
-        this.$store.dispatch('loadMetadata')
         alert('Thank you for reporting typo. Our team is going to check your reported typo.')
      },
+     /**
+      * Triggers backend scraper to scrape further informations for the direct-download file e.g. Autors, Title etc. 
+      * Function is beeing called directly when the component has been _created_ to guarantee an instant download experience to the users.
+      */
      sendScraper() {
        this.$store.dispatch('loadFurtherInformation')
-     }
+     },
+
+     /**
+      * This alert is triggered when the user tries to download the insights of all papers in his binder but is not in his binder.
+      */
+    alertBinder() {
+      alert('To download the insights of all papers in your binder, please switch to the corresponding binder and open the plugin again.')
+    }
 
   },
-  // mapstate is a Vuex component (using computed) summarizing the command of this.$store.state.metadata
-  // we can easily load all our state objects inside our Home-Component and access it by calling this."propertyname"
+  /**
+   * Accessing the vuex store propertys for further modification inside this component.
+   */
   computed: {
     ...mapState([
         'metadata', 
@@ -550,27 +604,42 @@ export default {
   }
 
   .grey-toggleBox {
-  text-align: left;
-  padding: 8px;
-  font-size: 85%;
-  margin-top: 30px;
-  margin-left: -384%;
-  margin-right: -8px;
-  margin-bottom: -8px;
-  border-radius: 0px 0px 5px 5px;
-  background-color: #FFFFFF;
+    text-align: left;
+    padding: 8px;
+    font-size: 85%;
+    margin-top: 30px;
+    margin-left: -384%;
+    margin-right: -8px;
+    margin-bottom: -8px;
+    border-radius: 0px 0px 5px 5px;
+    background-color: #FFFFFF;
   }
 
-  .new-insight-toggleBox {
-  text-align: center;
-  padding: 8px;
-  font-size: 85%;
-  margin-top: 30px;
-  margin-left: -384%;
-  margin-right: -8px;
-  margin-bottom: -8px;
-  border-radius: 0px 0px 5px 5px;
-  background-color: #FFFFFF;
+  .grey-toggleBox-add {
+    text-align: center;
+    padding: 8px;
+    font-size: 85%;
+    margin-top: 30px;
+    margin-left: -384%;
+    margin-right: -8px;
+    margin-bottom: -8px;
+    border-radius: 0px 0px 5px 5px;
+    background-color: #FFFFFF;
+  }
+
+  .grey-toggleBox-download {
+    text-align: left;
+    padding: 8px;
+    font-size: 85%;
+    margin-top: 30px;
+    margin-left: -384%;
+    margin-right: -8px;
+    margin-bottom: -8px;
+    border-radius: 0px 0px 5px 5px;
+    background-color: #FFFFFF;
+    display: flex;
+    flex-direction: column;
+    align-items:center;
   }
 
 /*insight- | desgin for the list of insights*/
@@ -591,7 +660,7 @@ export default {
     box-shadow: 3px 3px 3px silver;
     border-radius: 5px 0px 0px 5px;
   }
-  .insight-name2 {
+  .insight-name-transparent {
     width: 349%;
     padding: 8px;
     color: transparent;
@@ -611,38 +680,18 @@ export default {
     border-radius: 0px 5px 5px 0px;
   }
 
- .insight-button-green {
-   border: 0px;
-   background-color: transparent;
-   outline: none;
-   width: 30px;
-   height: 30px;
-   float: right;
-   border-radius: 5px;
-   }
-
-  .insight-button-yellow {
-   border: 0px;
-   background-color: transparent;
-   outline: none;
-   width: 30px;
-   height: 30px;
-   float: right;
-   border-radius: 5px;
- }
-  .insight-button-red {
-   border: 0px;
-   background-color: transparent;
-   outline: none;
-   width: 30px;
-   height: 30px;
-   float: right;
-   font-weight: bold;
-   border-radius: 5px;
- }
-
   .insight-button:focus{
     width: 60px;
+  }
+
+ .insight-button-icon {
+    border: 0px;
+    background-color: transparent;
+    outline: none;
+    width: 30px;
+    height: 30px;
+    float: right;
+    border-radius: 5px;
   }
 
   .insight-toggleBox {
@@ -659,10 +708,10 @@ export default {
   }
 
   .insight-green-answer {
-  font-size: 25px;
-  font-weight: bold;
-  margin-top: 15px;
-  margin-bottom: 5px;
+    font-size: 25px;
+    font-weight: bold;
+    margin-top: 15px;
+    margin-bottom: 5px;
   }
 
   .insight-green {
@@ -761,17 +810,17 @@ export default {
   }
 
   .button-legend2 {
-   border: 0px;
-   background-color: #f7f7f7;
-   outline: none;
-   width: 50px;
-   margin-left: -8px;
-   margin-right: -12px;
-   margin-top: -10px;
-   height: 50px;
-   float: right;
-   border-radius: 5px 5px 0px 0px;
-   box-shadow: 3px 0px 0px silver;  
+    border: 0px;
+    background-color: #f7f7f7;
+    outline: none;
+    width: 50px;
+    margin-left: -8px;
+    margin-right: -12px;
+    margin-top: -10px;
+    height: 50px;
+    float: right;
+    border-radius: 5px 5px 0px 0px;
+    box-shadow: 3px 0px 0px silver;  
    }
   
   .img-button-legend {
@@ -781,16 +830,16 @@ export default {
   }
 
   .button-legend {
-   border: 0px;
-   background-color: #ffffff;
-   outline: none;
-   width: 50px;
-   margin-left: -8px;
-   margin-right: -12px;
-   margin-top: -10px;
-   height: 50px;
-   float: right;
-   border-radius: 5px 5px 0px 0px;  
+    border: 0px;
+    background-color: #ffffff;
+    outline: none;
+    width: 50px;
+    margin-left: -8px;
+    margin-right: -12px;
+    margin-top: -10px;
+    height: 50px;
+    float: right;
+    border-radius: 5px 5px 0px 0px;  
    }
 
   .img-button {
@@ -856,6 +905,22 @@ export default {
     height: 30px;
     color: white;
     background-color: #8F8F8F;
+  }
+
+  .download-button {
+    border-radius: 6px;
+    outline: none;
+    border-style: none;
+    width: 85%;
+    padding: 7px;
+    color: white;
+    background-color: #8F8F8F;
+    margin-top: 10px;
+  }
+
+  .download-button:hover {
+    background-color: #3a3a3a;
+    color: white;
   }
 
 .noData{

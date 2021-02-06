@@ -538,12 +538,6 @@ def download():
 
     urls_from_binder = request.get_json().get("urls_from_binder")
 
-    answer_score_threshold = 4
-    #fetch data from request
-    url = request.get_json().get('url')
-    url = url_checker(url)
-    urls_from_binder = request.get_json().get("urls_from_binder")
-
     if urls_from_binder is not None:
         urls_from_binder_list = []
         for binder_url in urls_from_binder:

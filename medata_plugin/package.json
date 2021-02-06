@@ -21,6 +21,7 @@
     "@vue/cli-plugin-vuex": "~4.5.0",
     "@vue/cli-service": "~4.5.0",
     "@vue/compiler-sfc": "^3.0.0",
+    "jsdoc-to-markdown": "^6.0.1",
     "vue-cli-plugin-browser-extension": "~0.25.1",
     "webpack-extension-reloader": "^1.1.4"
   }
