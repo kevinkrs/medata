@@ -318,7 +318,7 @@ def add_insight():
         #reset votes
         if (Information.query.filter(Information.insight_name==in_insight_name).count()!=0):
             existing_information = Information.query.filter(Information.insight_name==in_insight_name).first()
-            existing_information.insight_upvotes = 1
+            existing_information.insight_upvotes = highscore
             existing_information.insight_downvotes = 0
         #creats empty information linked to existing insight
         else:
