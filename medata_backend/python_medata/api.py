@@ -314,10 +314,17 @@ def add_insight():
             if (Categories.query.filter(Categories.insight_id==i.id).filter(Categories.name == str(category)).count()==0):
                 c = Categories(insight_id = i.id, name = str(category))
                 db.session.add(c)
+        #check whether 'information' already exists in case it has been downvoted
+        #reset votes
+        if (Information.query.filter(Information.insight_name==in_insight_name).count()!=0):
+            existing_information = Information.query.filter(Information.insight_name==in_insight_name).first()
+            existing_information.insight_upvotes = highscore
+            existing_information.insight_downvotes = 0
         #creats empty information linked to existing insight
-        inf = Information(insight_id=i.id, insight_name=i.name, paper_id=in_paper_id, insight_upvotes=highscore)
-        db.session.add(inf)
-        db.session.commit()
+        else:
+            inf = Information(insight_id=i.id, insight_name=i.name, paper_id=in_paper_id, insight_upvotes=highscore)
+            db.session.add(inf)
+            db.session.commit()
 
     return jsonify(response_object)
 

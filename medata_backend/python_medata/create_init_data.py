@@ -28,7 +28,6 @@ def create_init_data():
     categories_names2 = ["Supervised learning by classification", "Supervised learning", "Learning paradigms", "Machine learning"]
     id_counter = 1
     
-    #paper https://dl.acm.org/doi/10.1145/3284432.3287180
     for ins in insight_names1:
         i=Insights(id = id_counter, name=ins)
         db.session.add(i)
@@ -41,8 +40,6 @@ def create_init_data():
             print(c)
         id_counter = id_counter + 1
 
-
-    #paper https://dl.acm.org/doi/10.1145/3314407
     for ins in insight_names2:
         i=Insights(id = id_counter, name=ins)
         db.session.add(i)
