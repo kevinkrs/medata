@@ -49,7 +49,7 @@ export default {
          * chrome extension call to _background.js_ for opening a new 
          */
         openGit () {
-        chrome.tabs.create({url: "https://github.com"});
+        chrome.tabs.create({url: "https://github.com/kevinkrs7/medata"});
         },
       /**
          * To get all available data the backend needs all the paper urls from the binder. In order to get this information 
