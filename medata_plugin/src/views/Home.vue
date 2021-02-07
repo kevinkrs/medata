@@ -294,7 +294,7 @@ export default {
     * Click function for top right git icon to open github repository.
     */
     openGit () {
-      chrome.tabs.create({url: "https://github.com"});
+      chrome.tabs.create({url: "https://github.com/kevinkrs7/medata"});
     },
 
     /**
