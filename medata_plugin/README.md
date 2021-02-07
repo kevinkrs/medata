@@ -1,6 +1,5 @@
 # medata_plugin
 For using the plugin one has to got trough the following steps 
-```
 
 ### 1. Compiles and minifies for production
 ```
