@@ -74,7 +74,7 @@ Our plugin relys on a supportive community so please add answers and new insight
 
 ## Set up the server
 You can either decide if you want to run the backend server locally - recommended for testing purposes or if you want to host it online.
-### set up local server
+### Set up local server
 Follow the instructions for the installation of the backend. 
 1. You have to change in [app.py](medata_backend/python_medata/app.py) the `app.run(host="0.0.0.0")` method to simply `app.run()`
 2. In the frontend you have to go to [medata_plugin/src/api/index.js](medata_plugin/src/api/index.js) and change the "`axios.defaults.baseURL = http://127.0.0.1:5000`" 
