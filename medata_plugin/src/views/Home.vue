@@ -149,12 +149,23 @@
               <button class="error-button" @click="visibleError(entry.id+1000)">report error</button>
               <div class="insight-answers">
                 <p>Please select <br/> the correct Answer</p>
-                <div class="row">
-                  <div v-for="answer in entry.answer" :key ="answer">                    
-                    <button type="button"  class="answer-button" @click="saveAnswerSelection(answer.answer), sendAnswerSelection()">
-                      {{answer.answer}}
-                    </button>
+                <div :id=entry.id+100000 style ="display:inline">
+                 <div class="row">
+                    <div v-for="answer in entry.answer" :key ="answer">
+                      <button type="button"  class="answer-button" @click="saveAnswerSelection(answer.answer), sendAnswerSelection(), submitControl(entry.id)">
+                        {{answer.answer}}
+                      </button>
+                     </div>
                   </div>
+              </div>
+              <div :id=entry.id+200000 style ="display:none">
+                 <div class="row">
+                    <div v-for="answer in entry.answer" :key ="answer">
+                      <button type="button"  class="main-button-clicked">
+                        {{answer.answer}}
+                      </button>
+                     </div>
+                 </div>   
                 </div>
               </div>
               <div class="insight-add">
@@ -198,7 +209,12 @@
                   <p>{{entry.answer[0].answer_score}}</p>                   
                 </div>
               </div>
-              <button class="green-button" @click='sendAnswerSelection()'>Confirm</button>
+              <div :id=entry.id+100000 style ="display:inline">
+                <button class="green-button" @click='sendAnswerSelection(),submitControl(entry.id)'>Confirm</button>
+                </div>
+                <div :id=entry.id+200000 style ="display:none">
+                <button class="green-button-clicked">Confirm</button>
+                </div>
             </div>
           </div>
         </div>
@@ -661,7 +677,7 @@ export default {
     border-radius: 5px 0px 0px 5px;
   }
   .insight-name-transparent {
-    width: 349%;
+    width: 348%;
     padding: 8px;
     color: transparent;
     margin-top: -8px;
