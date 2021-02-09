@@ -81,7 +81,7 @@ Follow the instructions for the installation of the backend.
 3. run "`npm run build`" 
 4. navigate to the [medata_backend/python_medata](medata_backend/python_medata) folder and run the app.py from there. Otherwise you will run into problems with the download function
 
-### set up webserver
+### Set up webserver
 In this part you will find a description how to run your developement server online.
 1. Decide which provider you want to go with. We ran our first server on a free tier on the [bw-cloud](https://www.bw-cloud.org). 
 2. create a VM with a linux system. We used Ubuntu
