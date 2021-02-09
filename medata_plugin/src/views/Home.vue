@@ -661,7 +661,7 @@ export default {
     border-radius: 5px 0px 0px 5px;
   }
   .insight-name-transparent {
-    width: 349%;
+    width: 343%;
     padding: 8px;
     color: transparent;
     margin-top: -8px;
