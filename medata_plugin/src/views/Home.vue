@@ -107,7 +107,7 @@
             <div class="insight-toggleBox">
               <button class="error-button" @click="visibleError(entry.id+1000)">back</button>
               <button id ="error1" class="error-button-2" @click='sendTypoError(),visibleErrorCollapse()'>Report typo </button> <br/> 
-              <button id ="error2" class="error-button-2" @click='sendInsightNotRelevantError(),visibleErrorCollapse()'>Report insignificance of this insight </button>
+              <button id ="error2" class="error-button-2" @click='sendInsightNotRelevantError(),visibleErrorCollapse()'>Insight not relevant</button>
             </div>
           </div> 
 
@@ -138,7 +138,7 @@
             <div class="insight-toggleBox">
               <button class="error-button" @click="visibleError(entry.id+1000)">back</button>
               <button id ="error1" class="error-button-2" @click='sendTypoError(),visibleErrorCollapse()'>Report typo </button> <br/> 
-              <button id ="error2" class="error-button-2" @click='sendInsightNotRelevantError(),visibleErrorCollapse()'>Report insignificance of this insight </button>
+              <button id ="error2" class="error-button-2" @click='sendInsightNotRelevantError(),visibleErrorCollapse()'>Insight not relevant </button>
             </div>
           </div> 
 
