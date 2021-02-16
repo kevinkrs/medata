@@ -7,7 +7,7 @@ Medata is a chrome-plugin that helps researchers to collect and contribute insig
 **IMPORTANT** The backend is hosted online, you can use the plugin by just following the _Installation Frontend_ steps. 
 To setup your own backend for developement reasons:
 
-* clone the GitHub repo ```TODO: link to out repo```
+* clone the GitHub repo ```git@git.scc.kit.edu:issd/students/teamproject/ws20-il.git```
 * navigate to the medata_backend folder
 * create venv: ```python -m venv venv```
     * run ```venv\Scripts\activate.bat``` (Windows)
